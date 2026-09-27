@@ -52,14 +52,17 @@ async function getJson<T>(fetchFn: FetchFn, path: string): Promise<T> {
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
 
+function chartPath(symbol: string, interval: string, range: string): string {
+  return `/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${range}&includePrePost=false`;
+}
+
 export async function fetchChart(
   fetchFn: FetchFn,
   symbol: string,
   interval: '5m' | '60m' | '1d',
   range: string,
 ): Promise<{ meta: ChartMeta; candles: Candle[] }> {
-  const path = `/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${range}&includePrePost=false`;
-  const data = await getJson<ChartResponse>(fetchFn, path);
+  const data = await getJson<ChartResponse>(fetchFn, chartPath(symbol, interval, range));
   const r = data.chart.result?.[0];
   if (!r) throw new Error(data.chart.error?.description || `${symbol}: veri yok`);
   const q = r.indicators.quote[0];
@@ -118,6 +121,12 @@ const SOURCE: Record<Timeframe, '5m' | '60m' | '1d'> = {
   '1d': '1d',
 };
 const RANGE: Record<'5m' | '60m' | '1d', string> = { '5m': '30d', '60m': '1y', '1d': '5y' };
+
+/** loadSeries'in ilk denemede isteyeceği adresler (toplu/paralel önceden indirmek için). */
+export function chartUrls(symbol: string, tfs: Timeframe[]): string[] {
+  const sources = [...new Set(tfs.map((tf) => SOURCE[tf]))];
+  return sources.map((src) => HOSTS[0] + chartPath(symbol, src, RANGE[src]));
+}
 
 /** İstenen zaman dilimleri için mumları indirir ve birleştirir. */
 export async function loadSeries(

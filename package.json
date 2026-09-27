@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
     "radar": "tsx server/run.ts",
-    "build:functions": "esbuild functions/src/index.ts --bundle --platform=node --format=esm --target=node22 --outfile=functions/lib/index.js --external:firebase-admin --external:firebase-functions --external:'firebase-admin/*' --external:'firebase-functions/*'"
+    "build:script": "esbuild apps-script/src/main.ts --bundle --format=iife --global-name=MechiRadar --target=es2017 --outfile=apps-script/dist/Code.js && cp apps-script/globals.js apps-script/dist/Globals.js && cp apps-script/appsscript.json apps-script/dist/"
   },
   "dependencies": {
     "@capacitor-firebase/authentication": "^7.5.0",

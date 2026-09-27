@@ -11,15 +11,13 @@ import {
   signOut as fbSignOut,
   type Auth,
 } from 'firebase/auth';
-import { initializeFirestore, persistentLocalCache, type Firestore } from 'firebase/firestore';
-import { getFunctions, httpsCallable, type Functions } from 'firebase/functions';
+import { doc, getDoc, initializeFirestore, persistentLocalCache, serverTimestamp, setDoc, type Firestore } from 'firebase/firestore';
 import { firebaseConfig } from './firebaseConfig';
 
 export interface FirebaseHandles {
   app: FirebaseApp;
   auth: Auth;
   db: Firestore;
-  functions: Functions;
 }
 
 const native = Capacitor.isNativePlatform();
@@ -34,8 +32,7 @@ function init(): FirebaseHandles | null {
   });
   // Son veriler telefonda önbelleklenir; internet yokken de son durum görünür.
   const db = initializeFirestore(app, { localCache: persistentLocalCache() });
-  const functions = getFunctions(app, 'europe-west1');
-  return { app, auth, db, functions };
+  return { app, auth, db };
 }
 
 export const fb = init();
@@ -58,14 +55,20 @@ export async function signOut(): Promise<void> {
   await fbSignOut(fb.auth);
 }
 
+/** İlk giriş yapan hesap uygulamanın sahibi olur (firestore.rules yalnızca bir kez yazmaya izin verir). */
 export async function claimOwner(): Promise<boolean> {
-  if (!fb) return false;
-  const res = await httpsCallable<unknown, { isOwner: boolean }>(fb.functions, 'claimOwner')({});
-  return res.data.isOwner;
+  const uid = fb?.auth.currentUser?.uid;
+  if (!fb || !uid) return false;
+  const ref = doc(fb.db, 'meta', 'access');
+  const snap = await getDoc(ref);
+  if (snap.exists()) return snap.get('owner') === uid;
+  await setDoc(ref, { owner: uid, email: fb.auth.currentUser?.email ?? null, since: serverTimestamp() });
+  return true;
 }
 
-export async function sendTestPush(): Promise<number> {
-  if (!fb) return 0;
-  const res = await httpsCallable<unknown, { sent: number }>(fb.functions, 'testPush')({});
-  return res.data.sent;
+/** Test bildirimi isteği bırakır; sunucu bir sonraki kontrolde (en geç ~5 dk) gönderir. */
+export async function requestTestPush(): Promise<void> {
+  const uid = fb?.auth.currentUser?.uid;
+  if (!fb || !uid) throw new Error('Giriş gerekli.');
+  await setDoc(doc(fb.db, 'requests', 'testPush'), { uid, at: serverTimestamp() });
 }

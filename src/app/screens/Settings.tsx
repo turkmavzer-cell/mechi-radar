@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { AuthApi } from '../lib/auth';
-import { sendTestPush, signOut } from '../lib/firebase';
+import { requestTestPush, signOut } from '../lib/firebase';
 import type { PushStatus } from '../lib/push';
 import { SignInCard } from '../ui';
 
@@ -23,12 +23,8 @@ export function SettingsScreen({ auth, pushStatus }: Props) {
     setBusy(true);
     setMsg(null);
     try {
-      const sent = await sendTestPush();
-      setMsg(
-        sent > 0
-          ? { ok: true, text: 'Test bildirimi gönderildi. Birkaç saniye içinde gelmeli.' }
-          : { ok: false, text: 'Kayıtlı cihaz bulunamadı. Bildirim iznini kontrol edip uygulamayı yeniden aç.' },
-      );
+      await requestTestPush();
+      setMsg({ ok: true, text: 'İstek gönderildi. Test bildirimi sunucunun bir sonraki kontrolünde, en geç ~5 dakika içinde gelir.' });
     } catch (err) {
       setMsg({ ok: false, text: err instanceof Error ? err.message : String(err) });
     } finally {
@@ -70,7 +66,7 @@ export function SettingsScreen({ auth, pushStatus }: Props) {
               <b className={pushStatus === 'granted' ? 'up' : ''}>{pushStatus ? PUSH_TEXT[pushStatus] : 'Kontrol ediliyor…'}</b>
             </div>
             <button className="btn" onClick={test} disabled={busy}>
-              {busy ? 'Gönderiliyor…' : 'Test bildirimi gönder'}
+              {busy ? 'Gönderiliyor…' : 'Test bildirimi iste'}
             </button>
             {msg && <div className={`small ${msg.ok ? 'pos' : 'neg'}`}>{msg.text}</div>}
             <div className="small muted">
@@ -82,7 +78,7 @@ export function SettingsScreen({ auth, pushStatus }: Props) {
 
       <h2>Nasıl çalışır</h2>
       <ul className="steps small">
-        <li>Sunucu (Firebase) her 5 dakikada bir izleme listeni kontrol eder.</li>
+        <li>Sunucu (Google Apps Script) her 5 dakikada bir izleme listeni kontrol eder; sonuçlar Firebase'e yazılır.</li>
         <li>Sinyaller mum kapanışında kesinleşir. Bildirim yalnızca 🔔 açtığın zaman dilimleri için gelir.</li>
         <li>EMA 5·8·13: üç ortalama sıralı ve aynı yöne eğimliyse yön başlangıcı.</li>
         <li>

@@ -1,16 +1,23 @@
 # Mechi Radar
 
-İzleme listendeki hisse, endeks ve pariteleri EMA stratejileriyle takip eder. Yön değişimi olduğunda mail atar ve Android uygulamasında gösterir.
+İzleme listendeki hisse, endeks ve pariteleri EMA stratejileriyle takip eder. Sinyal oluşunca telefona bildirim gönderir ve Android uygulamasında gösterir.
 
 ## Nasıl çalışır
 
 ```
-GitHub Actions (5 dk'da bir) → Yahoo Finance mum verisi → EMA hesabı → sinyal
-        ↓                                                       ↓
-  "data" dalına yazar (state/signals/scan.json)          Gmail ile mail (🔔 açıksa)
-        ↓
-  Mechi Radar APK buradan okur, izleme listesini buraya yazar (config.json)
+Google Apps Script (5 dk'da bir, "tick")
+  → Yahoo Finance mumları (toplu, paralel)
+  → EMA hesabı ve sinyaller (src/core, server/radar.ts)
+  → Firestore: radar/state, radar/signals, radar/scan
+  → FCM: 🔔 açık zaman dilimlerindeki yeni sinyaller telefona bildirim
+
+Mechi Radar APK
+  → Google ile giriş (ilk giriş yapan hesap sahip olur)
+  → Firestore'u canlı dinler, izleme listesini (radar/config) değiştirir
+  → Grafik ve Keşfet için Yahoo'ya doğrudan bağlanır
 ```
+
+Kredi kartı gerekmez: Firebase ücretsiz planda (Firestore, Auth, FCM), zamanlanmış kontrol Apps Script'te çalışır.
 
 ### Stratejiler
 
@@ -21,64 +28,40 @@ GitHub Actions (5 dk'da bir) → Yahoo Finance mum verisi → EMA hesabı → si
 | EMA 200 filtresi | Yükseliş EMA 200 üstünde → *Güçlü*, altında → *Zayıf · tepki yükselişi*. Düşüş EMA 200 altında → *Güçlü*, üstünde → *Zayıf · düzeltme* | Etiket |
 
 - Sinyaller yalnızca **kapanmış mumlarda** hesaplanır.
-- Zaman dilimleri: 15 dk, 20 dk, 30 dk, 1 s, 2 s, 4 s, 1 g. 20 dk / 2 s / 4 s mumlar Yahoo'nun 5 dk ve 1 saatlik mumları birleştirilerek üretilir. Seanslı piyasalarda (hisse/endeks) mumlar seans açılışından başlar. Bu yüzden TradingView değerleriyle küçük farklar olabilir.
-- Mail varsayılan olarak **kapalıdır**. Uygulamada enstrümanın detayından istediğin zaman dilimlerine 🔔 koyarsın.
-- Tarayıcı (varsayılan BIST 30, 4 s + 1 g) saatte bir çalışır, mail atmaz.
+- Zaman dilimleri: 15 dk, 20 dk, 30 dk, 1 s, 2 s, 4 s, 1 g. 20 dk / 2 s / 4 s mumlar 5 dk ve 1 saatlik mumlar birleştirilerek üretilir; TradingView değerleriyle küçük farklar olabilir.
+- Bildirim varsayılan olarak **kapalıdır**; enstrüman detayında 🔔 ile zaman dilimi seçilir.
+- Tarayıcı (varsayılan BIST 30, 4 s + 1 g) saatte bir çalışır, bildirim göndermez.
 
-## Kurulum (bir kez)
+## Bileşenler
 
-### 1. Gmail uygulama şifresi
-1. Google hesabında **2 adımlı doğrulama** açık olmalı.
-2. https://myaccount.google.com/apppasswords → ad olarak "Mechi Radar" yaz → **Oluştur**.
-3. Çıkan 16 haneli şifreyi kopyala.
-
-### 2. GitHub Secrets
-Repo → **Settings → Secrets and variables → Actions → New repository secret**:
-
-| Ad | Değer |
+| Klasör | İçerik |
 |---|---|
-| `GMAIL_USER` | Gmail adresin (ör. `ad@gmail.com`) |
-| `GMAIL_APP_PASSWORD` | 16 haneli uygulama şifresi |
-| `MAIL_TO` | (isteğe bağlı) Mailin gideceği adres; boşsa `GMAIL_USER` |
+| `src/core/` | Ortak motor: EMA, mum birleştirme, stratejiler, Yahoo istemcisi, etiketler |
+| `server/` | Kontrol turu (`radar.ts`), bildirim metinleri, yerel test için dosya deposu |
+| `apps-script/` | Apps Script giriş noktası (`tick`, `doGet`), Firestore REST dönüştürücü, manifest |
+| `src/app/` | React arayüzü (Radar, Keşfet, Tarayıcı, Ayarlar) |
+| `android/` | Capacitor Android projesi (`google-services.json` dahil) |
+| `firestore.rules` | Yalnızca sahip hesabın okuyup yazabilmesi |
 
-Mail adresi public repoda görünmesin diye config dosyasında değil, Secrets'ta tutulur.
+Firebase projesi: `banded-elevator-478108-q9` ("Mechi Radar").
 
-### 3. İlk çalıştırma ve test maili
-Repo → **Actions → Radar kontrol → Run workflow** → "Test maili gönder" kutusunu işaretle → **Run**.
-Birkaç dakika içinde test maili gelmeli ve `data` dalı oluşmalı. Sonrasında kontrol her 5 dakikada otomatik çalışır.
+## APK
 
-### 4. APK
-`main` dalına her gönderimde **Actions → Android APK** çalışır. APK iki yerde yayınlanır:
-- **Releases** (repo ana sayfası sağ tarafı): telefondan doğrudan `.apk` indirilir.
-- Actions çalışmasının **Artifacts** bölümü (zip içinde).
-
-Tüm sürümler aynı anahtarla (`keystore/debug.keystore`) imzalanır. Güncellemeyi eskisinin üzerine kurabilirsin.
-
-### 5. Uygulamada token
-GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token
-- Repository access: **Only select repositories → mechi-radar**
-- Permissions → **Contents: Read and write**
-
-Token'ı uygulamada **Ayarlar**'a yapıştır → **Kaydet ve test et**. Token yalnızca telefonda saklanır.
+`main` dalına her gönderimde **Actions → Android APK** çalışır ve APK'yı **Releases** bölümüne koyar (telefondan doğrudan indirilir). Tüm sürümler aynı anahtarla (`keystore/debug.keystore`) imzalanır; güncelleme eskisinin üzerine kurulur.
 
 ## Bilinen sınırlar
 
-- GitHub zamanlanmış işleri yoğunlukta 5–20 dk geciktirebilir, nadiren atlayabilir.
-- Public repolarda 60 gün boyunca repo etkinliği olmazsa GitHub zamanlanmış işleri durdurabilir. Böyle olursa GitHub mail atar; Actions sekmesinden tek tıkla yeniden açılır.
-- Yahoo Finance resmi olmayan bir kaynak. Bazı piyasalarda 15–20 dk gecikmeli; ileride erişim kısıtlanabilir.
-- Bu repo public: izleme listesi ve sinyaller herkese açık görünür. Şifreler ve mail adresi Secrets'ta gizlidir.
+- Apps Script ücretsiz hesaplarda günde toplam 90 dakika tetikleyici çalışma süresi verir. Her tur birkaç saniye sürdüğü için 5 dakikalık aralık bu sınırın altında kalır; izleme listesi çok büyürse aralık 10 dakikaya çıkarılmalı.
+- Google zamanlanmış tetikleyicileri zaman zaman birkaç dakika geciktirebilir.
+- Yahoo Finance resmi olmayan bir kaynak; bazı piyasalarda 15–20 dk gecikmeli ve ileride erişim kısıtlanabilir.
 - Teknik gösterge bilgisidir, yatırım tavsiyesi değildir.
 
 ## Geliştirme
 
 ```bash
 npm install
-npm test          # strateji ve sunucu testleri
-npm run build     # web derlemesi (dist/)
-npm run radar     # kontrolü yerelde çalıştırır (DATA_DIR=data-branch, DRY_RUN=1 ile mail atmaz)
+npm test               # strateji ve kontrol turu testleri
+npm run build          # web derlemesi (dist/)
+npm run build:script   # Apps Script paketi (apps-script/dist/)
+npm run radar          # kontrol turunu yerelde çalıştırır (local-data/ klasörüne yazar)
 ```
-
-- `src/core/`: ortak motor (EMA, mum birleştirme, stratejiler, Yahoo)
-- `server/`: GitHub Actions betiği ve mail
-- `src/app/`: React arayüzü
-- `android/`: Capacitor Android projesi
