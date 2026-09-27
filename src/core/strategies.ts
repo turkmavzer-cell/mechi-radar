@@ -184,16 +184,29 @@ function crossedDown(a: number[], b: number[] | number, i: number): boolean {
   return a[i - 1] >= bp && a[i] < bi;
 }
 
-/** Üçlü Onay'da üç kesişimin en fazla bu kadar mum içinde gerçekleşmiş olması gerekir. */
-export const TRIPLE_WINDOW = 10;
+/** Üçlü Onay: MACD ve RSI kesişimleri arasındaki, ve son kesişimden ok mumuna kadar en fazla mum farkı. */
+export const TRIPLE_WINDOW = 3;
+
+interface TripleTrack {
+  /** Son MACD 0 kesişiminin ve son RSI 50 kesişiminin mum indeksi. */
+  m: number;
+  r: number;
+  /** Ok verilmiş kesişim çifti (aynı çift için tekrar ok çıkmaz). */
+  fired: string;
+}
+
+function tripleReady(t: TripleTrack, i: number): boolean {
+  return Math.abs(t.m - t.r) <= TRIPLE_WINDOW && i - Math.max(t.m, t.r) <= TRIPLE_WINDOW;
+}
 const DONCHIAN = 20;
 
 /**
  * Ek stratejiler (grafikte çizilmez, yalnızca ok işareti):
  *
- * Üçlü Onay (MACD + RSI + Bollinger): MACD çizgisi 0'ı yukarı keser, RSI(14) 50'yi yukarı keser
- *   ve fiyat Bollinger orta bandını (SMA 20) yukarı keser. Üç kesişim son TRIPLE_WINDOW mum içinde
- *   olmalı ve üç koşul aynı anda sağlanmalı. Düşüş: tersi.
+ * Üçlü Onay (MACD + RSI + Bollinger): MACD çizgisi 0'ı yukarı keser ve bu kesişimin en fazla
+ *   TRIPLE_WINDOW mum öncesinde/sonrasında RSI(14) 50'yi yukarı keser (sıra fark etmez). Ok, son
+ *   kesişimden sonraki en fazla TRIPLE_WINDOW mum içinde Bollinger orta bandının (SMA 20) üstünde
+ *   kapanan ilk mumda verilir; o anda MACD > 0 ve RSI > 50 de sürmelidir. Düşüş: tersi.
  * Supertrend (10, 3): yön değişiminde sinyal.
  * Altın / Ölüm kesişimi: SMA 50, SMA 200'ü yukarı / aşağı keser.
  * Donchian 20 (Turtle kırılımı): kapanış önceki 20 mumun en yükseğinin üstünde / en düşüğünün
@@ -210,29 +223,31 @@ function extraStrategies(candles: Candle[], push: (i: number, s: SignalEvent['st
   const s200 = sma(close, 200);
   const st = supertrend(high, low, close, 10, 3);
 
-  let lastUpCross = { m: -Infinity, r: -Infinity, b: -Infinity };
-  let lastDnCross = { m: -Infinity, r: -Infinity, b: -Infinity };
+  const up: TripleTrack = { m: -Infinity, r: -Infinity, fired: '' };
+  const dn: TripleTrack = { m: -Infinity, r: -Infinity, fired: '' };
   let tripleUp = false;
   let tripleDn = false;
   let don: Trend = 'neutral';
 
   for (let i = 1; i < candles.length; i++) {
     // --- Üçlü Onay ---
-    if (!Number.isNaN(m[i - 1]) && !Number.isNaN(r[i - 1]) && !Number.isNaN(mid[i - 1])) {
-      if (crossedUp(m, 0, i)) lastUpCross.m = i;
-      if (crossedUp(r, 50, i)) lastUpCross.r = i;
-      if (crossedUp(close, mid, i)) lastUpCross.b = i;
-      if (crossedDown(m, 0, i)) lastDnCross.m = i;
-      if (crossedDown(r, 50, i)) lastDnCross.r = i;
-      if (crossedDown(close, mid, i)) lastDnCross.b = i;
-      const up = m[i] > 0 && r[i] > 50 && close[i] > mid[i];
-      const dn = m[i] < 0 && r[i] < 50 && close[i] < mid[i];
-      const recent = (x: { m: number; r: number; b: number }) =>
-        i - Math.min(x.m, x.r, x.b) < TRIPLE_WINDOW;
-      if (up && !tripleUp && recent(lastUpCross)) push(i, 'triple', 'up');
-      if (dn && !tripleDn && recent(lastDnCross)) push(i, 'triple', 'down');
-      tripleUp = up;
-      tripleDn = dn;
+    if (!Number.isNaN(m[i - 1]) && !Number.isNaN(r[i - 1]) && !Number.isNaN(mid[i])) {
+      if (crossedUp(m, 0, i)) up.m = i;
+      if (crossedUp(r, 50, i)) up.r = i;
+      if (crossedDown(m, 0, i)) dn.m = i;
+      if (crossedDown(r, 50, i)) dn.r = i;
+      const upNow = m[i] > 0 && r[i] > 50 && close[i] > mid[i];
+      const dnNow = m[i] < 0 && r[i] < 50 && close[i] < mid[i];
+      if (upNow && tripleReady(up, i) && up.fired !== `${up.m}:${up.r}`) {
+        push(i, 'triple', 'up');
+        up.fired = `${up.m}:${up.r}`;
+      }
+      if (dnNow && tripleReady(dn, i) && dn.fired !== `${dn.m}:${dn.r}`) {
+        push(i, 'triple', 'down');
+        dn.fired = `${dn.m}:${dn.r}`;
+      }
+      tripleUp = upNow;
+      tripleDn = dnNow;
     }
 
     // --- Supertrend ---
