@@ -38,6 +38,8 @@ export interface TfStatus {
   /** EMA 20/50 ilişkisi ve pullback aşaması. */
   pullback: PullbackPhase;
   pullbackDir: Trend;
+  /** Geri çekilmedeyken onay için kırılması gereken seviye. */
+  pullbackLevel?: number | null;
   /** Fiyat EMA 200'ün üstünde mi; veri yetersizse null. */
   above200: boolean | null;
   close: number;

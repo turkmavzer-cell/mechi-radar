@@ -42,11 +42,12 @@ export interface Analysis {
  * arada bozulmuş olması gerekir (eğim kısa süre duraklayınca tekrar sinyal çıkmaz).
  *
  * EMA 20/50 pullback (yükseliş; düşüş tersi):
- *   trend    : EMA20>EMA50 ve kapanış EMA20 üstünde
- *   pulled   : mumun dibi EMA20'ye dokunur/altına sarkar, kapanış EMA50 üstünde kalır
- *   iptal    : kapanış EMA50 altında veya EMA20<EMA50
- *   onay     : sonraki bir mum EMA20 üstünde ve önceki mumun tepesinin üstünde kapanır
- *   confirmed: yeni pullback için önce dibin EMA20 üstünde kaldığı bir mum gerekir
+ *   kopuş    : EMA20, EMA50'yi aşağıdan yukarı keser -> senaryo başlar ('trend')
+ *   tepe     : kesişimden sonra oluşan en yüksek seviye izlenir
+ *   pulled   : mumun dibi EMA20'ye dokunur/altına sarkar; o ana kadarki tepe kırılım seviyesi olur
+ *   onay     : bir mum kırılım seviyesinin (geri çekilme öncesi tepe) üstünde kapanır ('confirmed')
+ *   iptal    : kapanış EMA50 altında -> yeni bir yukarı kesişim beklenir
+ * Onaydan sonra trend sürdükçe yeni geri çekilme + yeni tepe kırılımı yeni sinyal üretir.
  */
 export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analysis {
   const emas = computeEmas(candles);
@@ -70,6 +71,8 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
 
   let phase: PullbackPhase = 'none';
   let pbDir: Trend = 'neutral';
+  let extreme = NaN; // kesişimden beri tepe (yükseliş) / dip (düşüş)
+  let level = NaN; // geri çekilmede kırılması gereken seviye
 
   for (let i = 1; i < candles.length; i++) {
     const c = candles[i];
@@ -93,41 +96,54 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
     }
 
     // --- EMA 20/50 pullback ---
-    if (!Number.isNaN(e50[i])) {
-      const up = e20[i] > e50[i];
-      const down = e20[i] < e50[i];
-      const prev = candles[i - 1];
-
-      // Trend yönü değiştiyse veya EMA50 kırıldıysa senaryo sıfırlanır.
-      if (pbDir === 'up' && (!up || c.c < e50[i])) phase = 'none';
-      if (pbDir === 'down' && (!down || c.c > e50[i])) phase = 'none';
-      if (phase === 'none') pbDir = 'neutral';
-
-      if (phase === 'none') {
-        if (up && c.c > e20[i]) {
-          phase = 'trend';
-          pbDir = 'up';
-        } else if (down && c.c < e20[i]) {
-          phase = 'trend';
-          pbDir = 'down';
-        }
+    if (!Number.isNaN(e50[i - 1])) {
+      const crossUp = e20[i - 1] <= e50[i - 1] && e20[i] > e50[i];
+      const crossDown = e20[i - 1] >= e50[i - 1] && e20[i] < e50[i];
+      if (crossUp) {
+        phase = 'trend';
+        pbDir = 'up';
+        extreme = c.h;
+        level = NaN;
+      } else if (crossDown) {
+        phase = 'trend';
+        pbDir = 'down';
+        extreme = c.l;
+        level = NaN;
       } else if (pbDir === 'up') {
-        if (phase === 'trend' && c.l <= e20[i]) {
-          phase = 'pulled';
-        } else if (phase === 'pulled' && c.c > e20[i] && c.c > prev.h) {
-          push(i, 'pullback2050', 'up');
-          phase = 'confirmed';
-        } else if (phase === 'confirmed' && c.l > e20[i]) {
-          phase = 'trend';
+        if (c.c < e50[i]) {
+          phase = 'none';
+          pbDir = 'neutral';
+        } else if (phase === 'pulled') {
+          if (c.c > level) {
+            push(i, 'pullback2050', 'up');
+            phase = 'confirmed';
+            extreme = c.h;
+            level = NaN;
+          }
+        } else {
+          extreme = Math.max(extreme, c.h);
+          if (c.l <= e20[i]) {
+            phase = 'pulled';
+            level = extreme;
+          }
         }
       } else if (pbDir === 'down') {
-        if (phase === 'trend' && c.h >= e20[i]) {
-          phase = 'pulled';
-        } else if (phase === 'pulled' && c.c < e20[i] && c.c < prev.l) {
-          push(i, 'pullback2050', 'down');
-          phase = 'confirmed';
-        } else if (phase === 'confirmed' && c.h < e20[i]) {
-          phase = 'trend';
+        if (c.c > e50[i]) {
+          phase = 'none';
+          pbDir = 'neutral';
+        } else if (phase === 'pulled') {
+          if (c.c < level) {
+            push(i, 'pullback2050', 'down');
+            phase = 'confirmed';
+            extreme = c.l;
+            level = NaN;
+          }
+        } else {
+          extreme = Math.min(extreme, c.l);
+          if (c.h >= e20[i]) {
+            phase = 'pulled';
+            level = extreme;
+          }
         }
       }
     }
@@ -140,6 +156,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
           align,
           pullback: phase,
           pullbackDir: pbDir,
+          pullbackLevel: phase === 'pulled' ? level : null,
           above200: Number.isNaN(e200[last]) ? null : candles[last].c > e200[last],
           close: candles[last].c,
           time: candles[last].t,

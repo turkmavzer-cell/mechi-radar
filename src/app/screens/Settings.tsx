@@ -76,7 +76,7 @@ export function SettingsScreen({ settings, onSave, onSaved }: Props) {
         <li>GitHub her 5 dakikada bir izleme listeni kontrol eder (GitHub bazen birkaç dakika geciktirir).</li>
         <li>Sinyaller mum kapanışında kesinleşir. Mail yalnızca 🔔 açtığın zaman dilimleri için gelir.</li>
         <li>EMA 5·8·13: üç ortalama sıralı ve aynı yöne eğimliyse yön başlangıcı.</li>
-        <li>EMA 20·50: trend → EMA 20'ye geri çekilme → önceki mumun tepesini/dibini aşan kapanışla onay.</li>
+        <li>EMA 20·50: EMA 20, EMA 50'yi yukarı keser (kopuş) → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanışla onay (kırılım). EMA 50 altında kapanış senaryoyu iptal eder.</li>
         <li>EMA 200 üstündeki yükseliş "Güçlü", altındaki "Zayıf · tepki yükselişi" olarak etiketlenir.</li>
         <li>Veri: Yahoo Finance (resmi olmayan, bazı piyasalarda 15–20 dk gecikmeli).</li>
       </ul>

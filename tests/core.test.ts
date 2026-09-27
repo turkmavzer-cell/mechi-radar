@@ -56,19 +56,48 @@ test('5·8·13: istikrarlı yükselişte tek sinyal, düşüşe dönünce düş�
   assert.equal(ev[0].time, 1_700_000_000 + 30 * 900); // ilk yükselen mum
 });
 
-test('20·50 pullback: trend, geri çekilme, onay', () => {
+/** Düşüş -> EMA20/50 yukarı kesişim (kopuş) -> tepe -> EMA20'ye geri çekilme -> toparlanma. */
+function crossScenario(reboundBars: number, reboundStep: number): number[] {
   const closes: number[] = [];
-  for (let i = 0; i < 80; i++) closes.push(100 + i * 0.5); // yükseliş trendi
-  const top = closes[closes.length - 1];
-  for (let i = 1; i <= 6; i++) closes.push(top - i * 1.2); // EMA20'ye geri çekilme
-  const bottom = closes[closes.length - 1];
-  for (let i = 1; i <= 6; i++) closes.push(bottom + i * 1.5); // toparlanma
-  const a = analyze('X', '4h', fromCloses(closes, 14400));
+  for (let i = 0; i < 60; i++) closes.push(130 - i * 0.5); // düşüş: EMA20 < EMA50
+  let p = closes[closes.length - 1];
+  for (let i = 0; i < 45; i++) closes.push((p += 0.8)); // kopuş: EMA20 yukarı keser
+  for (let i = 0; i < 9; i++) closes.push((p -= 1.2)); // pullback: EMA20'ye iner
+  for (let i = 0; i < reboundBars; i++) closes.push((p += reboundStep)); // toparlanma
+  return closes;
+}
+
+test('20·50 pullback: kesişim, geri çekilme, tepe kırılımıyla onay', () => {
+  const candles = fromCloses(crossScenario(10, 1.5), 14400);
+  const a = analyze('X', '4h', candles);
   const pb = a.events.filter((e) => e.strategy === 'pullback2050');
   assert.equal(pb.length, 1);
   assert.equal(pb[0].dir, 'up');
-  assert.ok(pb[0].time > 1_700_000_000 + 86 * 14400);
-  assert.equal(pb[0].strength, 'unknown'); // EMA 200 için yeterli mum yok
+  // Onay mumu, geri çekilme öncesindeki tepenin üstünde kapanmış olmalı.
+  const peak = Math.max(...candles.slice(60, 105).map((c) => c.h));
+  const idx = candles.findIndex((c) => c.t === pb[0].time);
+  assert.ok(candles[idx].c > peak);
+  assert.ok(candles[idx - 1].c <= peak, 'ilk kırılım mumunda sinyal verilmeli');
+});
+
+test('20·50 pullback: tepe kırılmadan sinyal yok, durum kırılım seviyesini gösterir', () => {
+  const candles = fromCloses(crossScenario(3, 1.0), 14400);
+  const a = analyze('X', '4h', candles);
+  assert.equal(a.events.filter((e) => e.strategy === 'pullback2050').length, 0);
+  assert.equal(a.status!.pullback, 'pulled');
+  assert.equal(a.status!.pullbackDir, 'up');
+  const peak = Math.max(...candles.slice(60, 105).map((c) => c.h));
+  assert.equal(a.status!.pullbackLevel, peak);
+});
+
+test('20·50 pullback: kesişim olmadan (hep yükselen trend) sinyal yok', () => {
+  const closes: number[] = [];
+  for (let i = 0; i < 80; i++) closes.push(100 + i * 0.5);
+  const top = closes[closes.length - 1];
+  for (let i = 1; i <= 6; i++) closes.push(top - i * 1.2);
+  for (let i = 1; i <= 10; i++) closes.push(top - 7.2 + i * 1.5);
+  const a = analyze('X', '4h', fromCloses(closes, 14400));
+  assert.equal(a.events.filter((e) => e.strategy === 'pullback2050').length, 0);
 });
 
 test('20·50 pullback: EMA50 altına kapanış senaryoyu iptal eder', () => {

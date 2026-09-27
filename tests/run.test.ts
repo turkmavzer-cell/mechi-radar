@@ -17,7 +17,7 @@ const price = (t: number) => 150 + 3 * Math.sin((t - START) / 7200) + (t - START
 function mockFetch(now: number) {
   return async (url: string): Promise<Response> => {
     const u = new URL(url);
-    if (u.pathname.includes('fail')) return new Response('x', { status: 404 });
+    if (u.pathname.includes('BOZUK')) return new Response('x', { status: 404 });
     const interval = u.searchParams.get('interval')!;
     const step = interval === '5m' ? 300 : interval === '60m' ? 3600 : 86400;
     const from = interval === '1d' ? now - 400 * 86400 : interval === '60m' ? now - 200 * 86400 : now - 30 * 86400;
@@ -48,7 +48,7 @@ test('runRadar: ilk çalıştırmada mail yok, sonraki çalıştırmada yeni sin
     schemaVersion: 1,
     watchlist: [
       { symbol: 'TEST', name: 'Test', alerts: ['15m'] },
-      { symbol: 'fail', name: 'Hatalı', alerts: [] },
+      { symbol: 'BOZUK', name: 'Hatalı', alerts: [] },
     ],
     scanner: { name: 'Deneme', symbols: ['TEST'], timeframes: ['4h', '1d'] },
   };
@@ -63,7 +63,7 @@ test('runRadar: ilk çalıştırmada mail yok, sonraki çalıştırmada yeni sin
   assert.equal(r1.scanned, true);
   const s1 = JSON.parse(readFileSync(join(dir, 'state.json'), 'utf8')) as RadarState;
   assert.ok(s1.symbols.TEST.tf['15m']);
-  assert.ok(s1.symbols.fail.error);
+  assert.ok(s1.symbols.BOZUK.error);
 
   const t2 = t1 + 6 * 3600;
   const r2 = await runRadar({ dataDir: dir, fetchFn: mockFetch(t2), now: t2, send, delayMs: 0 });

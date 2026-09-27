@@ -41,16 +41,18 @@ export function alignText(st: TfStatus): string {
 }
 
 export function pullbackText(st: TfStatus): string {
-  const word = st.pullbackDir === 'up' ? 'yukarı' : 'aşağı';
+  const up = st.pullbackDir === 'up';
   switch (st.pullback) {
     case 'trend':
-      return `Trend ${word} · geri çekilme bekleniyor`;
+      return `${up ? 'Yukarı' : 'Aşağı'} kesişim · geri çekilme bekleniyor`;
     case 'pulled':
-      return `Trend ${word} · geri çekilmede, onay bekleniyor`;
+      return st.pullbackLevel != null
+        ? `Geri çekilmede · ${formatPrice(st.pullbackLevel)} ${up ? 'üstü' : 'altı'} kapanış bekleniyor`
+        : 'Geri çekilmede · kırılım bekleniyor';
     case 'confirmed':
-      return `Trend ${word} · pullback onaylandı`;
+      return `Kırılım onaylandı · ${up ? 'yükseliş' : 'düşüş'} devam ediyor`;
     default:
-      return 'Belirgin trend yok';
+      return 'EMA 20/50 kesişimi bekleniyor';
   }
 }
 

@@ -17,7 +17,7 @@ GitHub Actions (5 dk'da bir) → Yahoo Finance mum verisi → EMA hesabı → si
 | Strateji | Kural | Mesaj |
 |---|---|---|
 | EMA 5·8·13 | EMA5 > EMA8 > EMA13 ve üçü de yükseliyor (düşüş: tersi). Sinyal dizilimin ilk oluştuğu mumda. | 15/20/30 dk: *Kısa vade*, 1/2/4 s: *Orta vade*, 1 g: *Uzun vade* … yükseliş/düşüş başlangıcı |
-| EMA 20·50 pullback | Trend (EMA20 > EMA50, fiyat üstte) → EMA 20'ye geri çekilme (EMA 50 altına kapanış iptal eder) → önceki mumun tepesini aşan, EMA 20 üstü kapanış | Pullback onayı · yükseliş/düşüş devamı |
+| EMA 20·50 pullback | Kopuş: EMA 20, EMA 50'yi aşağıdan yukarı keser → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanış (kırılım). EMA 50 altında kapanış senaryoyu iptal eder; yeni kesişim beklenir. Düşüş: tersi. | Pullback onayı · yükseliş/düşüş devamı |
 | EMA 200 filtresi | Yükseliş EMA 200 üstünde → *Güçlü*, altında → *Zayıf · tepki yükselişi*. Düşüş EMA 200 altında → *Güçlü*, üstünde → *Zayıf · düzeltme* | Etiket |
 
 - Sinyaller yalnızca **kapanmış mumlarda** hesaplanır.

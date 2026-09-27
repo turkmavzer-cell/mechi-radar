@@ -7,9 +7,10 @@ interface Props {
   api: RadarApi;
   onOpen: (t: OpenTarget) => void;
   hasToken: boolean;
+  onGoSettings: () => void;
 }
 
-export function RadarScreen({ api, onOpen, hasToken }: Props) {
+export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
   const { data, loading, error, refresh } = api;
   const watch = data.config?.watchlist ?? [];
   const names = new Map(watch.map((w) => [w.symbol, w.name]));
@@ -29,7 +30,9 @@ export function RadarScreen({ api, onOpen, hasToken }: Props) {
 
       {error && <div className="notice err">{error}</div>}
       {!hasToken && (
-        <div className="notice">İzleme listesini ve mail bildirimlerini değiştirmek için Ayarlar'dan GitHub token gir.</div>
+        <button className="notice link" onClick={onGoSettings}>
+          İzleme listesine ekleme yapmak ve bildirim açmak için bir kez GitHub token girmen gerekiyor. <b>Ayarlar'a git ›</b>
+        </button>
       )}
       {!data.state && !loading && !error && (
         <div className="notice">Henüz veri yok. İlk kontrol GitHub'da çalıştıktan sonra burada görünecek.</div>

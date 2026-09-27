@@ -14,9 +14,10 @@ interface Props {
   api: RadarApi;
   hasToken: boolean;
   onClose: () => void;
+  onGoSettings: () => void;
 }
 
-export function DetailScreen({ target, api, hasToken, onClose }: Props) {
+export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: Props) {
   const [tf, setTf] = useState<Timeframe>('15m');
   const [group, setGroup] = useState<EmaGroup>('fast');
   const [series, setSeries] = useState<SeriesSet | null>(null);
@@ -24,6 +25,7 @@ export function DetailScreen({ target, api, hasToken, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [needToken, setNeedToken] = useState(false);
 
   const watchItem = api.data.config?.watchlist.find((w) => w.symbol === target.symbol);
 
@@ -50,6 +52,10 @@ export function DetailScreen({ target, api, hasToken, onClose }: Props) {
   const price = series?.meta.regularMarketPrice ?? all[all.length - 1]?.c;
 
   const run = async (fn: () => Promise<unknown>, ok: string) => {
+    if (!hasToken) {
+      setNeedToken(true);
+      return;
+    }
     setBusy(true);
     setMsg(null);
     try {
@@ -156,7 +162,7 @@ export function DetailScreen({ target, api, hasToken, onClose }: Props) {
                 <button
                   key={t}
                   className={watchItem.alerts.includes(t) ? 'on' : ''}
-                  disabled={busy || !hasToken}
+                  disabled={busy}
                   onClick={() => toggleAlert(t)}
                 >
                   {watchItem.alerts.includes(t) ? '🔔 ' : ''}
@@ -166,7 +172,7 @@ export function DetailScreen({ target, api, hasToken, onClose }: Props) {
             </div>
             <button
               className="btn ghost"
-              disabled={busy || !hasToken}
+              disabled={busy}
               onClick={() => run(() => api.removeWatch(target.symbol), 'Listeden çıkarıldı.')}
             >
               İzleme listesinden çıkar
@@ -175,13 +181,20 @@ export function DetailScreen({ target, api, hasToken, onClose }: Props) {
         ) : (
           <button
             className="btn"
-            disabled={busy || !hasToken}
+            disabled={busy}
             onClick={() => run(() => api.addWatch({ symbol: target.symbol, name: target.name, alerts: [] }), 'İzleme listesine eklendi.')}
           >
             İzleme listesine ekle
           </button>
         )}
-        {!hasToken && <div className="small muted">Değişiklik için Ayarlar'dan GitHub token gir.</div>}
+        {needToken && (
+          <div className="notice">
+            İzleme listesi GitHub'daki reponda tutulduğu için uygulamanın bir kez yazma izni (token) alması gerekiyor.
+            <button className="btn" style={{ marginTop: 10, width: '100%' }} onClick={onGoSettings}>
+              Ayarlar'a git ve token gir
+            </button>
+          </div>
+        )}
         {msg && <div className="small">{msg}</div>}
       </div>
       <p className="legend muted small">Teknik gösterge bilgisidir, yatırım tavsiyesi değildir.</p>

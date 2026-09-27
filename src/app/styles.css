@@ -46,6 +46,8 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: v
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .notice { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-top: 8px; color: var(--muted); }
+.notice.link { display: block; width: 100%; text-align: left; }
+.notice.link b { color: var(--accent); }
 .notice.err { background: #3b1515; color: #fca5a5; }
 .empty { color: var(--muted); font-size: 13px; padding: 12px; background: var(--surface); border-radius: 12px; }
 

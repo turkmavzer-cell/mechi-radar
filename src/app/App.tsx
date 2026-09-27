@@ -50,12 +50,17 @@ export function App() {
     setSettings(s);
   };
 
+  const goSettings = () => {
+    setDetail(null);
+    setTab('settings');
+  };
+
   if (!settings) return <div className="splash">Mechi Radar</div>;
 
   return (
     <div className="shell">
       <main className="content">
-        {tab === 'radar' && <RadarScreen api={api} onOpen={setDetail} hasToken={!!settings.token} />}
+        {tab === 'radar' && <RadarScreen api={api} onOpen={setDetail} hasToken={!!settings.token} onGoSettings={goSettings} />}
         {tab === 'explore' && <ExploreScreen onOpen={setDetail} />}
         {tab === 'scanner' && <ScannerScreen api={api} onOpen={setDetail} />}
         {tab === 'settings' && <SettingsScreen settings={settings} onSave={updateSettings} onSaved={api.refresh} />}
@@ -68,7 +73,15 @@ export function App() {
           </button>
         ))}
       </nav>
-      {detail && <DetailScreen target={detail} api={api} hasToken={!!settings.token} onClose={() => setDetail(null)} />}
+      {detail && (
+        <DetailScreen
+          target={detail}
+          api={api}
+          hasToken={!!settings.token}
+          onClose={() => setDetail(null)}
+          onGoSettings={goSettings}
+        />
+      )}
     </div>
   );
 }
