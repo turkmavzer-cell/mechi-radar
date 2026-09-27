@@ -1,6 +1,6 @@
 {
  "name": "BIST 30",
- "updatedAt": "2026-09-27T15:58:23.000Z",
+ "updatedAt": "2026-09-27T19:42:59.000Z",
  "rows": [
   {
    "symbol": "AKBNK.IS",
@@ -9,6 +9,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 70.9000015258789,
      "time": 1790346600,
@@ -26,6 +27,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 70.9000015258789,
      "time": 1790317800,
@@ -46,15 +48,16 @@
    "tf": {
     "4h": {
      "align": "neutral",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 103.30000305175781,
      "above200": true,
      "close": 107,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "ALARK.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "weak",
       "time": 1790231400,
@@ -65,6 +68,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 107,
      "time": 1790317800,
@@ -85,15 +89,16 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 84.8499984741211,
      "above200": false,
      "close": 85.80000305175781,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "ARCLK.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790231400,
@@ -102,19 +107,20 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 85.80000305175781,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "ARCLK.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1789972200,
-      "close": 86.9000015258789
+      "time": 1789540200,
+      "close": 86.8499984741211
      }
     }
    }
@@ -124,8 +130,9 @@
    "tf": {
     "4h": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 372.25,
      "time": 1790346600,
@@ -143,6 +150,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 372.25,
      "time": 1790317800,
@@ -165,6 +173,7 @@
      "align": "neutral",
      "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 238.89999389648438,
      "above200": false,
      "close": 261.25,
      "time": 1790346600,
@@ -182,6 +191,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": true,
      "close": 261.25,
      "time": 1790317800,
@@ -202,8 +212,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "confirmed",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 424.75,
      "time": 1790346600,
@@ -219,15 +230,16 @@
     },
     "1d": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 424.75,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "BIMAS.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
       "time": 1789972200,
@@ -243,23 +255,25 @@
      "align": "up",
      "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 39.41999816894531,
      "above200": false,
      "close": 42.79999923706055,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "CIMSA.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1790245800,
-      "close": 42.380001068115234
+      "strategy": "ema5813",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1790145000,
+      "close": 43.099998474121094
      }
     },
     "1d": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 42.79999923706055,
      "time": 1790317800,
@@ -280,8 +294,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 149.60000610351562,
      "above200": false,
      "close": 154.60000610351562,
      "time": 1790346600,
@@ -299,6 +314,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 154.60000610351562,
      "time": 1790317800,
@@ -319,8 +335,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 19.25,
      "time": 1790346600,
@@ -338,6 +355,7 @@
      "align": "down",
      "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 19.020000457763672,
      "above200": false,
      "close": 19.25,
      "time": 1790317800,
@@ -358,8 +376,9 @@
    "tf": {
     "4h": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 86.44999694824219,
      "time": 1790346600,
@@ -375,8 +394,9 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 86.44999694824219,
      "time": 1790317800,
@@ -397,8 +417,9 @@
    "tf": {
     "4h": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 37.7400016784668,
      "time": 1790346600,
@@ -414,8 +435,9 @@
     },
     "1d": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 37.7400016784668,
      "time": 1790317800,
@@ -436,36 +458,38 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 76.80000305175781,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "FROTO.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790332200,
-      "close": 76.80000305175781
+      "time": 1790260200,
+      "close": 77.25
      }
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 76.80000305175781,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "FROTO.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790231400,
-      "close": 77.4000015258789
+      "time": 1789540200,
+      "close": 74.6500015258789
      }
     }
    }
@@ -477,6 +501,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 129.8000030517578,
      "time": 1790346600,
@@ -494,6 +519,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 129.8000030517578,
      "time": 1790317800,
@@ -516,6 +542,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 2.180000066757202,
      "time": 1790346600,
@@ -531,8 +558,9 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 2.180000066757202,
      "time": 1790317800,
@@ -555,6 +583,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 13.069999694824219,
      "time": 1790346600,
@@ -572,6 +601,7 @@
      "align": "neutral",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 13.069999694824219,
      "time": 1790317800,
@@ -594,6 +624,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 216.5,
      "time": 1790346600,
@@ -609,8 +640,9 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "pulled",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 216.5,
      "time": 1790317800,
@@ -633,6 +665,7 @@
      "align": "up",
      "pullback": "trend",
      "pullbackDir": "up",
+     "pullbackLevel": null,
      "above200": true,
      "close": 46.959999084472656,
      "time": 1790346600,
@@ -648,8 +681,9 @@
     },
     "1d": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 46.959999084472656,
      "time": 1790317800,
@@ -670,25 +704,27 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "confirmed",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 523.5,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "MGROS.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790346600,
-      "close": 523.5
+      "time": 1790332200,
+      "close": 525
      }
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 523.5,
      "time": 1790317800,
@@ -711,6 +747,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": true,
      "close": 21.059999465942383,
      "time": 1790346600,
@@ -728,6 +765,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 21.059999465942383,
      "time": 1790317800,
@@ -748,15 +786,16 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 146.6999969482422,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "PGSUS.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790231400,
@@ -765,19 +804,20 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 146.6999969482422,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "PGSUS.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790231400,
-      "close": 145.6999969482422
+      "time": 1789540200,
+      "close": 145.1999969482422
      }
     }
    }
@@ -787,8 +827,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 88.25,
      "time": 1790346600,
@@ -804,19 +845,20 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 86.55000305175781,
      "above200": false,
      "close": 88.25,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "SAHOL.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790231400,
-      "close": 88.19999694824219
+      "time": 1789540200,
+      "close": 84.30000305175781
      }
     }
    }
@@ -828,6 +870,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 2.0799999237060547,
      "time": 1790346600,
@@ -845,6 +888,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 2.0799999237060547,
      "time": 1790317800,
@@ -865,25 +909,27 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 38.68000030517578,
      "above200": false,
      "close": 39.2400016784668,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "SISE.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790245800,
-      "close": 39.52000045776367
+      "time": 1790231400,
+      "close": 39.81999969482422
      }
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 39.2400016784668,
      "time": 1790317800,
@@ -906,6 +952,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 272.75,
      "time": 1790346600,
@@ -921,8 +968,9 @@
     },
     "1d": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 272.75,
      "time": 1790317800,
@@ -945,6 +993,7 @@
      "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 99.94999694824219,
      "time": 1790346600,
@@ -960,19 +1009,20 @@
     },
     "1d": {
      "align": "neutral",
-     "pullback": "confirmed",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 99.94999694824219,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "TCELL.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790231400,
-      "close": 99.44999694824219
+      "time": 1789540200,
+      "close": 95.75
      }
     }
    }
@@ -982,8 +1032,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 290.75,
      "time": 1790346600,
@@ -999,15 +1050,16 @@
     },
     "1d": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 258.25,
      "above200": false,
      "close": 290.75,
      "time": 1790317800,
      "lastSignal": {
       "symbol": "THYAO.IS",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790231400,
@@ -1021,8 +1073,9 @@
    "tf": {
     "4h": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 290,
      "time": 1790346600,
@@ -1040,6 +1093,7 @@
      "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 290,
      "time": 1790317800,
@@ -1062,6 +1116,7 @@
      "align": "up",
      "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 55.25,
      "above200": false,
      "close": 54.650001525878906,
      "time": 1790346600,
@@ -1077,8 +1132,9 @@
     },
     "1d": {
      "align": "up",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 54.650001525878906,
      "time": 1790317800,
@@ -1099,8 +1155,9 @@
    "tf": {
     "4h": {
      "align": "down",
-     "pullback": "pulled",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 406,
      "time": 1790346600,
@@ -1118,6 +1175,7 @@
      "align": "neutral",
      "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 423,
      "above200": true,
      "close": 406,
      "time": 1790317800,
@@ -1140,6 +1198,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 35.779998779296875,
      "time": 1790346600,
@@ -1157,6 +1216,7 @@
      "align": "neutral",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 35.779998779296875,
      "time": 1790317800,

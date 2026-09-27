@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-09-27T15:58:23.000Z",
+ "updatedAt": "2026-09-27T19:42:59.000Z",
  "symbols": {
   "NIY=F": {
    "symbol": "NIY=F",
@@ -11,6 +11,7 @@
      "align": "up",
      "pullback": "trend",
      "pullbackDir": "up",
+     "pullbackLevel": null,
      "above200": true,
      "close": 66455,
      "time": 1790369100,
@@ -26,42 +27,45 @@
     },
     "20m": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 66455,
      "time": 1790368800,
      "lastSignal": {
       "symbol": "NIY=F",
       "tf": "20m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790365200,
-      "close": 66455
+      "time": 1790353200,
+      "close": 66435
      }
     },
     "30m": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 66455,
      "time": 1790368200,
      "lastSignal": {
       "symbol": "NIY=F",
       "tf": "30m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790364600,
-      "close": 66455
+      "time": 1790353800,
+      "close": 66340
      }
     },
     "1h": {
      "align": "up",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 66590,
      "above200": true,
      "close": 66455,
      "time": 1790366400,
@@ -77,42 +81,45 @@
     },
     "2h": {
      "align": "up",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 66590,
      "above200": true,
      "close": 66455,
      "time": 1790366400,
      "lastSignal": {
       "symbol": "NIY=F",
       "tf": "2h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790352000,
-      "close": 66325
+      "time": 1790301600,
+      "close": 66050
      }
     },
     "4h": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 66455,
      "time": 1790366400,
      "lastSignal": {
       "symbol": "NIY=F",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790352000,
-      "close": 66455
+      "time": 1790323200,
+      "close": 66325
      }
     },
     "1d": {
      "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 66455,
      "time": 1790308800,
@@ -136,15 +143,16 @@
    "tf": {
     "15m": {
      "align": "down",
-     "pullback": "confirmed",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 156.9320068359375,
      "above200": false,
      "close": 157.18499755859375,
      "time": 1790370000,
      "lastSignal": {
       "symbol": "USDJPY=X",
       "tf": "15m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790370000,
@@ -153,15 +161,16 @@
     },
     "20m": {
      "align": "down",
-     "pullback": "confirmed",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 156.9320068359375,
      "above200": false,
      "close": 157.18499755859375,
      "time": 1790370000,
      "lastSignal": {
       "symbol": "USDJPY=X",
       "tf": "20m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790370000,
@@ -172,23 +181,25 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 157.18499755859375,
      "time": 1790370000,
      "lastSignal": {
       "symbol": "USDJPY=X",
       "tf": "30m",
-      "strategy": "pullback2050",
-      "dir": "up",
-      "strength": "strong",
-      "time": 1790290800,
-      "close": 158.81900024414062
+      "strategy": "ema5813",
+      "dir": "down",
+      "strength": "weak",
+      "time": 1790289000,
+      "close": 158.7550048828125
      }
     },
     "1h": {
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 157.18499755859375,
      "time": 1790370000,
@@ -206,6 +217,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 157.18499755859375,
      "time": 1790366400,
@@ -223,6 +235,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 157.18499755859375,
      "time": 1790366400,
@@ -240,6 +253,7 @@
      "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 158.81100463867188,
      "time": 1790290800,
@@ -263,8 +277,9 @@
    "tf": {
     "15m": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 1.1401208639144897,
      "time": 1790376300,
@@ -280,8 +295,9 @@
     },
     "20m": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 1.1401208639144897,
      "time": 1790376000,
@@ -297,8 +313,9 @@
     },
     "30m": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 1.1401208639144897,
      "time": 1790375400,
@@ -316,6 +333,7 @@
      "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 1.1401208639144897,
      "time": 1790373600,
@@ -331,25 +349,27 @@
     },
     "2h": {
      "align": "up",
-     "pullback": "confirmed",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 1.1363636255264282,
      "above200": false,
      "close": 1.1401208639144897,
      "time": 1790373600,
      "lastSignal": {
       "symbol": "EURUSD=X",
       "tf": "2h",
-      "strategy": "pullback2050",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1790366400,
-      "close": 1.139211654663086
+      "strategy": "ema5813",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1790323200,
+      "close": 1.1394712924957275
      }
     },
     "4h": {
      "align": "neutral",
      "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 1.1363636255264282,
      "above200": false,
      "close": 1.1401208639144897,
      "time": 1790366400,
@@ -359,17 +379,18 @@
       "strategy": "pullback2050",
       "dir": "down",
       "strength": "strong",
-      "time": 1789992000,
-      "close": 1.1470520496368408
+      "time": 1790049600,
+      "close": 1.145213007926941
      }
     },
     "1d": {
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
-     "close": 1.1374752521514893,
-     "time": 1790290800,
+     "close": 1.1401208639144897,
+     "time": 1790449497,
      "lastSignal": {
       "symbol": "EURUSD=X",
       "tf": "1d",
@@ -392,6 +413,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790369100,
@@ -407,25 +429,27 @@
     },
     "20m": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790368800,
      "lastSignal": {
       "symbol": "GC=F",
       "tf": "20m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
-      "strength": "strong",
-      "time": 1790361600,
-      "close": 4329.7998046875
+      "strength": "weak",
+      "time": 1790360400,
+      "close": 4322.60009765625
      }
     },
     "30m": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790368200,
@@ -443,6 +467,7 @@
      "align": "neutral",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790366400,
@@ -458,8 +483,9 @@
     },
     "2h": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790366400,
@@ -475,25 +501,27 @@
     },
     "4h": {
      "align": "neutral",
-     "pullback": "pulled",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790366400,
      "lastSignal": {
       "symbol": "GC=F",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790150400,
-      "close": 4346.2998046875
+      "time": 1790136000,
+      "close": 4356.2001953125
      }
     },
     "1d": {
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 4321.2001953125,
      "time": 1790308800,
@@ -517,15 +545,16 @@
    "tf": {
     "15m": {
      "align": "up",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 7749.2998046875,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790366400,
      "lastSignal": {
       "symbol": "^GSPC",
       "tf": "15m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
       "time": 1790364600,
@@ -536,6 +565,7 @@
      "align": "up",
      "pullback": "trend",
      "pullbackDir": "up",
+     "pullbackLevel": null,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790365800,
@@ -551,42 +581,45 @@
     },
     "30m": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790366400,
      "lastSignal": {
       "symbol": "^GSPC",
       "tf": "30m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790352000,
-      "close": 7744.91015625
+      "time": 1790276400,
+      "close": 7706.0400390625
      }
     },
     "1h": {
      "align": "up",
-     "pullback": "confirmed",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790364600,
      "lastSignal": {
       "symbol": "^GSPC",
       "tf": "1h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790364600,
-      "close": 7743.41015625
+      "time": 1790350200,
+      "close": 7744.91015625
      }
     },
     "2h": {
      "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790364600,
@@ -602,36 +635,38 @@
     },
     "4h": {
      "align": "up",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 7782.18994140625,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790357400,
      "lastSignal": {
       "symbol": "^GSPC",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790343000,
-      "close": 7742.85986328125
+      "time": 1789997400,
+      "close": 7758.1201171875
      }
     },
     "1d": {
      "align": "up",
-     "pullback": "confirmed",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 7743.41015625,
      "time": 1790343000,
      "lastSignal": {
       "symbol": "^GSPC",
       "tf": "1d",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "up",
       "strength": "strong",
-      "time": 1790343000,
-      "close": 7743.41015625
+      "time": 1789997400,
+      "close": 7764.7001953125
      }
     }
    }
@@ -646,6 +681,7 @@
      "align": "down",
      "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 12840.2001953125,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790348100,
@@ -661,42 +697,45 @@
     },
     "20m": {
      "align": "neutral",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 12840.2001953125,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790348100,
      "lastSignal": {
       "symbol": "XU100.IS",
       "tf": "20m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790345700,
-      "close": 12876.2998046875
+      "time": 1790339700,
+      "close": 12899.830078125
      }
     },
     "30m": {
      "align": "neutral",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790348100,
      "lastSignal": {
       "symbol": "XU100.IS",
       "tf": "30m",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
-      "time": 1790346300,
-      "close": 12886.2998046875
+      "time": 1790175300,
+      "close": 13252.5703125
      }
     },
     "1h": {
      "align": "neutral",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 12817.009765625,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790346600,
@@ -712,15 +751,16 @@
     },
     "2h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 12817.009765625,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "XU100.IS",
       "tf": "2h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790231400,
@@ -731,6 +771,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 12899.349609375,
      "time": 1790346600,
@@ -748,6 +789,7 @@
      "align": "down",
      "pullback": "trend",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 12899.400390625,
      "time": 1790317800,
@@ -771,25 +813,27 @@
    "tf": {
     "15m": {
      "align": "down",
-     "pullback": "pulled",
+     "pullback": "confirmed",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790348100,
      "lastSignal": {
       "symbol": "XU030.IS",
       "tf": "15m",
-      "strategy": "ema5813",
+      "strategy": "pullback2050",
       "dir": "down",
       "strength": "strong",
-      "time": 1790345400,
-      "close": 15951.6796875
+      "time": 1790347200,
+      "close": 15928.76953125
      }
     },
     "20m": {
      "align": "neutral",
-     "pullback": "trend",
+     "pullback": "confirmed",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790348100,
@@ -805,8 +849,9 @@
     },
     "30m": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "confirmed",
      "pullbackDir": "down",
+     "pullbackLevel": null,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790348100,
@@ -822,8 +867,9 @@
     },
     "1h": {
      "align": "down",
-     "pullback": "trend",
-     "pullbackDir": "down",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790346600,
@@ -839,8 +885,9 @@
     },
     "2h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 15322.240234375,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790346600,
@@ -856,15 +903,16 @@
     },
     "4h": {
      "align": "down",
-     "pullback": "trend",
+     "pullback": "pulled",
      "pullbackDir": "down",
+     "pullbackLevel": 15467.7802734375,
      "above200": false,
      "close": 15946.9501953125,
      "time": 1790346600,
      "lastSignal": {
       "symbol": "XU030.IS",
       "tf": "4h",
-      "strategy": "pullback2050",
+      "strategy": "ema5813",
       "dir": "down",
       "strength": "strong",
       "time": 1790231400,
@@ -875,6 +923,7 @@
      "align": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
      "close": 15947,
      "time": 1790317800,
@@ -893,50 +942,53 @@
   "BTC-USD": {
    "symbol": "BTC-USD",
    "name": "Bitcoin",
-   "price": 84441.43,
-   "changePct": 0.04143862667489977,
+   "price": 84762.35,
+   "changePct": 0.4216465232497658,
    "tf": {
     "15m": {
-     "align": "down",
-     "pullback": "none",
-     "pullbackDir": "neutral",
+     "align": "neutral",
+     "pullback": "trend",
+     "pullbackDir": "up",
+     "pullbackLevel": null,
      "above200": true,
-     "close": 84417.703125,
-     "time": 1790523000,
+     "close": 84689.5,
+     "time": 1790536500,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "15m",
       "strategy": "ema5813",
-      "dir": "down",
-      "strength": "weak",
-      "time": 1790519400,
-      "close": 84718.46875
+      "dir": "up",
+      "strength": "strong",
+      "time": 1790533800,
+      "close": 84751.6875
      }
     },
     "20m": {
-     "align": "down",
+     "align": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
-     "close": 84467.3203125,
-     "time": 1790522400,
+     "close": 84760.828125,
+     "time": 1790536800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "20m",
       "strategy": "ema5813",
-      "dir": "down",
-      "strength": "weak",
-      "time": 1790520000,
-      "close": 84520
+      "dir": "up",
+      "strength": "strong",
+      "time": 1790534400,
+      "close": 84798.7265625
      }
     },
     "30m": {
-     "align": "down",
-     "pullback": "confirmed",
-     "pullbackDir": "up",
+     "align": "neutral",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
-     "close": 84605.3515625,
-     "time": 1790521200,
+     "close": 84689.5,
+     "time": 1790535600,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "30m",
@@ -944,16 +996,17 @@
       "dir": "down",
       "strength": "weak",
       "time": 1790521200,
-      "close": 84605.3515625
+      "close": 84603.0390625
      }
     },
     "1h": {
      "align": "neutral",
      "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 85140.4921875,
      "above200": true,
-     "close": 84520,
-     "time": 1790517600,
+     "close": 84798.7265625,
+     "time": 1790532000,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "1h",
@@ -961,16 +1014,17 @@
       "dir": "up",
       "strength": "strong",
       "time": 1790456400,
-      "close": 84137.6328125
+      "close": 84137.6171875
      }
     },
     "2h": {
-     "align": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "align": "neutral",
+     "pullback": "none",
+     "pullbackDir": "neutral",
+     "pullbackLevel": null,
      "above200": true,
-     "close": 85029.34375,
-     "time": 1790510400,
+     "close": 84559.7421875,
+     "time": 1790524800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "2h",
@@ -978,16 +1032,17 @@
       "dir": "up",
       "strength": "strong",
       "time": 1790452800,
-      "close": 84137.6328125
+      "close": 84137.6171875
      }
     },
     "4h": {
-     "align": "up",
-     "pullback": "trend",
+     "align": "neutral",
+     "pullback": "pulled",
      "pullbackDir": "up",
+     "pullbackLevel": 87373.78125,
      "above200": true,
-     "close": 84877.0234375,
-     "time": 1790496000,
+     "close": 84449.4765625,
+     "time": 1790510400,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "4h",
@@ -1000,19 +1055,20 @@
     },
     "1d": {
      "align": "up",
-     "pullback": "trend",
+     "pullback": "confirmed",
      "pullbackDir": "up",
+     "pullbackLevel": null,
      "above200": true,
      "close": 84406.453125,
      "time": 1790380800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "1d",
-      "strategy": "ema5813",
+      "strategy": "pullback2050",
       "dir": "up",
       "strength": "strong",
-      "time": 1789689600,
-      "close": 80901.4609375
+      "time": 1789948800,
+      "close": 86602.9140625
      }
     }
    }
@@ -1039,7 +1095,7 @@
   "EURUSD=X|1h": 1790373600,
   "EURUSD=X|2h": 1790373600,
   "EURUSD=X|4h": 1790366400,
-  "EURUSD=X|1d": 1790290800,
+  "EURUSD=X|1d": 1790449497,
   "GC=F|15m": 1790369100,
   "GC=F|20m": 1790368800,
   "GC=F|30m": 1790368200,
@@ -1068,13 +1124,13 @@
   "XU030.IS|2h": 1790346600,
   "XU030.IS|4h": 1790346600,
   "XU030.IS|1d": 1790317800,
-  "BTC-USD|15m": 1790523000,
-  "BTC-USD|20m": 1790522400,
-  "BTC-USD|30m": 1790521200,
-  "BTC-USD|1h": 1790517600,
-  "BTC-USD|2h": 1790510400,
-  "BTC-USD|4h": 1790496000,
+  "BTC-USD|15m": 1790536500,
+  "BTC-USD|20m": 1790536800,
+  "BTC-USD|30m": 1790535600,
+  "BTC-USD|1h": 1790532000,
+  "BTC-USD|2h": 1790524800,
+  "BTC-USD|4h": 1790510400,
   "BTC-USD|1d": 1790380800
  },
- "scanAt": 1790524703
+ "scanAt": 1790538179
 }
