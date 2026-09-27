@@ -14,7 +14,7 @@ const STRATEGY_HINT: Record<Strategy, string> = {
   ema5813: '',
   pullback2050: '',
   goldencross: '',
-  triple: `MACD 0'ı, RSI 50'yi ve fiyat Bollinger orta bandını aynı yönde keserse (üçü en fazla ${TRIPLE_WINDOW} mum arayla) ok çıkar.`,
+  triple: `MACD 0'ı keser, ${TRIPLE_WINDOW} mum içinde RSI 50'yi keser ve mum Bollinger orta bandının üstünde (düşüşte altında) kapanırsa ok çıkar.`,
   supertrend: 'Supertrend (10, 3) yön değiştirince ok çıkar.',
   donchian: 'Kapanış önceki 20 mumun zirvesini / dibini kırınca ok çıkar (Turtle kırılımı).',
 };

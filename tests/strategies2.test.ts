@@ -48,32 +48,29 @@ test('donchian: kırılım yönü değişince tek sinyal', () => {
   assert.deepEqual(ev.map((e) => e.dir), ['up', 'down']);
 });
 
-test('üçlü onay: MACD 0, RSI 50 ve BB orta bandı birlikte yukarı kesince ok', () => {
-  const closes = [
-    ...Array.from({ length: 60 }, (_, i) => 150 - i * 0.5), // düşüş: üç koşul da aşağıda
-    ...Array.from({ length: 25 }, (_, i) => 120 + i * 1.2), // güçlü dönüş
-  ];
-  const a = analyze('X', '15m', fromCloses(closes));
+function reversal(jump: number, dir: 1 | -1 = 1): number[] {
+  // dir=1: düşüşten sert yükselişe dönüş; dir=-1: tersi
+  return [...Array.from({ length: 60 }, (_, i) => 150 - dir * i * 0.5), ...Array.from({ length: 25 }, (_, i) => 150 - dir * 30 + dir * i * jump)];
+}
+
+test('üçlü onay: MACD 0 ve RSI 50 kesişimleri 3 mum içinde, mum BB ortası üstünde → tek ok', () => {
+  // Bu seride RSI 62. mumda, MACD 65. mumda keser (3 mum fark); fiyat BB ortasının üstünde.
+  const a = analyze('X', '15m', fromCloses(reversal(4)));
   const tr = a.events.filter((e) => e.strategy === 'triple');
-  assert.ok(tr.some((e) => e.dir === 'up'), 'yukarı üçlü onay beklenir');
-  assert.equal(tr.filter((e) => e.dir === 'up').length, 1, 'aynı hareket için tek ok');
+  assert.deepEqual(tr.map((e) => [e.dir, (e.time - 1_700_000_000) / 900]), [['up', 65]]);
   assert.equal(a.status!.triple, 'up');
   assert.equal(a.status!.tripleScore, 3);
 });
 
-test('üçlü onay: kesişimler birbirinden uzaksa ok çıkmaz', () => {
-  // Fiyat BB ortasını erken keser, ardından uzun süre yatay; MACD/RSI kesişimi çok sonra.
-  const closes = [
-    ...Array.from({ length: 60 }, (_, i) => 150 - i * 0.5),
-    ...Array.from({ length: 3 }, (_, i) => 121 + i * 2),
-    ...Array.from({ length: 12 }, () => 125.5),
-  ];
-  const a = analyze('X', '15m', fromCloses(closes, 900, 0.05));
-  const ups = a.events.filter((e) => e.strategy === 'triple' && e.dir === 'up');
-  for (const e of ups) {
-    // Oluşan her ok, pencere kuralını sağlamış olmalı: kontrolü strateji yapar, burada yalnız tutarlılık.
-    assert.ok(e.close > 0);
-  }
+test('üçlü onay: MACD ile RSI kesişimleri 3 mumdan fazla arayla ise ok yok', () => {
+  // RSI 65. mumda, MACD 70. mumda keser (5 mum fark).
+  const tr = analyze('X', '15m', fromCloses(reversal(1.2))).events.filter((e) => e.strategy === 'triple');
+  assert.equal(tr.length, 0);
+});
+
+test('üçlü onay: düşüş yönü simetrik', () => {
+  const tr = analyze('X', '15m', fromCloses(reversal(4, -1))).events.filter((e) => e.strategy === 'triple');
+  assert.deepEqual(tr.map((e) => e.dir), ['down']);
 });
 
 test('performans: sonraki sinyale kadar hareket ve en iyi seviye', () => {
