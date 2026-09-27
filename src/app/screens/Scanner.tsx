@@ -3,13 +3,14 @@ import { TF_LABEL, TF_SECONDS } from '../../core/candles';
 import { formatTime, pullbackText, signalTitle, strengthShort } from '../../core/labels';
 import type { Timeframe } from '../../core/types';
 import type { OpenTarget } from '../App';
+import type { Role } from '../lib/auth';
 import type { RadarApi } from '../lib/data';
-import { agoText, shortSymbol } from '../ui';
+import { agoText, shortSymbol, SignInCard } from '../ui';
 
 /** Son 3 mum içinde oluşan sinyal "yeni" sayılır. */
 const RECENT_BARS = 3;
 
-export function ScannerScreen({ api, onOpen }: { api: RadarApi; onOpen: (t: OpenTarget) => void }) {
+export function ScannerScreen({ api, role, onOpen }: { api: RadarApi; role: Role; onOpen: (t: OpenTarget) => void }) {
   const scan = api.data.scan;
   const tfs: Timeframe[] = api.data.config?.scanner.timeframes.length ? api.data.config.scanner.timeframes : ['4h', '1d'];
   const [tf, setTf] = useState<Timeframe>(tfs[0]);
@@ -61,7 +62,8 @@ export function ScannerScreen({ api, onOpen }: { api: RadarApi; onOpen: (t: Open
           </button>
         ))}
       </div>
-      {!scan && <div className="empty">Tarama sonucu henüz yok. Tarayıcı saatte bir çalışır.</div>}
+      <SignInCard role={role} reason="Tarama sonuçlarını görmek için Google hesabınla giriş yap." />
+      {role === 'owner' && !scan && <div className="empty">Tarama sonucu henüz yok. Tarayıcı saatte bir çalışır.</div>}
       {scan && (
         <>
           <h2>Son {RECENT_BARS} mumda sinyal verenler</h2>

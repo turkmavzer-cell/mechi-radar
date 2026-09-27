@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { TF_LABEL } from '../core/candles';
 import { formatTime, signalTitle, strengthShort } from '../core/labels';
 import type { SignalEvent, Timeframe, Trend } from '../core/types';
+import type { Role } from './lib/auth';
+import { signInWithGoogle } from './lib/firebase';
 
 export function TrendChip({ tf, trend }: { tf: Timeframe; trend: Trend | undefined }) {
   const cls = trend === 'up' ? 'up' : trend === 'down' ? 'down' : 'flat';
@@ -43,4 +46,37 @@ export function agoText(iso: string | undefined): string {
 
 export function shortSymbol(symbol: string): string {
   return symbol.replace(/\.IS$/, '');
+}
+
+/** Google ile giriş kartı; izleme listesi ve bildirimler için gerekir. */
+export function SignInCard({ role, reason }: { role: Role; reason: string }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  if (role === 'owner' || role === 'loading') return null;
+  if (role === 'denied')
+    return (
+      <div className="notice err">
+        Bu uygulama başka bir Google hesabına bağlı. Ayarlar'dan çıkış yapıp doğru hesapla giriş yap.
+      </div>
+    );
+  const go = async () => {
+    setBusy(true);
+    setErr(null);
+    try {
+      await signInWithGoogle();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="notice">
+      {reason}
+      <button className="btn" style={{ marginTop: 10, width: '100%' }} onClick={go} disabled={busy}>
+        {busy ? 'Giriş yapılıyor…' : 'Google ile giriş yap'}
+      </button>
+      {err && <div className="small neg" style={{ marginTop: 6 }}>{err}</div>}
+    </div>
+  );
 }

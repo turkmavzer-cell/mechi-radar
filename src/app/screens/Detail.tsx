@@ -7,17 +7,18 @@ import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
 import { LINE_COLORS, PriceChart, type EmaGroup } from '../Chart';
 import type { RadarApi } from '../lib/data';
-import { SignalRow } from '../ui';
+import { SignalRow, SignInCard } from '../ui';
+import type { Role } from '../lib/auth';
+import { yahooFetch } from '../lib/http';
 
 interface Props {
   target: OpenTarget;
   api: RadarApi;
-  hasToken: boolean;
+  role: Role;
   onClose: () => void;
-  onGoSettings: () => void;
 }
 
-export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: Props) {
+export function DetailScreen({ target, api, role, onClose }: Props) {
   const [tf, setTf] = useState<Timeframe>('15m');
   const [group, setGroup] = useState<EmaGroup>('fast');
   const [series, setSeries] = useState<SeriesSet | null>(null);
@@ -25,7 +26,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [needToken, setNeedToken] = useState(false);
+  const [needSignIn, setNeedSignIn] = useState(false);
 
   const watchItem = api.data.config?.watchlist.find((w) => w.symbol === target.symbol);
 
@@ -33,7 +34,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
     let alive = true;
     setLoading(true);
     setError(null);
-    loadSeries(fetch, target.symbol, [tf])
+    loadSeries(yahooFetch, target.symbol, [tf])
       .then((s) => alive && setSeries(s))
       .catch((err) => alive && setError(err instanceof Error ? err.message : String(err)))
       .finally(() => alive && setLoading(false));
@@ -52,8 +53,8 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
   const price = series?.meta.regularMarketPrice ?? all[all.length - 1]?.c;
 
   const run = async (fn: () => Promise<unknown>, ok: string) => {
-    if (!hasToken) {
-      setNeedToken(true);
+    if (role !== 'owner') {
+      setNeedSignIn(true);
       return;
     }
     setBusy(true);
@@ -72,7 +73,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
     if (!watchItem) return;
     const next = watchItem.alerts.includes(t) ? watchItem.alerts.filter((a) => a !== t) : [...watchItem.alerts, t];
     const ordered = TIMEFRAMES.filter((x) => next.includes(x));
-    run(() => api.setAlerts(target.symbol, ordered), 'Mail ayarı kaydedildi.');
+    run(() => api.setAlerts(target.symbol, ordered), 'Bildirim ayarı kaydedildi.');
   };
 
   return (
@@ -152,11 +153,11 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         <div className="empty">Bu zaman diliminde sinyal yok.</div>
       )}
 
-      <h2>İzleme ve mail</h2>
+      <h2>İzleme ve bildirim</h2>
       <div className="card">
         {watchItem ? (
           <>
-            <div className="small muted">Mail gelmesini istediğin zaman dilimlerini seç:</div>
+            <div className="small muted">Telefona bildirim gelmesini istediğin zaman dilimlerini seç:</div>
             <div className="seg wrap">
               {TIMEFRAMES.map((t) => (
                 <button
@@ -187,14 +188,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
             İzleme listesine ekle
           </button>
         )}
-        {needToken && (
-          <div className="notice">
-            İzleme listesi GitHub'daki reponda tutulduğu için uygulamanın bir kez yazma izni (token) alması gerekiyor.
-            <button className="btn" style={{ marginTop: 10, width: '100%' }} onClick={onGoSettings}>
-              Ayarlar'a git ve token gir
-            </button>
-          </div>
-        )}
+        {needSignIn && <SignInCard role={role === 'loading' ? 'signedOut' : role} reason="İzleme listesi ve bildirimler Google hesabına bağlı." />}
         {msg && <div className="small">{msg}</div>}
       </div>
       <p className="legend muted small">Teknik gösterge bilgisidir, yatırım tavsiyesi değildir.</p>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
+import { doc, onSnapshot, runTransaction } from 'firebase/firestore';
 import type { RadarConfig, RadarState, ScanResult, SignalEvent, Timeframe, WatchItem } from '../../core/types';
-import { readFile, updateFile } from './github';
-import { loadCache, saveCache, type AppSettings } from './storage';
+import { fb } from './firebase';
 
 export interface RadarData {
   config: RadarConfig | null;
@@ -12,76 +12,59 @@ export interface RadarData {
 
 const EMPTY: RadarData = { config: null, state: null, signals: [], scan: null };
 
-export function useRadarData(settings: AppSettings | null) {
+/** Firestore'daki radar belgelerini canlı dinler (sunucu yazdıkça ekran güncellenir). */
+export function useRadarData(enabled: boolean) {
   const [data, setData] = useState<RadarData>(EMPTY);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadCache<RadarData>('radar').then((c) => c && setData((d) => (d.state ? d : c)));
-  }, []);
-
-  const refresh = useCallback(async () => {
-    if (!settings) return;
+    if (!enabled || !fb) {
+      setData(EMPTY);
+      return;
+    }
     setLoading(true);
     setError(null);
-    try {
-      const [config, state, signals, scan] = await Promise.all([
-        readFile<RadarConfig>(settings, 'config.json'),
-        readFile<RadarState>(settings, 'state.json'),
-        readFile<SignalEvent[]>(settings, 'signals.json'),
-        readFile<ScanResult>(settings, 'scan.json'),
-      ]);
-      const next: RadarData = {
-        config: config?.data ?? null,
-        state: state?.data ?? null,
-        signals: signals?.data ?? [],
-        scan: scan?.data ?? null,
-      };
-      setData(next);
-      await saveCache('radar', next);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
+    const db = fb.db;
+    const onErr = (err: Error) => {
+      setError(`Veri alınamadı: ${err.message}`);
       setLoading(false);
-    }
-  }, [settings]);
+    };
+    const subs = [
+      onSnapshot(doc(db, 'radar', 'config'), (s) => setData((d) => ({ ...d, config: (s.data() as RadarConfig) ?? null })), onErr),
+      onSnapshot(
+        doc(db, 'radar', 'state'),
+        (s) => {
+          setData((d) => ({ ...d, state: (s.data() as RadarState) ?? null }));
+          setLoading(false);
+        },
+        onErr,
+      ),
+      onSnapshot(doc(db, 'radar', 'signals'), (s) => setData((d) => ({ ...d, signals: (s.get('items') as SignalEvent[]) ?? [] })), onErr),
+      onSnapshot(doc(db, 'radar', 'scan'), (s) => setData((d) => ({ ...d, scan: (s.data() as ScanResult) ?? null })), onErr),
+    ];
+    return () => subs.forEach((u) => u());
+  }, [enabled]);
 
-  useEffect(() => {
-    refresh();
-    const id = setInterval(refresh, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [refresh]);
-
-  const editConfig = useCallback(
-    async (mutate: (c: RadarConfig) => RadarConfig, message: string) => {
-      if (!settings) return;
-      const next = await updateFile<RadarConfig>(settings, 'config.json', mutate, message);
-      setData((d) => {
-        const updated = { ...d, config: next };
-        void saveCache('radar', updated);
-        return updated;
-      });
-    },
-    [settings],
-  );
+  const editConfig = useCallback(async (mutate: (c: RadarConfig) => RadarConfig) => {
+    if (!fb) throw new Error('Firebase ayarlanmamış.');
+    const ref = doc(fb.db, 'radar', 'config');
+    await runTransaction(fb.db, async (tx) => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) throw new Error('Sunucu henüz ilk kontrolü yapmadı; birkaç dakika sonra tekrar dene.');
+      tx.set(ref, mutate(snap.data() as RadarConfig));
+    });
+  }, []);
 
   const addWatch = (item: WatchItem) =>
-    editConfig(
-      (c) => (c.watchlist.some((w) => w.symbol === item.symbol) ? c : { ...c, watchlist: [...c.watchlist, item] }),
-      `İzleme listesine eklendi: ${item.symbol}`,
-    );
+    editConfig((c) => (c.watchlist.some((w) => w.symbol === item.symbol) ? c : { ...c, watchlist: [...c.watchlist, item] }));
 
-  const removeWatch = (symbol: string) =>
-    editConfig((c) => ({ ...c, watchlist: c.watchlist.filter((w) => w.symbol !== symbol) }), `İzleme listesinden çıkarıldı: ${symbol}`);
+  const removeWatch = (symbol: string) => editConfig((c) => ({ ...c, watchlist: c.watchlist.filter((w) => w.symbol !== symbol) }));
 
   const setAlerts = (symbol: string, alerts: Timeframe[]) =>
-    editConfig(
-      (c) => ({ ...c, watchlist: c.watchlist.map((w) => (w.symbol === symbol ? { ...w, alerts } : w)) }),
-      `Mail bildirimleri: ${symbol} → ${alerts.join(', ') || 'kapalı'}`,
-    );
+    editConfig((c) => ({ ...c, watchlist: c.watchlist.map((w) => (w.symbol === symbol ? { ...w, alerts } : w)) }));
 
-  return { data, loading, error, refresh, addWatch, removeWatch, setAlerts };
+  return { data, loading, error, addWatch, removeWatch, setAlerts };
 }
 
 export type RadarApi = ReturnType<typeof useRadarData>;

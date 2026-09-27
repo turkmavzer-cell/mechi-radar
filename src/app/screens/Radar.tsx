@@ -1,17 +1,17 @@
 import { formatPrice } from '../../core/labels';
+import type { Role } from '../lib/auth';
 import type { RadarApi } from '../lib/data';
 import type { OpenTarget } from '../App';
-import { agoText, SignalRow, TrendChip } from '../ui';
+import { agoText, SignInCard, SignalRow, TrendChip } from '../ui';
 
 interface Props {
   api: RadarApi;
+  role: Role;
   onOpen: (t: OpenTarget) => void;
-  hasToken: boolean;
-  onGoSettings: () => void;
 }
 
-export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
-  const { data, loading, error, refresh } = api;
+export function RadarScreen({ api, role, onOpen }: Props) {
+  const { data, loading, error } = api;
   const watch = data.config?.watchlist ?? [];
   const names = new Map(watch.map((w) => [w.symbol, w.name]));
   const recent = data.signals.filter((s) => names.has(s.symbol)).slice(0, 5);
@@ -23,19 +23,13 @@ export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
           <h1>Mechi Radar</h1>
           <div className="muted small">Son kontrol: {agoText(data.state?.updatedAt)}</div>
         </div>
-        <button className="icon-btn" onClick={refresh} aria-label="Yenile" disabled={loading}>
-          <span className={loading ? 'spin' : ''}>⟳</span>
-        </button>
+        {(loading || role === 'loading') && <span className="spin muted">⟳</span>}
       </header>
 
       {error && <div className="notice err">{error}</div>}
-      {!hasToken && (
-        <button className="notice link" onClick={onGoSettings}>
-          İzleme listesine ekleme yapmak ve bildirim açmak için bir kez GitHub token girmen gerekiyor. <b>Ayarlar'a git ›</b>
-        </button>
-      )}
-      {!data.state && !loading && !error && (
-        <div className="notice">Henüz veri yok. İlk kontrol GitHub'da çalıştıktan sonra burada görünecek.</div>
+      <SignInCard role={role} reason="İzleme listeni görmek ve telefona bildirim almak için Google hesabınla giriş yap." />
+      {role === 'owner' && !data.state && !loading && !error && (
+        <div className="notice">Henüz veri yok. Sunucu ilk kontrolü yaptığında (en geç 5 dakika) burada görünecek.</div>
       )}
 
       <h2>Son sinyaller</h2>

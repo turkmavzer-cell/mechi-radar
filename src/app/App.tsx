@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { App as CapApp } from '@capacitor/app';
+import { useAuth } from './lib/auth';
 import { useRadarData } from './lib/data';
-import { loadSettings, saveSettings, type AppSettings } from './lib/storage';
+import { fb } from './lib/firebase';
+import { initPush, type PushStatus } from './lib/push';
 import { RadarScreen } from './screens/Radar';
 import { ExploreScreen } from './screens/Explore';
 import { ScannerScreen } from './screens/Scanner';
@@ -15,6 +17,12 @@ export interface OpenTarget {
   name: string;
 }
 
+interface Toast {
+  title: string;
+  body: string;
+  target: OpenTarget | null;
+}
+
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'radar', label: 'Radar', icon: '◎' },
   { id: 'explore', label: 'Keşfet', icon: '⌕' },
@@ -23,16 +31,14 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 export function App() {
-  const [settings, setSettings] = useState<AppSettings | null>(null);
   const [tab, setTab] = useState<Tab>('radar');
   const [detail, setDetail] = useState<OpenTarget | null>(null);
-  const api = useRadarData(settings);
+  const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
+  const [toast, setToast] = useState<Toast | null>(null);
+  const auth = useAuth();
+  const api = useRadarData(auth.role === 'owner');
   const detailRef = useRef(detail);
   detailRef.current = detail;
-
-  useEffect(() => {
-    loadSettings().then(setSettings);
-  }, []);
 
   // Android geri tuşu: önce detay ekranını kapat, sonra uygulamadan çık.
   useEffect(() => {
@@ -45,25 +51,42 @@ export function App() {
     };
   }, []);
 
-  const updateSettings = async (s: AppSettings) => {
-    await saveSettings(s);
-    setSettings(s);
-  };
+  // Sahip hesapla giriş yapılınca bildirim izni istenir ve cihaz kaydedilir.
+  const uid = auth.user?.uid;
+  useEffect(() => {
+    if (auth.role !== 'owner' || !uid) return;
+    initPush(uid, {
+      onOpen: (t) => setDetail(t),
+      onForeground: (title, body, target) => setToast({ title, body, target }),
+    })
+      .then(setPushStatus)
+      .catch(() => setPushStatus('denied'));
+  }, [auth.role, uid]);
 
-  const goSettings = () => {
-    setDetail(null);
-    setTab('settings');
-  };
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 7000);
+    return () => clearTimeout(id);
+  }, [toast]);
 
-  if (!settings) return <div className="splash">Mechi Radar</div>;
+  if (!fb) {
+    return (
+      <div className="content">
+        <header className="top">
+          <h1>Mechi Radar</h1>
+        </header>
+        <div className="notice">Firebase ayarları bu sürümde yok. Uygulamanın güncel sürümünü kur.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="shell">
       <main className="content">
-        {tab === 'radar' && <RadarScreen api={api} onOpen={setDetail} hasToken={!!settings.token} onGoSettings={goSettings} />}
+        {tab === 'radar' && <RadarScreen api={api} role={auth.role} onOpen={setDetail} />}
         {tab === 'explore' && <ExploreScreen onOpen={setDetail} />}
-        {tab === 'scanner' && <ScannerScreen api={api} onOpen={setDetail} />}
-        {tab === 'settings' && <SettingsScreen settings={settings} onSave={updateSettings} onSaved={api.refresh} />}
+        {tab === 'scanner' && <ScannerScreen api={api} role={auth.role} onOpen={setDetail} />}
+        {tab === 'settings' && <SettingsScreen auth={auth} pushStatus={pushStatus} />}
       </main>
       <nav className="tabbar">
         {TABS.map((t) => (
@@ -73,14 +96,18 @@ export function App() {
           </button>
         ))}
       </nav>
-      {detail && (
-        <DetailScreen
-          target={detail}
-          api={api}
-          hasToken={!!settings.token}
-          onClose={() => setDetail(null)}
-          onGoSettings={goSettings}
-        />
+      {detail && <DetailScreen target={detail} api={api} role={auth.role} onClose={() => setDetail(null)} />}
+      {toast && (
+        <button
+          className="toast"
+          onClick={() => {
+            if (toast.target) setDetail(toast.target);
+            setToast(null);
+          }}
+        >
+          <b>{toast.title}</b>
+          <span>{toast.body}</span>
+        </button>
       )}
     </div>
   );

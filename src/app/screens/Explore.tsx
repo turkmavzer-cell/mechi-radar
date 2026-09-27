@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { searchSymbols, type SearchHit } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
+import { yahooFetch } from '../lib/http';
 
 const QUICK: OpenTarget[] = [
   { symbol: 'NIY=F', name: 'Japan 225 (vadeli)' },
@@ -23,7 +24,7 @@ export function ExploreScreen({ onOpen }: { onOpen: (t: OpenTarget) => void }) {
     setLoading(true);
     setError(null);
     try {
-      setHits(await searchSymbols(fetch, query));
+      setHits(await searchSymbols(yahooFetch, query));
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {

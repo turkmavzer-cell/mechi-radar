@@ -1,27 +1,34 @@
 import { useState } from 'react';
-import { testConnection } from '../lib/github';
-import type { AppSettings } from '../lib/storage';
+import type { AuthApi } from '../lib/auth';
+import { sendTestPush, signOut } from '../lib/firebase';
+import type { PushStatus } from '../lib/push';
+import { SignInCard } from '../ui';
 
 interface Props {
-  settings: AppSettings;
-  onSave: (s: AppSettings) => Promise<void>;
-  onSaved: () => void;
+  auth: AuthApi;
+  pushStatus: PushStatus | null;
 }
 
-export function SettingsScreen({ settings, onSave, onSaved }: Props) {
-  const [form, setForm] = useState(settings);
+const PUSH_TEXT: Record<PushStatus, string> = {
+  granted: 'Açık',
+  denied: 'Kapalı. Telefon Ayarlar → Uygulamalar → Mechi Radar → Bildirimler bölümünden izin ver.',
+  unsupported: 'Bu cihazda desteklenmiyor',
+};
+
+export function SettingsScreen({ auth, pushStatus }: Props) {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const save = async () => {
+  const test = async () => {
     setBusy(true);
     setMsg(null);
-    const clean = { ...form, token: form.token.trim(), owner: form.owner.trim(), repo: form.repo.trim() };
     try {
-      const text = await testConnection(clean);
-      await onSave(clean);
-      onSaved();
-      setMsg({ ok: true, text });
+      const sent = await sendTestPush();
+      setMsg(
+        sent > 0
+          ? { ok: true, text: 'Test bildirimi gönderildi. Birkaç saniye içinde gelmeli.' }
+          : { ok: false, text: 'Kayıtlı cihaz bulunamadı. Bildirim iznini kontrol edip uygulamayı yeniden aç.' },
+      );
     } catch (err) {
       setMsg({ ok: false, text: err instanceof Error ? err.message : String(err) });
     } finally {
@@ -35,48 +42,53 @@ export function SettingsScreen({ settings, onSave, onSaved }: Props) {
         <h1>Ayarlar</h1>
       </header>
 
-      <h2>GitHub bağlantısı</h2>
-      <div className="card">
-        <label>
-          <span className="small muted">Token</span>
-          <input
-            type="password"
-            value={form.token}
-            onChange={(e) => setForm({ ...form, token: e.target.value })}
-            placeholder="github_pat_…"
-            autoComplete="off"
-          />
-        </label>
-        <div className="two">
-          <label>
-            <span className="small muted">Hesap</span>
-            <input value={form.owner} onChange={(e) => setForm({ ...form, owner: e.target.value })} />
-          </label>
-          <label>
-            <span className="small muted">Repo</span>
-            <input value={form.repo} onChange={(e) => setForm({ ...form, repo: e.target.value })} />
-          </label>
+      <h2>Hesap</h2>
+      {auth.user ? (
+        <div className="card">
+          <div className="kv">
+            <span>Google hesabı</span>
+            <b>{auth.user.email}</b>
+          </div>
+          {auth.role === 'denied' && (
+            <div className="small neg">Bu uygulama başka bir hesaba bağlı. Çıkış yapıp doğru hesapla giriş yap.</div>
+          )}
+          {auth.role === 'error' && <div className="small neg">Sunucuya bağlanılamadı: {auth.error}</div>}
+          <button className="btn ghost" onClick={() => signOut()}>
+            Çıkış yap
+          </button>
         </div>
-        <button className="btn" onClick={save} disabled={busy}>
-          {busy ? 'Kontrol ediliyor…' : 'Kaydet ve test et'}
-        </button>
-        {msg && <div className={`small ${msg.ok ? 'pos' : 'neg'}`}>{msg.text}</div>}
-      </div>
+      ) : (
+        <SignInCard role={auth.role} reason="İzleme listen ve bildirimlerin Google hesabına bağlı. İlk giriş yapan hesap uygulamanın sahibi olur." />
+      )}
 
-      <h2>Token nasıl alınır</h2>
-      <ol className="steps small">
-        <li>GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</li>
-        <li>Repository access: Only select repositories → mechi-radar</li>
-        <li>Permissions → Contents: Read and write</li>
-        <li>Oluşan token'ı kopyalayıp yukarıya yapıştır.</li>
-      </ol>
+      {auth.role === 'owner' && (
+        <>
+          <h2>Bildirimler</h2>
+          <div className="card">
+            <div className="kv">
+              <span>Telefon bildirimi</span>
+              <b className={pushStatus === 'granted' ? 'up' : ''}>{pushStatus ? PUSH_TEXT[pushStatus] : 'Kontrol ediliyor…'}</b>
+            </div>
+            <button className="btn" onClick={test} disabled={busy}>
+              {busy ? 'Gönderiliyor…' : 'Test bildirimi gönder'}
+            </button>
+            {msg && <div className={`small ${msg.ok ? 'pos' : 'neg'}`}>{msg.text}</div>}
+            <div className="small muted">
+              Bir enstrümanın detayına girip 🔔 ile zaman dilimi seçtiğinde, o dilimdeki yeni sinyaller telefona bildirim olarak gelir.
+            </div>
+          </div>
+        </>
+      )}
 
       <h2>Nasıl çalışır</h2>
       <ul className="steps small">
-        <li>GitHub her 5 dakikada bir izleme listeni kontrol eder (GitHub bazen birkaç dakika geciktirir).</li>
-        <li>Sinyaller mum kapanışında kesinleşir. Mail yalnızca 🔔 açtığın zaman dilimleri için gelir.</li>
+        <li>Sunucu (Firebase) her 5 dakikada bir izleme listeni kontrol eder.</li>
+        <li>Sinyaller mum kapanışında kesinleşir. Bildirim yalnızca 🔔 açtığın zaman dilimleri için gelir.</li>
         <li>EMA 5·8·13: üç ortalama sıralı ve aynı yöne eğimliyse yön başlangıcı.</li>
-        <li>EMA 20·50: EMA 20, EMA 50'yi yukarı keser (kopuş) → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanışla onay (kırılım). EMA 50 altında kapanış senaryoyu iptal eder.</li>
+        <li>
+          EMA 20·50: EMA 20, EMA 50'yi yukarı keser (kopuş) → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde
+          kapanışla onay (kırılım). EMA 50 altında kapanış senaryoyu iptal eder.
+        </li>
         <li>EMA 200 üstündeki yükseliş "Güçlü", altındaki "Zayıf · tepki yükselişi" olarak etiketlenir.</li>
         <li>Veri: Yahoo Finance (resmi olmayan, bazı piyasalarda 15–20 dk gecikmeli).</li>
       </ul>
