@@ -10,10 +10,12 @@ import {
   type Time,
   type UTCTimestamp,
 } from 'lightweight-charts';
-import type { EmaSet } from '../core/strategies';
-import type { Candle, SignalEvent } from '../core/types';
+import type { Candle, SignalEvent, Strategy } from '../core/types';
 
-export type EmaGroup = 'fast' | 'slow';
+export interface ChartLine {
+  name: string;
+  values: number[];
+}
 
 // Doğrulanmış kategorik palet (koyu tema): mavi, turuncu, su yeşili.
 export const LINE_COLORS = ['#3987e5', '#d95926', '#199e70'];
@@ -25,13 +27,14 @@ const TZ_SHIFT = 3 * 3600;
 
 interface Props {
   candles: Candle[];
-  emas: EmaSet;
-  /** EMA dizileri kapanmış mumlar için hesaplandı; oluşan son mum dahil değil. */
+  /** En fazla 3 çizgi; değerler kapanmış mumlar için hesaplandı (oluşan son mum dahil değil). */
+  lines: ChartLine[];
   events: SignalEvent[];
-  group: EmaGroup;
+  /** Ok işaretleri gösterilecek strateji. */
+  strategy: Strategy;
 }
 
-export function PriceChart({ candles, emas, events, group }: Props) {
+export function PriceChart({ candles, lines, events, strategy }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
 
@@ -65,8 +68,7 @@ export function PriceChart({ candles, emas, events, group }: Props) {
     });
     candleSeries.setData(candles.map((c) => ({ time: t(c.t), open: c.o, high: c.h, low: c.l, close: c.c })));
 
-    const lines = group === 'fast' ? [emas.e5, emas.e8, emas.e13] : [emas.e20, emas.e50, emas.e200];
-    const lineSeries = lines.map((vals, idx) => {
+    const lineSeries = lines.slice(0, LINE_COLORS.length).map(({ values: vals }, idx) => {
       const s = chart.addSeries(LineSeries, {
         color: LINE_COLORS[idx],
         lineWidth: 2,
@@ -80,15 +82,14 @@ export function PriceChart({ candles, emas, events, group }: Props) {
       return s;
     });
 
-    const wanted = group === 'fast' ? 'ema5813' : 'pullback2050';
     const markers: SeriesMarker<Time>[] = events
-      .filter((e) => e.strategy === wanted)
+      .filter((e) => e.strategy === strategy)
       .map((e) => ({
         time: t(e.time),
         position: e.dir === 'up' ? 'belowBar' : 'aboveBar',
         shape: e.dir === 'up' ? 'arrowUp' : 'arrowDown',
         color: e.dir === 'up' ? UP : DOWN,
-        text: e.strategy === 'ema5813' ? '' : 'PB',
+        text: e.strategy === 'pullback2050' ? 'PB' : '',
         size: 1.2,
       }));
     const markerApi = createSeriesMarkers(candleSeries, markers);
@@ -103,7 +104,7 @@ export function PriceChart({ candles, emas, events, group }: Props) {
       lineSeries.forEach((s) => chart.removeSeries(s));
       chart.removeSeries(candleSeries);
     };
-  }, [candles, emas, events, group]);
+  }, [candles, lines, events, strategy]);
 
   return <div className="chart" ref={box} />;
 }

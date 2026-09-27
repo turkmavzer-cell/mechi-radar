@@ -1,5 +1,5 @@
 import { TF_LABEL } from './candles';
-import type { SignalEvent, Strength, TfStatus, Timeframe, Direction } from './types';
+import type { Direction, SignalEvent, Strategy, Strength, TfStatus, Timeframe, Trend } from './types';
 
 export function horizon(tf: Timeframe): string {
   if (tf === '15m' || tf === '20m' || tf === '30m') return 'Kısa vade';
@@ -8,9 +8,22 @@ export function horizon(tf: Timeframe): string {
 }
 
 export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf'>): string {
-  const word = e.dir === 'up' ? 'yükseliş' : 'düşüş';
-  if (e.strategy === 'ema5813') return `${horizon(e.tf)} ${word} başlangıcı`;
-  return `Pullback onayı · ${word} devamı`;
+  const up = e.dir === 'up';
+  const word = up ? 'yükseliş' : 'düşüş';
+  switch (e.strategy) {
+    case 'ema5813':
+      return `${horizon(e.tf)} ${word} başlangıcı`;
+    case 'pullback2050':
+      return `Pullback onayı · ${word} devamı`;
+    case 'triple':
+      return `Üçlü onay · ${word}`;
+    case 'supertrend':
+      return `Supertrend ${up ? 'yükselişe' : 'düşüşe'} döndü`;
+    case 'goldencross':
+      return up ? 'Altın kesişim (SMA 50/200)' : 'Ölüm kesişimi (SMA 50/200)';
+    case 'donchian':
+      return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
+  }
 }
 
 export function strengthLabel(dir: Direction, s: Strength): string {
@@ -23,8 +36,26 @@ export function strengthShort(s: Strength): string {
   return s === 'strong' ? 'Güçlü' : s === 'weak' ? 'Zayıf' : '';
 }
 
+export const STRATEGY_NAME: Record<Strategy, string> = {
+  ema5813: 'EMA 5·8·13',
+  pullback2050: 'EMA 20·50',
+  triple: 'Üçlü Onay',
+  supertrend: 'Supertrend',
+  goldencross: 'Altın Kesişim',
+  donchian: 'Donchian 20',
+};
+
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {
-  return e.strategy === 'ema5813' ? 'EMA 5·8·13' : 'EMA 20·50';
+  return STRATEGY_NAME[e.strategy];
+}
+
+export function trendText(t: Trend | undefined, up: string, down: string, none = 'Belirsiz'): string {
+  return t === 'up' ? up : t === 'down' ? down : none;
+}
+
+export function formatPct(v: number): string {
+  const s = v.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return `${v > 0 ? '+' : ''}${s}%`;
 }
 
 /** Mail konusu: "▲ USDJPY · 15dk · Kısa vade yükseliş başlangıcı · Güçlü" */

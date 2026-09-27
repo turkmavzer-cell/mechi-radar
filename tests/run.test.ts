@@ -74,9 +74,9 @@ test('runRadar: ilk çalıştırmada bildirim yok, sonraki çalıştırmada yeni
   assert.ok(new15.length > 0, '6 saatlik salınımda 15dk sinyali beklenir');
   // Yeni olaylar yalnızca önceki kapanmış mumdan sonrakiler olmalı.
   for (const e of r2.newEvents) assert.ok(e.time > s1.lastSeen[`TEST|${e.tf}`]);
-  // Sadece bildirimi açık 15dk sinyalleri gönderilir, tek seferde toplanır.
+  // Sadece bildirimi açık 15dk sinyalleri gönderilir; kapanışı eskide kalan (bayat) sinyaller bildirilmez.
   assert.ok(r2.alerted.every((m) => m.event.tf === '15m'));
-  assert.equal(r2.alerted.length, new15.length);
+  assert.ok(r2.alerted.length > 0 && r2.alerted.length <= new15.length);
   assert.equal(mails.length, 1);
   const msgs = buildPushMessages(mails[0]);
   assert.ok(msgs.length >= 1);
