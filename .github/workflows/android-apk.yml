@@ -1,0 +1,68 @@
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21   # Capacitor 7 -> JDK 21
+
+      - name: Bağımlılıkları kur
+        run: npm ci --no-audit --no-fund
+
+      - name: Testler
+        run: npm test
+
+      - name: Web dosyalarını derle
+        run: npm run build
+
+      - name: Capacitor senkronize et
+        run: npx cap sync android
+
+      - name: Sabit imzalama anahtarını yerleştir
+        run: |
+          mkdir -p ~/.android
+          cp keystore/debug.keystore ~/.android/debug.keystore
+
+      - name: APK derle
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: APK'yı adlandır
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk mechi-radar-${{ github.run_number }}.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mechi-radar-apk-${{ github.run_number }}
+          path: mechi-radar-${{ github.run_number }}.apk
+
+      # Telefondan kolay indirmek için her derleme bir "Release" olarak da yayınlanır.
+      - name: Release oluştur
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v1.0.${{ github.run_number }}" "mechi-radar-${{ github.run_number }}.apk" \
+            --title "Mechi Radar 1.0.${{ github.run_number }}" \
+            --notes "Otomatik derleme: ${{ github.sha }}" --latest
