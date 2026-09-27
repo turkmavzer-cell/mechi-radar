@@ -74,7 +74,8 @@ test('runRadar: ilk çalıştırmada mail yok, sonraki çalıştırmada yeni sin
   for (const e of r2.newEvents) assert.ok(e.time > s1.lastSeen[`TEST|${e.tf}`]);
   // Sadece alarmı açık 15dk sinyalleri maillenir, tek mailde toplanır.
   assert.ok(r2.mailed.every((m) => m.event.tf === '15m'));
-  assert.equal(r2.mailed.length, new15.length);
+  // Kapanışı çok eskide kalan (bayat) sinyaller bildirilmez; kalanların hepsi 15dk olmalı.
+  assert.ok(r2.mailed.length > 0 && r2.mailed.length <= new15.length);
   assert.equal(mails.length, 1);
   assert.match(mails[0].subject, /Test|yeni sinyal/);
 

@@ -14,7 +14,9 @@ export interface Candle {
 }
 
 export type Direction = 'up' | 'down';
-export type Strategy = 'ema5813' | 'pullback2050';
+export type Strategy = 'ema5813' | 'pullback2050' | 'triple' | 'supertrend' | 'goldencross' | 'donchian';
+
+export const STRATEGIES: Strategy[] = ['ema5813', 'pullback2050', 'triple', 'supertrend', 'goldencross', 'donchian'];
 /** EMA 200 verisi yetersizse 'unknown'. */
 export type Strength = 'strong' | 'weak' | 'unknown';
 
@@ -42,6 +44,15 @@ export interface TfStatus {
   pullbackLevel?: number | null;
   /** Fiyat EMA 200'ün üstünde mi; veri yetersizse null. */
   above200: boolean | null;
+  /** Üçlü Onay: MACD>0, RSI>50, fiyat Bollinger orta bandı üstünde (yükseliş) / tersi (düşüş). */
+  triple?: Trend;
+  /** Üçlü Onay koşullarından yükseliş yönünde sağlananların sayısı (0-3). */
+  tripleScore?: number;
+  supertrend?: Trend;
+  /** SMA 50 / SMA 200 ilişkisi. */
+  golden?: Trend;
+  /** Donchian 20 kanalında son kırılımın yönü. */
+  donchian?: Trend;
   close: number;
   /** Son kapanmış mumun açılış zamanı. */
   time: number;

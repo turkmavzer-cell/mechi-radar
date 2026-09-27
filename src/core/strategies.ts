@@ -1,4 +1,4 @@
-import { ema } from './indicators';
+import { ema, macd, rsi, sma, supertrend } from './indicators';
 import type { Candle, Direction, PullbackPhase, SignalEvent, Strength, TfStatus, Timeframe, Trend } from './types';
 
 export interface EmaSet {
@@ -149,6 +149,10 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
     }
   }
 
+  const extra = extraStrategies(candles, push);
+  // Stratejiler ayrı döngülerde çalıştığı için olayları zamana göre sırala.
+  events.sort((a, b) => a.time - b.time);
+
   const last = candles.length - 1;
   const status: TfStatus | null =
     last >= 0
@@ -158,6 +162,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
           pullbackDir: pbDir,
           pullbackLevel: phase === 'pulled' ? level : null,
           above200: Number.isNaN(e200[last]) ? null : candles[last].c > e200[last],
+          ...extra,
           close: candles[last].c,
           time: candles[last].t,
           lastSignal: events[events.length - 1] ?? null,
@@ -165,4 +170,152 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
       : null;
 
   return { events, status, emas };
+}
+
+/** Kesişim: önceki mumda a<=b iken bu mumda a>b (yukarı) ya da tersi (aşağı). */
+function crossedUp(a: number[], b: number[] | number, i: number): boolean {
+  const bi = typeof b === 'number' ? b : b[i];
+  const bp = typeof b === 'number' ? b : b[i - 1];
+  return a[i - 1] <= bp && a[i] > bi;
+}
+function crossedDown(a: number[], b: number[] | number, i: number): boolean {
+  const bi = typeof b === 'number' ? b : b[i];
+  const bp = typeof b === 'number' ? b : b[i - 1];
+  return a[i - 1] >= bp && a[i] < bi;
+}
+
+/** Üçlü Onay'da üç kesişimin en fazla bu kadar mum içinde gerçekleşmiş olması gerekir. */
+export const TRIPLE_WINDOW = 10;
+const DONCHIAN = 20;
+
+/**
+ * Ek stratejiler (grafikte çizilmez, yalnızca ok işareti):
+ *
+ * Üçlü Onay (MACD + RSI + Bollinger): MACD çizgisi 0'ı yukarı keser, RSI(14) 50'yi yukarı keser
+ *   ve fiyat Bollinger orta bandını (SMA 20) yukarı keser. Üç kesişim son TRIPLE_WINDOW mum içinde
+ *   olmalı ve üç koşul aynı anda sağlanmalı. Düşüş: tersi.
+ * Supertrend (10, 3): yön değişiminde sinyal.
+ * Altın / Ölüm kesişimi: SMA 50, SMA 200'ü yukarı / aşağı keser.
+ * Donchian 20 (Turtle kırılımı): kapanış önceki 20 mumun en yükseğinin üstünde / en düşüğünün
+ *   altında. Sinyal yalnızca kırılım yönü değiştiğinde verilir.
+ */
+function extraStrategies(candles: Candle[], push: (i: number, s: SignalEvent['strategy'], d: Direction) => void) {
+  const close = candles.map((c) => c.c);
+  const high = candles.map((c) => c.h);
+  const low = candles.map((c) => c.l);
+  const m = macd(close).line;
+  const r = rsi(close, 14);
+  const mid = sma(close, 20);
+  const s50 = sma(close, 50);
+  const s200 = sma(close, 200);
+  const st = supertrend(high, low, close, 10, 3);
+
+  let lastUpCross = { m: -Infinity, r: -Infinity, b: -Infinity };
+  let lastDnCross = { m: -Infinity, r: -Infinity, b: -Infinity };
+  let tripleUp = false;
+  let tripleDn = false;
+  let don: Trend = 'neutral';
+
+  for (let i = 1; i < candles.length; i++) {
+    // --- Üçlü Onay ---
+    if (!Number.isNaN(m[i - 1]) && !Number.isNaN(r[i - 1]) && !Number.isNaN(mid[i - 1])) {
+      if (crossedUp(m, 0, i)) lastUpCross.m = i;
+      if (crossedUp(r, 50, i)) lastUpCross.r = i;
+      if (crossedUp(close, mid, i)) lastUpCross.b = i;
+      if (crossedDown(m, 0, i)) lastDnCross.m = i;
+      if (crossedDown(r, 50, i)) lastDnCross.r = i;
+      if (crossedDown(close, mid, i)) lastDnCross.b = i;
+      const up = m[i] > 0 && r[i] > 50 && close[i] > mid[i];
+      const dn = m[i] < 0 && r[i] < 50 && close[i] < mid[i];
+      const recent = (x: { m: number; r: number; b: number }) =>
+        i - Math.min(x.m, x.r, x.b) < TRIPLE_WINDOW;
+      if (up && !tripleUp && recent(lastUpCross)) push(i, 'triple', 'up');
+      if (dn && !tripleDn && recent(lastDnCross)) push(i, 'triple', 'down');
+      tripleUp = up;
+      tripleDn = dn;
+    }
+
+    // --- Supertrend ---
+    if (!Number.isNaN(st[i - 1]) && st[i] !== st[i - 1]) push(i, 'supertrend', st[i] > 0 ? 'up' : 'down');
+
+    // --- Altın / Ölüm kesişimi ---
+    if (!Number.isNaN(s200[i - 1])) {
+      if (crossedUp(s50, s200, i)) push(i, 'goldencross', 'up');
+      else if (crossedDown(s50, s200, i)) push(i, 'goldencross', 'down');
+    }
+
+    // --- Donchian 20 ---
+    if (i >= DONCHIAN) {
+      let hh = -Infinity;
+      let ll = Infinity;
+      for (let j = i - DONCHIAN; j < i; j++) {
+        if (high[j] > hh) hh = high[j];
+        if (low[j] < ll) ll = low[j];
+      }
+      if (close[i] > hh && don !== 'up') {
+        don = 'up';
+        push(i, 'donchian', 'up');
+      } else if (close[i] < ll && don !== 'down') {
+        don = 'down';
+        push(i, 'donchian', 'down');
+      }
+    }
+  }
+
+  const last = candles.length - 1;
+  if (last < 0) return {};
+  const score = (m[last] > 0 ? 1 : 0) + (r[last] > 50 ? 1 : 0) + (close[last] > mid[last] ? 1 : 0);
+  const trend = (up: boolean, dn: boolean): Trend => (up ? 'up' : dn ? 'down' : 'neutral');
+  return {
+    triple: trend(tripleUp, tripleDn),
+    tripleScore: Number.isNaN(m[last]) || Number.isNaN(r[last]) || Number.isNaN(mid[last]) ? undefined : score,
+    supertrend: Number.isNaN(st[last]) ? undefined : st[last] > 0 ? ('up' as Trend) : ('down' as Trend),
+    golden: Number.isNaN(s200[last]) ? undefined : trend(s50[last] > s200[last], s50[last] < s200[last]),
+    donchian: don,
+  };
+}
+
+export interface SignalPerformance {
+  /** Sinyal kapanışından ölçüm sonuna kadar fiyat değişimi (%). */
+  movePct: number;
+  /** Aynı aralıkta sinyal yönünde görülen en iyi hareket (%): yükselişte en yüksek, düşüşte en düşük. */
+  bestPct: number;
+  /** true: aynı stratejide henüz yeni sinyal yok, ölçüm son fiyata kadar. */
+  ongoing: boolean;
+}
+
+/**
+ * Her sinyal için, aynı stratejinin bir sonraki sinyaline (yoksa son fiyata) kadar olan hareket.
+ * candles oluşmakta olan son mumu da içerebilir.
+ */
+export function signalPerformance(events: SignalEvent[], candles: Candle[]): Map<SignalEvent, SignalPerformance> {
+  const out = new Map<SignalEvent, SignalPerformance>();
+  if (!candles.length) return out;
+  const index = new Map(candles.map((c, i) => [c.t, i]));
+  const byStrategy = new Map<string, SignalEvent[]>();
+  for (const e of events) {
+    const list = byStrategy.get(e.strategy) ?? [];
+    list.push(e);
+    byStrategy.set(e.strategy, list);
+  }
+  for (const list of byStrategy.values()) {
+    list.sort((a, b) => a.time - b.time);
+    list.forEach((e, k) => {
+      const start = index.get(e.time);
+      if (start === undefined) return;
+      const next = list[k + 1];
+      const end = next ? (index.get(next.time) ?? candles.length - 1) : candles.length - 1;
+      let best = e.close;
+      for (let i = start + 1; i <= end; i++) {
+        best = e.dir === 'up' ? Math.max(best, candles[i].h) : Math.min(best, candles[i].l);
+      }
+      const endPrice = candles[end].c;
+      out.set(e, {
+        movePct: ((endPrice - e.close) / e.close) * 100,
+        bestPct: ((best - e.close) / e.close) * 100,
+        ongoing: !next,
+      });
+    });
+  }
+  return out;
 }

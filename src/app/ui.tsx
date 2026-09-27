@@ -1,5 +1,6 @@
 import { TF_LABEL } from '../core/candles';
-import { formatTime, signalTitle, strengthShort } from '../core/labels';
+import { formatPct, formatTime, signalTitle, strengthShort } from '../core/labels';
+import type { SignalPerformance } from '../core/strategies';
 import type { SignalEvent, Timeframe, Trend } from '../core/types';
 
 export function TrendChip({ tf, trend }: { tf: Timeframe; trend: Trend | undefined }) {
@@ -12,8 +13,20 @@ export function TrendChip({ tf, trend }: { tf: Timeframe; trend: Trend | undefin
   );
 }
 
-export function SignalRow({ e, name, onClick }: { e: SignalEvent; name?: string; onClick?: () => void }) {
+export function SignalRow({
+  e,
+  name,
+  perf,
+  onClick,
+}: {
+  e: SignalEvent;
+  name?: string;
+  perf?: SignalPerformance;
+  onClick?: () => void;
+}) {
   const s = strengthShort(e.strength);
+  // Sinyal yönündeki hareket yeşil, ters yöndeki kırmızı.
+  const good = perf ? (e.dir === 'up' ? perf.movePct >= 0 : perf.movePct <= 0) : true;
   return (
     <button className="row signal" onClick={onClick} disabled={!onClick}>
       <span className={`arrow ${e.dir}`}>{e.dir === 'up' ? '▲' : '▼'}</span>
@@ -25,6 +38,16 @@ export function SignalRow({ e, name, onClick }: { e: SignalEvent; name?: string;
           {signalTitle(e)}
           {s && <span className={`tag ${e.strength}`}>{s}</span>}
         </span>
+        {perf && (
+          <span className="perf">
+            <b className={good ? 'pos' : 'neg'}>{formatPct(perf.movePct)}</b>
+            <span className="muted">
+              {' '}
+              {perf.ongoing ? 'şu ana kadar' : 'sonraki sinyale kadar'} · en {e.dir === 'up' ? 'yüksek' : 'düşük'}{' '}
+              {formatPct(perf.bestPct)}
+            </span>
+          </span>
+        )}
       </span>
       <span className="muted small">{formatTime(e.time)}</span>
     </button>

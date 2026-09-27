@@ -77,6 +77,11 @@ export function SettingsScreen({ settings, onSave, onSaved }: Props) {
         <li>Sinyaller mum kapanışında kesinleşir. Mail yalnızca 🔔 açtığın zaman dilimleri için gelir.</li>
         <li>EMA 5·8·13: üç ortalama sıralı ve aynı yöne eğimliyse yön başlangıcı.</li>
         <li>EMA 20·50: EMA 20, EMA 50'yi yukarı keser (kopuş) → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanışla onay (kırılım). EMA 50 altında kapanış senaryoyu iptal eder.</li>
+        <li>Üçlü Onay: MACD 0'ı, RSI(14) 50'yi ve fiyat Bollinger orta bandını (SMA 20) aynı yönde keser; üçü en fazla 10 mum arayla. Grafikte sadece ok görünür.</li>
+        <li>Supertrend (10, 3): yön değişiminde sinyal.</li>
+        <li>Altın / Ölüm kesişimi: SMA 50, SMA 200'ü yukarı / aşağı keser.</li>
+        <li>Donchian 20 (Turtle kırılımı): kapanış önceki 20 mumun zirvesini / dibini kırar.</li>
+        <li>Sinyal geçmişindeki yüzde: sinyal kapanışından aynı stratejinin bir sonraki sinyaline (yoksa şu ana) kadar olan değişim ve bu arada görülen en iyi seviye.</li>
         <li>EMA 200 üstündeki yükseliş "Güçlü", altındaki "Zayıf · tepki yükselişi" olarak etiketlenir.</li>
         <li>Veri: Yahoo Finance (resmi olmayan, bazı piyasalarda 15–20 dk gecikmeli).</li>
       </ul>
