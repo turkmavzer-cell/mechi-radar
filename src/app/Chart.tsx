@@ -28,6 +28,8 @@ export interface ChartPosition {
   target: number;
   outcome: 'tp' | 'sl' | 'open';
   exitPrice?: number;
+  peak?: number;
+  trailLine?: number;
   label?: string;
 }
 
