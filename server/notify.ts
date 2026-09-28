@@ -18,7 +18,7 @@ const MAX_SINGLE = 3;
 export function buildPushMessages(items: AlertItem[]): PushMessage[] {
   const one = ({ event: e, name }: AlertItem): PushMessage => ({
     title: `${e.dir === 'up' ? '▲' : '▼'} ${name} · ${TF_LABEL[e.tf]}`,
-    body: [signalTitle(e), strengthLabel(e.dir, e.strength), `Kapanış ${formatPrice(e.close)}`].filter(Boolean).join(' · '),
+    body: [signalTitle(e), strengthLabel(e.dir, e.strength), e.levels ? '' : `Kapanış ${formatPrice(e.close)}`].filter(Boolean).join(' · '),
     data: { symbol: e.symbol, name, tf: e.tf },
   });
   if (items.length <= MAX_SINGLE) return items.map(one);

@@ -1,0 +1,78 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { aggregate } from '../src/core/candles';
+import { atr } from '../src/core/indicators';
+import { higherSeries, srTrades, weeklyFromDaily, withHigher, SR_PARAMS } from '../src/core/sratr';
+import { analyze } from '../src/core/strategies';
+import { signalTitle } from '../src/core/labels';
+import type { Candle } from '../src/core/types';
+
+// Rastgele yürüyüş (sabit tohum) 15dk mumlar; 1s üst zaman dilimi birleştirmeyle üretilir.
+function walk(n: number, step = 900, seed = 7): Candle[] {
+  let s = seed;
+  const rnd = () => ((s = (s * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  let p = 100;
+  const out: Candle[] = [];
+  const t0 = 1_750_000_000 - (1_750_000_000 % 86400);
+  for (let i = 0; i < n; i++) {
+    const o = p;
+    p = Math.max(1, p + (rnd() - 0.5) * 1.2);
+    out.push({ t: t0 + i * step, o, h: Math.max(o, p) + rnd() * 0.3, l: Math.min(o, p) - rnd() * 0.3, c: p });
+  }
+  return out;
+}
+
+test('Stokastik-RSI-ATR: seviyeler, tek pozisyon, sonuç', () => {
+  const cs = walk(4000);
+  const higher = higherSeries('15m', { '1h': aggregate(cs, 3600, false) })!;
+  const trades = srTrades(cs, '15m', higher);
+  assert.ok(trades.length > 5, `yeterli işlem yok: ${trades.length}`);
+  const a = atr(cs.map((c) => c.h), cs.map((c) => c.l), cs.map((c) => c.c), 14);
+  for (let k = 0; k < trades.length; k++) {
+    const t = trades[k];
+    const risk = SR_PARAMS.stopAtr * a[t.i];
+    const s = t.dir === 'up' ? 1 : -1;
+    assert.ok(Math.abs(t.entry - cs[t.i].c) < 1e-9);
+    assert.ok(Math.abs(t.stop - (t.entry - s * risk)) < 1e-9);
+    assert.ok(Math.abs(t.target - (t.entry + s * SR_PARAMS.rr * risk)) < 1e-9);
+    // Önceki pozisyon kapanmadan yeni pozisyon açılmaz.
+    if (k > 0) assert.ok(t.i > trades[k - 1].exitI!);
+    if (t.outcome !== 'open') {
+      const c = cs[t.exitI!];
+      assert.ok(t.outcome === 'tp' ? (s > 0 ? c.h >= t.target : c.l <= t.target) : s > 0 ? c.l <= t.stop : c.h >= t.stop);
+    }
+  }
+});
+
+test('Stokastik-RSI-ATR: geleceğe bakmaz (kısaltılmış veride aynı girişler)', () => {
+  const cs = walk(4000, 900, 11);
+  const run = (n: number) => {
+    const part = cs.slice(0, n);
+    // Üst zaman dilimi, oluşmakta olan son mumu da içerir; kapanış zamanı kuralı onu elemeli.
+    return srTrades(part, '15m', { tf: '1h', candles: aggregate(part, 3600, false) });
+  };
+  const full = run(4000);
+  for (const n of [1500, 2300, 3100]) {
+    const part = run(n);
+    const fullBefore = full.filter((t) => t.i < n);
+    // Kısaltılmış veride açık kalan pozisyon sonrası girişler farklılaşabilir; kapanana kadar olanlar aynı olmalı.
+    const stable = part.filter((t) => t.outcome !== 'open');
+    for (let k = 0; k < stable.length; k++) {
+      assert.equal(stable[k].i, fullBefore[k].i);
+      assert.equal(stable[k].dir, fullBefore[k].dir);
+    }
+  }
+});
+
+test('Stokastik-RSI-ATR: analyze olayları, başlık ve üst zaman dilimi eşlemesi', () => {
+  const cs = walk(3000, 900, 5);
+  const ev = analyze('X', '15m', cs, higherSeries('15m', { '1h': aggregate(cs, 3600, false) })).events.filter((e) => e.strategy === 'sratr');
+  assert.ok(ev.length > 0 && ev.every((e) => e.levels));
+  assert.match(signalTitle(ev[0]), /^(LONG|SHORT) GİRİŞ .* · Stop .* · Hedef /);
+  assert.equal(analyze('X', '15m', cs).events.filter((e) => e.strategy === 'sratr').length, 0);
+  assert.deepEqual(withHigher(['15m', '1d']), ['15m', '1h', '1d']);
+  const days: Candle[] = Array.from({ length: 14 }, (_, i) => ({ t: 1_767_571_200 + i * 86400, o: i, h: i + 1, l: i - 1, c: i + 0.5 })); // 2026-01-05 Pazartesi
+  const w = weeklyFromDaily(days);
+  assert.equal(w.length, 2);
+  assert.deepEqual(w[0], { t: 1_767_571_200, o: 0, h: 7, l: -1, c: 6.5 });
+});

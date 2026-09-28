@@ -1,6 +1,7 @@
 // Mechi Radar zamanlanmış kontrolü — Google Apps Script'te çalışır (kart gerektirmez).
 // Her 5 dakikada "tick" tetiklenir: Yahoo'dan mumları toplu indirir, sinyalleri hesaplar,
 // sonucu Firestore'a yazar ve bildirimi açık sinyalleri FCM ile telefona gönderir.
+import { withHigher } from '../../src/core/sratr';
 import { chartUrls, type FetchFn } from '../../src/core/yahoo';
 import { TIMEFRAMES } from '../../src/core/types';
 import type { RadarConfig, RadarState, ScanResult, SignalEvent, Timeframe } from '../../src/core/types';
@@ -144,7 +145,7 @@ export async function tick(): Promise<void> {
     const urls: string[] = cfg.watchlist.flatMap((w) => chartUrls(w.symbol, TIMEFRAMES));
     if (!state?.scanAt || now - state.scanAt >= SCAN_INTERVAL) {
       const tfs: Timeframe[] = cfg.scanner.timeframes.length ? cfg.scanner.timeframes : ['4h', '1d'];
-      urls.push(...cfg.scanner.symbols.flatMap((s) => chartUrls(s, tfs)));
+      urls.push(...cfg.scanner.symbols.flatMap((s) => chartUrls(s, withHigher(tfs))));
     }
     const cache = prefetch(urls);
 

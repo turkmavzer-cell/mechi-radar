@@ -1,3 +1,4 @@
+import { higherSeries, withHigher } from './sratr';
 import { analyze } from './strategies';
 import type { SignalEvent, TfStatus, Timeframe } from './types';
 import { loadSeries, type FetchFn } from './yahoo';
@@ -19,7 +20,7 @@ export async function summarize(
   now = Math.floor(Date.now() / 1000),
 ): Promise<LiveSummary> {
   const all: Timeframe[] = tfs.includes('1d') ? tfs : [...tfs, '1d'];
-  const set = await loadSeries(fetchFn, symbol, all, now, true);
+  const set = await loadSeries(fetchFn, symbol, withHigher(all), now, true);
   const daily = set.candles['1d'] ?? [];
   const price = set.meta.regularMarketPrice ?? daily[daily.length - 1]?.c ?? null;
   const ref = daily[daily.length - 2]?.c;
@@ -34,7 +35,7 @@ export async function summarize(
   for (const tf of tfs) {
     const cs = set.candles[tf] ?? [];
     const closed = set.lastOpen[tf] ? cs.slice(0, -1) : cs;
-    const a = analyze(symbol, tf, closed);
+    const a = analyze(symbol, tf, closed, higherSeries(tf, set.candles));
     if (a.status) out.tf[tf] = a.status;
     out.events.push(...a.events);
   }
