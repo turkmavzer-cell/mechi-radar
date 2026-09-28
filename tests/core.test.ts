@@ -122,3 +122,18 @@ test('EMA 200 filtresi: güçlü / zayıf etiketi', () => {
   assert.equal(strengthLabel('up', up.strength), 'Zayıf · tepki yükselişi (EMA 200 altı)');
   assert.equal(signalLine(up, 'USDJPY'), '▲ USDJPY · 15dk · Kısa vade yükseliş başlangıcı · Zayıf');
 });
+
+test('5·8·13: yukarı sinyalden sonra yeniden yukarı için önce aşağı sinyal gerekir', () => {
+  const closes = [
+    ...Array.from({ length: 30 }, () => 100),
+    ...Array.from({ length: 15 }, (_, i) => 100 + (i + 1) * 0.5), // yükseliş → yukarı sinyal
+    ...Array.from({ length: 6 }, (_, i) => 107.5 - (i + 1) * 0.3), // kısa düzeltme (dizilim bozulur, düşüş dizilimi oluşmaz)
+    ...Array.from({ length: 15 }, (_, i) => 105.7 + (i + 1) * 0.6), // tekrar yükseliş → sinyal YOK
+    ...Array.from({ length: 30 }, (_, i) => 114.7 - (i + 1) * 0.6), // düşüş → aşağı sinyal
+    ...Array.from({ length: 30 }, (_, i) => 96.7 + (i + 1) * 0.6), // yükseliş → yukarı sinyal
+  ];
+  const a = analyze('X', '15m', fromCloses(closes, 900, 0.05));
+  const dirs = a.events.filter((e) => e.strategy === 'ema5813').map((e) => e.dir);
+  assert.deepEqual(dirs, ['up', 'down', 'up']);
+  assert.equal(a.status!.ema5813Dir, 'up');
+});

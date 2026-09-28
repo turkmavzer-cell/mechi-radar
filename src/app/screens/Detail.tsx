@@ -40,6 +40,13 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
 
   const watchItem = api.data.config?.watchlist.find((w) => w.symbol === target.symbol);
 
+  // Ekran açıkken grafik dakikada bir yenilenir.
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
   useEffect(() => {
     let alive = true;
     setLoading(true);
@@ -51,7 +58,7 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
     return () => {
       alive = false;
     };
-  }, [target.symbol, tf]);
+  }, [target.symbol, tf, tick]);
 
   const { all, closed, analysis } = useMemo(() => {
     const candles = series?.candles[tf] ?? [];
@@ -119,7 +126,9 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
           ←
         </button>
         <div className="grow">
-          <h1>{target.name}</h1>
+          <h1>
+            {target.name} {loading && series?.candles[tf] && <span className="spin muted small">⟳</span>}
+          </h1>
           <div className="muted small">
             {target.symbol} · {formatPrice(price)}
           </div>
@@ -142,13 +151,13 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
         ))}
       </div>
 
-      {error ? (
+      {error && !series?.candles[tf] ? (
         <div className="notice err">Veri alınamadı: {error}</div>
-      ) : loading && !series ? (
+      ) : !series?.candles[tf] ? (
         <div className="chart placeholder">Yükleniyor…</div>
       ) : (
         <>
-          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} />
+          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} viewId={`${target.symbol}|${tf}`} />
           <div className="legend-row small">
             {lines.length ? (
               lines.map((l, i) => (
@@ -168,7 +177,11 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
         <div className="card">
           <div className="kv">
             <span>EMA 5·8·13</span>
-            <b className={st.align}>{alignText(st)}</b>
+            <b className={st.ema5813Dir ?? st.align}>
+              {st.ema5813Dir && st.ema5813Dir !== 'neutral'
+                ? `Son sinyal ${st.ema5813Dir === 'up' ? 'yükseliş' : 'düşüş'} · ${alignText(st).toLowerCase()}`
+                : alignText(st)}
+            </b>
           </div>
           <div className="kv">
             <span>EMA 20·50</span>

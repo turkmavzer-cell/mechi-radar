@@ -38,8 +38,8 @@ export interface Analysis {
  * Kapanmış mumlar üzerinde iki stratejiyi baştan sona çalıştırır.
  *
  * EMA 5/8/13: EMA5>EMA8>EMA13 ve üçü de yükseliyorsa yükseliş dizilimi (düşüş tersi).
- * Sinyal dizilimin ilk oluştuğu mumda verilir; aynı yönde yeni sinyal için sıralamanın
- * arada bozulmuş olması gerekir (eğim kısa süre duraklayınca tekrar sinyal çıkmaz).
+ * Sinyaller sırayla değişir: yükseliş sinyalinden sonraki ilk sinyal ancak düşüş dizilimi
+ * oluştuğunda (düşüş sinyali) verilir; tersi de aynı. Aynı yönde art arda sinyal çıkmaz.
  *
  * EMA 20/50 pullback (yükseliş; düşüş tersi):
  *   kopuş    : EMA20, EMA50'yi aşağıdan yukarı keser -> senaryo başlar ('trend')
@@ -65,9 +65,9 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
     });
   };
 
-  let armedUp = true;
-  let armedDown = true;
   let align: Trend = 'neutral';
+  /** Son 5·8·13 sinyalinin yönü; aynı yönde ikinci sinyal verilmez. */
+  let lastDir: Trend = 'neutral';
 
   let phase: PullbackPhase = 'none';
   let pbDir: Trend = 'neutral';
@@ -83,14 +83,14 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
       const orderDown = e5[i] < e8[i] && e8[i] < e13[i];
       const risingAll = e5[i] > e5[i - 1] && e8[i] > e8[i - 1] && e13[i] > e13[i - 1];
       const fallingAll = e5[i] < e5[i - 1] && e8[i] < e8[i - 1] && e13[i] < e13[i - 1];
-      if (!orderUp) armedUp = true;
-      if (!orderDown) armedDown = true;
-      if (orderUp && risingAll && armedUp) {
+      // Yön sırayla değişir: yükseliş sinyalinden sonra yeniden yükseliş için önce düşüş dizilimi
+      // oluşup düşüş sinyali verilmiş olmalı (tersi de aynı).
+      if (orderUp && risingAll && lastDir !== 'up') {
         push(i, 'ema5813', 'up');
-        armedUp = false;
-      } else if (orderDown && fallingAll && armedDown) {
+        lastDir = 'up';
+      } else if (orderDown && fallingAll && lastDir !== 'down') {
         push(i, 'ema5813', 'down');
-        armedDown = false;
+        lastDir = 'down';
       }
       align = orderUp && risingAll ? 'up' : orderDown && fallingAll ? 'down' : 'neutral';
     }
@@ -158,6 +158,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
     last >= 0
       ? {
           align,
+          ema5813Dir: lastDir,
           pullback: phase,
           pullbackDir: pbDir,
           pullbackLevel: phase === 'pulled' ? level : null,

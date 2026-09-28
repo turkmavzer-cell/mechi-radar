@@ -32,11 +32,15 @@ interface Props {
   events: SignalEvent[];
   /** Ok işaretleri gösterilecek strateji. */
   strategy: Strategy;
+  /** Sembol + zaman dilimi; değişince görünüm son mumlara odaklanır, aynı kalırsa korunur. */
+  viewId: string;
 }
 
-export function PriceChart({ candles, lines, events, strategy }: Props) {
+export function PriceChart({ candles, lines, events, strategy, viewId }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  // Aynı seri yenilenince (dakikalık güncelleme) kullanıcının kaydırdığı görünüm korunur.
+  const viewKey = useRef('');
 
   useEffect(() => {
     if (!box.current) return;
@@ -94,8 +98,11 @@ export function PriceChart({ candles, lines, events, strategy }: Props) {
       }));
     const markerApi = createSeriesMarkers(candleSeries, markers);
 
-    const visible = Math.min(candles.length, 90);
-    if (candles.length) chart.timeScale().setVisibleLogicalRange({ from: candles.length - visible, to: candles.length + 2 });
+    if (candles.length && viewId !== viewKey.current) {
+      const visible = Math.min(candles.length, 90);
+      chart.timeScale().setVisibleLogicalRange({ from: candles.length - visible, to: candles.length + 2 });
+      viewKey.current = viewId;
+    }
 
     return () => {
       // Bileşen kapanırken grafik önce yok edilmiş olabilir.
@@ -104,7 +111,7 @@ export function PriceChart({ candles, lines, events, strategy }: Props) {
       lineSeries.forEach((s) => chart.removeSeries(s));
       chart.removeSeries(candleSeries);
     };
-  }, [candles, lines, events, strategy]);
+  }, [candles, lines, events, strategy, viewId]);
 
   return <div className="chart" ref={box} />;
 }

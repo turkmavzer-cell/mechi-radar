@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TF_LABEL } from '../core/candles';
-import { formatPct, formatTime, signalTitle, strengthShort } from '../core/labels';
+import { formatPct, formatTime, signalTitle, strategyName, strengthShort } from '../core/labels';
 import type { SignalPerformance } from '../core/strategies';
 import type { SignalEvent, Timeframe, Trend } from '../core/types';
 import type { Role } from './lib/auth';
@@ -20,11 +20,14 @@ export function SignalRow({
   e,
   name,
   perf,
+  showStrategy,
   onClick,
 }: {
   e: SignalEvent;
   name?: string;
   perf?: SignalPerformance;
+  /** Farklı stratejilerin karışık listelendiği yerlerde strateji adını göster. */
+  showStrategy?: boolean;
   onClick?: () => void;
 }) {
   const s = strengthShort(e.strength);
@@ -36,6 +39,7 @@ export function SignalRow({
       <span className="grow">
         <span className="title">
           {name ?? e.symbol} <span className="muted">· {TF_LABEL[e.tf]}</span>
+          {showStrategy && <span className="tag strat">{strategyName(e)}</span>}
         </span>
         <span className="sub">
           {signalTitle(e)}
@@ -100,6 +104,29 @@ export function SignInCard({ role, reason }: { role: Role; reason: string }) {
         {busy ? 'Giriş yapılıyor…' : 'Google ile giriş yap'}
       </button>
       {err && <div className="small neg" style={{ marginTop: 6 }}>{err}</div>}
+    </div>
+  );
+}
+
+/** Saat:dakika (bugün değilse gün/ay da). */
+export function clockText(ms: number): string {
+  const d = new Date(ms);
+  const today = new Date().toDateString() === d.toDateString();
+  return d.toLocaleString('tr-TR', today ? { hour: '2-digit', minute: '2-digit' } : { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+export function SkeletonList({ rows }: { rows: number }) {
+  return (
+    <div className="list">
+      {Array.from({ length: rows }, (_, i) => (
+        <div key={i} className="row skeleton">
+          <span className="grow">
+            <span className="bar w60" />
+            <span className="bar w40" />
+          </span>
+          <span className="bar w20" />
+        </div>
+      ))}
     </div>
   );
 }
