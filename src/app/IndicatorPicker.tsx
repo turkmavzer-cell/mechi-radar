@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { INDICATOR_GROUPS, INDICATORS } from './indicators';
+import { INDICATOR_GROUPS, INDICATORS, STRATEGY_KIT } from './indicators';
 
 interface Props {
   selected: string[];
   onToggle: (id: string) => void;
+  /** Verilen indikatörlerin hepsini ekler. */
+  onAddAll: (ids: string[]) => void;
   onClose: () => void;
 }
 
 /** Alttan açılan hazır indikatör listesi. EMA/SMA grupları açılır liste, dilediğin kadar periyot seçilir. */
-export function IndicatorPicker({ selected, onToggle, onClose }: Props) {
+export function IndicatorPicker({ selected, onToggle, onAddAll, onClose }: Props) {
   const [open, setOpen] = useState<string | null>('EMA');
   return (
     <div className="sheet-back" onClick={onClose}>
@@ -47,7 +49,14 @@ export function IndicatorPicker({ selected, onToggle, onClose }: Props) {
             }
             return (
               <div key={g} className="pick-group">
-                <div className="pick-title">{g}</div>
+                <div className="pick-title">
+                  {g}
+                  {g === 'Stokastik-RSI-ATR' && STRATEGY_KIT.some((id) => !selected.includes(id)) && (
+                    <button className="pick-all" onClick={() => onAddAll(STRATEGY_KIT)}>
+                      Hepsini ekle
+                    </button>
+                  )}
+                </div>
                 {items.map((d) => {
                   const on = selected.includes(d.id);
                   return (
