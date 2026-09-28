@@ -3,6 +3,8 @@ name: Android APK
 on:
   push:
     branches: [main]
+    # Otomatik işlem botu (trader/) ve araştırma dosyaları APK'yı etkilemez.
+    paths-ignore: ['trader/**', 'research/**']
   workflow_dispatch:
 
 permissions:
