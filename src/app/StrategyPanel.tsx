@@ -17,7 +17,10 @@ export function durationText(seconds: number): string {
   return `${(d / 365).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} yıl`;
 }
 
-const fmtR = (r: number) => `${r > 0 ? '+' : r < 0 ? '−' : ''}${Math.abs(r).toLocaleString('tr-TR', { maximumFractionDigits: 1 })}R`;
+/** Takip eden kâr alda takip mesafesi (ATR katı); geçmiş veri testine göre seçildi. */
+export const TRAIL_ATR = 1.5;
+
+export const fmtR = (r: number) => `${r > 0 ? '+' : r < 0 ? '−' : ''}${Math.abs(r).toLocaleString('tr-TR', { maximumFractionDigits: 1 })}R`;
 
 interface Props {
   title: string;
@@ -33,7 +36,8 @@ export function StrategyPanel({ title, rule, trades, candles, rr }: Props) {
   const [limit, setLimit] = useState(PAGE);
   const done = trades.filter((x) => x.outcome !== 'open');
   const wins = done.filter((x) => x.outcome === 'tp').length;
-  const totalR = done.reduce((a, x) => a + (x.outcome === 'tp' ? rr : -1), 0);
+  const rOf = (x: BoxTrade) => x.r ?? (x.outcome === 'tp' ? rr : -1);
+  const totalR = done.reduce((a, x) => a + rOf(x), 0);
   // Toplam sonucun oluştuğu süre: ilk girişten son kapanan işleme kadar.
   const span = done.length ? candles[done[done.length - 1].exitI!]?.t - candles[done[0].i].t : 0;
   const list = trades.slice().reverse();
@@ -78,7 +82,7 @@ export function StrategyPanel({ title, rule, trades, candles, rr }: Props) {
                   </span>
                   <span className="perf">
                     <b className={x.outcome === 'tp' ? 'pos' : x.outcome === 'sl' ? 'neg' : 'muted'}>
-                      {x.outcome === 'tp' ? `✓ ${fmtR(rr)}` : x.outcome === 'sl' ? '✕ −1R' : 'Açık'}
+                      {x.outcome === 'tp' ? `✓ ${fmtR(rOf(x))}` : x.outcome === 'sl' ? '✕ −1R' : x.trailing ? `Takipte · stop ${formatPrice(x.trailStop)}` : 'Açık'}
                     </b>
                     {took && <span className="muted"> · {took}</span>}
                   </span>

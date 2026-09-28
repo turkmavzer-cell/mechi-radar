@@ -25,6 +25,11 @@ import type { Candle, Direction } from './types';
 export interface BoxParams {
   stopAtr: number;
   rr: number;
+  /**
+   * Takip eden kâr al: tanımlıysa hedefe ulaşınca pozisyon kapanmaz; stop hedefe çekilir ve fiyat kâr yönünde gittikçe
+   * görülen en iyi fiyatın `trail × ATR` gerisinden takip eder. Fiyat bu stopa dönünce kapanır (en az ~hedef kadar kâr).
+   */
+  trail?: number;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -41,6 +46,13 @@ export interface BoxTrade {
   target: number;
   exitI?: number;
   outcome: 'tp' | 'sl' | 'open';
+  /** Kapanış fiyatı (kapanmış işlemlerde). */
+  exitPrice?: number;
+  /** Gerçekleşen sonuç, R cinsinden (kapanmış işlemlerde). */
+  r?: number;
+  /** Takip eden kâr al devrede (hedefe ulaşıldı); açık işlemde güncel takip stopu `trailStop`. */
+  trailing?: boolean;
+  trailStop?: number;
 }
 
 export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxParams = BOX_PARAMS): BoxTrade[] {
@@ -59,16 +71,49 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
     const risk = params.stopAtr * a[i];
     const s = dir === 'up' ? 1 : -1;
     const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target: entry + s * params.rr * risk, outcome: 'open' };
+    const gap = params.trail != null ? params.trail * a[i] : NaN;
+    let best = NaN; // takipte görülen en iyi fiyat
+    let trailStop = NaN;
     for (let j = i + 1; j < candles.length; j++) {
       const c = candles[j];
-      const hitStop = dir === 'up' ? c.l <= t.stop : c.h >= t.stop;
-      const hitTarget = dir === 'up' ? c.h >= t.target : c.l <= t.target;
-      if (hitStop || hitTarget) {
-        t.outcome = hitStop ? 'sl' : 'tp';
+      if (!t.trailing) {
+        const hitStop = dir === 'up' ? c.l <= t.stop : c.h >= t.stop;
+        const hitTarget = dir === 'up' ? c.h >= t.target : c.l <= t.target;
+        if (hitStop) {
+          t.outcome = 'sl';
+          t.exitI = j;
+          t.exitPrice = t.stop;
+          t.r = -1;
+          break;
+        }
+        if (!hitTarget) continue;
+        if (Number.isNaN(gap)) {
+          t.outcome = 'tp';
+          t.exitI = j;
+          t.exitPrice = t.target;
+          t.r = params.rr;
+          break;
+        }
+        // Hedefe değildi: bu mumdaki hedef sonrası hareket bilinmediği için takip bir sonraki mumdan başlar (temkinli).
+        t.trailing = true;
+        best = t.target;
+        trailStop = t.target;
+        continue;
+      }
+      // Takipte: önce mevcut stopa dokunuldu mu (boşlukla açılışta stop aşıldıysa açılış fiyatından çıkılır).
+      const hit = dir === 'up' ? c.l <= trailStop : c.h >= trailStop;
+      if (hit) {
+        const px = dir === 'up' ? Math.min(trailStop, c.o) : Math.max(trailStop, c.o);
+        t.outcome = 'tp';
         t.exitI = j;
+        t.exitPrice = px;
+        t.r = (s * (px - entry)) / risk;
         break;
       }
+      best = dir === 'up' ? Math.max(best, c.h) : Math.min(best, c.l);
+      trailStop = dir === 'up' ? Math.max(trailStop, best - gap) : Math.min(trailStop, best + gap);
     }
+    if (t.trailing && t.outcome === 'open') t.trailStop = trailStop;
     trades.push(t);
     busyUntil = t.exitI ?? candles.length;
   }

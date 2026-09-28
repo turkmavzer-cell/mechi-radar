@@ -114,3 +114,43 @@ test('kutu adayları: geleceğe bakmaz (kısaltılmış veride aynı sinyaller)'
     }
   }
 });
+
+test('takip eden kâr al: hedefte kapanmaz, fiyatı takip eder, dönüşte kârla kapanır', async () => {
+  const { simulate } = await import('../src/core/boxes');
+  // 30 mum yatay (ATR ≈ 2), sonra düşüş (short lehine) ve geri dönüş.
+  const cs: Candle[] = [];
+  let p = 100;
+  for (let i = 0; i < 30; i++) cs.push({ t: i * 900, o: p, h: p + 1, l: p - 1, c: p });
+  const path = [99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 80, 82, 84, 86, 88, 90];
+  for (const [k, c] of path.entries()) {
+    const o = p;
+    cs.push({ t: (30 + k) * 900, o, h: Math.max(o, c) + 0.2, l: Math.min(o, c) - 0.2, c });
+    p = c;
+  }
+  const sig = [{ i: 29, dir: 'down' as const }];
+  const fixed = simulate(cs, sig, { stopAtr: 1.5, rr: 2 })[0];
+  const trail = simulate(cs, sig, { stopAtr: 1.5, rr: 2, trail: 1 })[0];
+  assert.equal(fixed.outcome, 'tp');
+  assert.equal(fixed.r, 2);
+  assert.equal(trail.outcome, 'tp');
+  assert.ok(trail.r! > fixed.r!, `takip ${trail.r} > sabit ${fixed.r}`);
+  assert.ok(trail.exitI! > fixed.exitI!);
+  // Çıkış, görülen en düşük fiyatın 1 ATR yukarısında (hedefin altında).
+  assert.ok(trail.exitPrice! <= trail.target && trail.exitPrice! > 79.8);
+});
+
+test('takip eden kâr al: stop hedefin gerisine gitmez, sonuç ≥ hedef (boşluk yoksa)', async () => {
+  const { BOX_CANDIDATES, simulate } = await import('../src/core/boxes');
+  const cs = walk(6000, 900, 13);
+  for (const b of BOX_CANDIDATES.slice(0, 4)) {
+    const tr = simulate(cs, b.signals(cs), { stopAtr: 1.5, rr: 2, trail: 1 });
+    for (const t of tr) {
+      if (t.outcome === 'sl') assert.equal(t.r, -1);
+      if (t.outcome === 'tp') {
+        const c = cs[t.exitI!];
+        const gapped = t.dir === 'up' ? c.o < t.target : c.o > t.target;
+        if (!gapped) assert.ok(t.r! >= 2 - 1e-9, `${b.id} r=${t.r}`);
+      }
+    }
+  }
+});

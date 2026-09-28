@@ -1,5 +1,6 @@
 import { TF_SECONDS } from './candles';
 import { adx, atr, bollinger, ema, macd, rsi, sma, stochOsc, supertrend } from './indicators';
+import { simulate, type BoxParams, type BoxSignal, type BoxTrade } from './boxes';
 import type { Candle, Direction, Timeframe } from './types';
 
 /**
@@ -11,7 +12,7 @@ import type { Candle, Direction, Timeframe } from './types';
  * Pozisyon yalnızca hedef ya da stopla kapanır; açık pozisyon varken yeni sinyal verilmez.
  * Aynı mumda hem stop hem hedef görülürse sonuç stop sayılır (temkinli varsayım).
  */
-export interface SrParams {
+export interface SrParams extends BoxParams {
   stopAtr: number;
   rr: number;
   /** Filtre için bakılan kapanmış üst zaman dilimi mumu sayısı. */
@@ -85,17 +86,8 @@ export function higherSeries(tf: Timeframe, all: Partial<Record<Timeframe, Candl
   return { tf: h, candles: h === '1w' ? weeklyFromDaily(src) : src };
 }
 
-export interface SrTrade {
-  /** Giriş mumunun indeksi. */
-  i: number;
-  dir: Direction;
-  entry: number;
-  stop: number;
-  target: number;
-  /** Pozisyonun kapandığı mum; açıksa undefined. */
-  exitI?: number;
-  outcome: 'tp' | 'sl' | 'open';
-}
+/** SRA işlemi: ortak kutu motorunun işlem tipiyle aynı. */
+export type SrTrade = BoxTrade;
 
 /** Girişe ek şart: true dönerse giriş yapılır. */
 export type SrFilter = (i: number, dir: Direction) => boolean;
@@ -208,6 +200,17 @@ export function srTrades(
   params: SrParams = SR_PARAMS,
   filters: string[] = [],
 ): SrTrade[] {
+  return simulate(candles, srSignals(candles, tf, higher, params, filters), params);
+}
+
+/** SRA giriş sinyalleri (pozisyon durumundan bağımsız; açık pozisyon kuralı `simulate` içinde uygulanır). */
+export function srSignals(
+  candles: Candle[],
+  tf: Timeframe,
+  higher: HigherSeries | undefined,
+  params: SrParams = SR_PARAMS,
+  filters: string[] = [],
+): BoxSignal[] {
   if (!higher || candles.length < 30) return [];
   const close = candles.map((c) => c.c);
   const { rsi: r, sma: rMa } = rsiWithSma(close);
@@ -225,12 +228,10 @@ export function srTrades(
   ).k;
   const hIdx = alignHigher(candles, tf, higher);
   const extra = filters.map((id) => SR_FILTERS[id].make({ candles, hIdx, higher }));
-
-  const trades: SrTrade[] = [];
-  let busyUntil = -1;
+  const out: BoxSignal[] = [];
   for (let i = 1; i < candles.length; i++) {
     const h = hIdx[i];
-    if (i <= busyUntil || h < 0) continue;
+    if (h < 0) continue;
     const up = r[i - 1] <= rMa[i - 1] && r[i] > rMa[i];
     const down = r[i - 1] >= rMa[i - 1] && r[i] < rMa[i];
     if ((!up && !down) || Number.isNaN(a[i])) continue;
@@ -241,25 +242,9 @@ export function srTrades(
       if (hk[k] > 80) high = true;
     }
     const dir: Direction | null = up && low ? 'up' : down && high ? 'down' : null;
-    if (!dir || !extra.every((f) => f(i, dir))) continue;
-    const entry = close[i];
-    const risk = params.stopAtr * a[i];
-    const s = dir === 'up' ? 1 : -1;
-    const t: SrTrade = { i, dir, entry, stop: entry - s * risk, target: entry + s * params.rr * risk, outcome: 'open' };
-    for (let j = i + 1; j < candles.length; j++) {
-      const c = candles[j];
-      const hitStop = dir === 'up' ? c.l <= t.stop : c.h >= t.stop;
-      const hitTarget = dir === 'up' ? c.h >= t.target : c.l <= t.target;
-      if (hitStop || hitTarget) {
-        t.outcome = hitStop ? 'sl' : 'tp';
-        t.exitI = j;
-        break;
-      }
-    }
-    trades.push(t);
-    busyUntil = t.exitI ?? candles.length;
+    if (dir && extra.every((f) => f(i, dir))) out.push({ i, dir });
   }
-  return trades;
+  return out;
 }
 
 /** Her mumun kapanışında bilinen (kapanmış) son üst zaman dilimi mumunun indeksi; yoksa -1. */

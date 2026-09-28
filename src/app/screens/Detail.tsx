@@ -4,7 +4,7 @@ import { formatPrice } from '../../core/labels';
 import { BOX_STRATEGIES } from '../../core/boxStrategies';
 import { higherSeries, SR_PARAMS, withHigher } from '../../core/sratr';
 import type { Strategy } from '../../core/types';
-import { StrategyPanel } from '../StrategyPanel';
+import { fmtR, StrategyPanel, TRAIL_ATR } from '../StrategyPanel';
 import { TIMEFRAMES, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
@@ -90,12 +90,28 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
     }
   };
   const variant = BOX_STRATEGIES.find((x) => x.id === srId);
+  // Takip eden kâr al: hedefe ulaşınca kapatmak yerine fiyatı TRAIL_ATR × ATR geriden izler.
+  const [trailOn, setTrailOn] = useState(() => {
+    try {
+      return localStorage.getItem('mechi.trail') === '1';
+    } catch {
+      return false;
+    }
+  });
+  const toggleTrail = () => {
+    setTrailOn(!trailOn);
+    try {
+      localStorage.setItem('mechi.trail', trailOn ? '0' : '1');
+    } catch {
+      // Kaydedilemezse yalnızca bu oturumda geçerli olur.
+    }
+  };
   const showStrategy = !!variant;
   // Strateji yalnızca kapanmış mumlarda sinyal üretir; üst zaman diliminin oluşan mumu kapanış zamanıyla elenir.
   const { closed, trades } = useMemo(() => {
     const closed = series?.lastOpen[tf] ? all.slice(0, -1) : all;
-    return { closed, trades: series && variant ? variant.run(closed, tf, higherSeries(tf, series.candles)) : [] };
-  }, [series, tf, all, variant]);
+    return { closed, trades: series && variant ? variant.run(closed, tf, higherSeries(tf, series.candles), trailOn ? { trail: TRAIL_ATR } : undefined) : [] };
+  }, [series, tf, all, variant, trailOn]);
   const positions = useMemo<ChartPosition[] | undefined>(
     () =>
       showStrategy
@@ -107,6 +123,8 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
             stop: x.stop,
             target: x.target,
             outcome: x.outcome,
+            exitPrice: x.exitPrice,
+            label: x.outcome === 'tp' && x.r != null ? `✓ ${fmtR(x.r)}` : x.trailing ? 'Takipte' : undefined,
           }))
         : undefined,
     [showStrategy, trades, closed, all],
@@ -179,6 +197,11 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
             {v.short}
           </button>
         ))}
+        {variant && (
+          <button className={`ind-chip strat ${trailOn ? 'on' : ''}`} onClick={toggleTrail}>
+            {trailOn ? '✓ ' : ''}Takip eden TP
+          </button>
+        )}
         <button className="ind-add" onClick={() => setPicker(true)}>
           + İndikatör ekle
         </button>
@@ -203,7 +226,7 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
         <StrategyPanel
           key={`${variant.id}|${tf}|${target.symbol}`}
           title={`${variant.name} · ${TF_LABEL[tf]}`}
-          rule={variant.rule(tf)}
+          rule={variant.rule(tf) + (trailOn ? ` · takip eden TP (${TRAIL_ATR.toLocaleString('tr-TR')} ATR)` : '')}
           trades={trades}
           candles={closed}
           rr={SR_PARAMS.rr}

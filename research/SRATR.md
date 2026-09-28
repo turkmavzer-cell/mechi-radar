@@ -96,3 +96,26 @@ ikinci yarıda ortalama R'nin sıfırdan farkı z≈3,8 (SAR, 4.387 işlem) ve z
 Kaynaklar: Trading Rush (tradingrush.net: MACD 200 EMA, Supertrend, Ichimoku 100/200 test), QuantifiedStrategies (Williams %R, IBS, RSI-2),
 StockCharts ChartSchool (RSI-2), Davidd Tech (Medium: MACD + Parabolic SAR + 200 EMA), TradeSearcher (UT Bot + STC testi),
 TradingView (Chandelier Exit + ZLSMA, Squeeze Momentum LazyBear).
+
+# Takip eden kâr al (trailing TP)
+
+Giriş ve stop aynı (1,5 ATR); fiyat 2R hedefe ulaşınca pozisyon kapanmaz, stop hedefe çekilir ve görülen en iyi fiyatın
+`d × ATR` (giriş mumundaki ATR) gerisinden izler; fiyat bu stopa dönünce kapanır. Hedefe dokunulan mumda takip başlamaz
+(mum içi yol bilinmediği için), bir sonraki mumdan başlar. Tam tablo: `research-trail` dalı, `sratr-trail.md`.
+
+| Strateji | Sabit 2R (1. / 2. yarı ort. R) | Takip 1,5 ATR (1. / 2. yarı) | Toplam R: sabit → takip |
+|---|---|---|---|
+| SRA | +0,037 / +0,010 | +0,072 / +0,056 | 375 → 1.023 |
+| SRA + EMA 200 | +0,091 / +0,051 | +0,203 / +0,121 | 149 → 341 |
+| SRA + ADX | +0,067 / +0,054 | +0,137 / +0,107 | 354 → 711 |
+| SAR + EMA 200 + MACD | +0,068 / +0,080 | +0,133 / +0,147 | 627 → 1.178 |
+| TTM Squeeze | +0,054 / +0,082 | +0,113 / +0,167 | 432 → 889 |
+
+- **Tüm stratejilerde, iki yarıda da işlem başına kazanç yaklaşık iki katına çıkıyor.** Kârlı işlem oranı değişmiyor (%34–36);
+  fark, hedefe ulaşan işlemlerin bir kısmının 4R ve üstüne gitmesinden (işlemlerin ~%2'si).
+- Takip mesafeleri (0,5 / 1 / 1,5 / 2 ATR) arasında fark küçük. **1,5 ATR seçildi:** stop mesafesine eşit ve mum içi yolun
+  bilinmemesinden doğan simülasyon hatası geniş mesafede daha küçük.
+- Japan 225 (NIY=F) SAR + MACD 15dk: sabit +31,0R → takip 1,5 ATR +28,6R (82 işlem); bu sembol/zaman diliminde fark yok denecek kadar küçük.
+- İşlem süresi az uzuyor (ortalama 12 → 13 mum); açık pozisyonda gelen sinyaller atlandığı için işlem sayısı çok az düşüyor.
+- **Sınırlama:** simülasyon mum verisiyle yapılıyor. Canlıda (tik bazında) takip stopu mum içinde de güncellenir; dar mesafede
+  sonuç farklı olabilir. Sonuçlar spread/komisyon hariç.
