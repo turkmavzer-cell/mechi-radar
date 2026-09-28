@@ -30,6 +30,11 @@ export interface BoxParams {
    * görülen en iyi fiyatın `trail × ATR` gerisinden takip eder. Fiyat bu stopa dönünce kapanır (en az ~hedef kadar kâr).
    */
   trail?: number;
+  /**
+   * true: hedefe değince stop tam hedefe kilitlenir (en az hedef kadar kâr, ama küçük geri çekilmede kapanır).
+   * false (varsayılan): stop en iyi fiyatın `trail × ATR` gerisine konur; hedefte bu ≈ hedef − trail×ATR seviyesidir.
+   */
+  trailLock?: boolean;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -97,7 +102,7 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
         // Hedefe değildi: bu mumdaki hedef sonrası hareket bilinmediği için takip bir sonraki mumdan başlar (temkinli).
         t.trailing = true;
         best = t.target;
-        trailStop = t.target;
+        trailStop = params.trailLock ? t.target : t.target - s * gap;
         continue;
       }
       // Takipte: önce mevcut stopa dokunuldu mu (boşlukla açılışta stop aşıldıysa açılış fiyatından çıkılır).
