@@ -51,7 +51,7 @@ Firebase projesi: `banded-elevator-478108-q9` ("Mechi Radar").
 
 ## APK
 
-`main` dalına her gönderimde **Actions → Android APK** çalışır ve APK'yı **Releases** bölümüne koyar (telefondan doğrudan indirilir). Tüm sürümler aynı anahtarla (`keystore/debug.keystore`) imzalanır; güncelleme eskisinin üzerine kurulur.
+`main` dalına her gönderimde **Actions → Android APK** çalışır ve APK'yı **Releases** bölümüne koyar (telefondan doğrudan indirilir). Tüm sürümler `android/app/build.gradle` içindeki imza ayarıyla repodaki `keystore/debug.keystore` anahtarıyla imzalanır; derleme imzayı doğrular. Güncelleme eskisinin üzerine kurulur.
 
 ## Bilinen sınırlar
 
