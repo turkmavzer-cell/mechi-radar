@@ -76,3 +76,17 @@ test('Stokastik-RSI-ATR: analyze olayları, başlık ve üst zaman dilimi eşlem
   assert.equal(w.length, 2);
   assert.deepEqual(w[0], { t: 1_767_571_200, o: 0, h: 7, l: -1, c: 6.5 });
 });
+
+test('Stokastik-RSI-ATR filtreleri: her giriş filtre şartını sağlar', async () => {
+  const { SR_FILTERS, alignHigher } = await import('../src/core/sratr');
+  const cs = walk(5000, 900, 3);
+  const higher = { tf: '1h' as const, candles: aggregate(cs, 3600, false) };
+  const hIdx = alignHigher(cs, '15m', higher);
+  const base = srTrades(cs, '15m', higher).length;
+  for (const id of Object.keys(SR_FILTERS)) {
+    const f = SR_FILTERS[id].make({ candles: cs, hIdx, higher });
+    const ts = srTrades(cs, '15m', higher, SR_PARAMS, [id]);
+    assert.ok(ts.length > 0 && ts.length <= base * 1.5, `${id}: ${ts.length}/${base}`);
+    for (const t of ts) assert.ok(f(t.i, t.dir), `${id} şartı sağlanmadı`);
+  }
+});

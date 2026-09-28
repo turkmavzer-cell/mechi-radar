@@ -3,6 +3,10 @@ name: Stokastik-RSI-ATR testi
 # Elle başlatılır. Sonuçlar "research-sratr" dalına yazılır.
 on:
   workflow_dispatch:
+    inputs:
+      script:
+        description: research/ altındaki betik (uzantısız)
+        default: sratr
 
 permissions:
   contents: write
@@ -19,7 +23,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Backtest
-        run: npx tsx research/sratr.ts
+        run: npx tsx research/${{ inputs.script }}.ts
       - name: Sonuçları research-sratr dalına yaz
         run: |
           git config user.name "mechi-radar-bot"
@@ -27,7 +31,7 @@ jobs:
           cp -r research/out /tmp/out
           git checkout --orphan sratr-results
           git rm -rq --cached . && rm -rf ./* .github 2>/dev/null || true
-          cp /tmp/out/sratr.* .
-          git add sratr.json sratr.md
+          cp /tmp/out/sratr* .
+          git add sratr*
           git commit -qm "Stokastik-RSI-ATR sonuçları $(date -u +%F)"
-          git push -f origin HEAD:research-sratr
+          git push -f origin HEAD:research-${{ inputs.script }}
