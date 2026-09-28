@@ -6,13 +6,28 @@ import {
   LineSeries,
   LineStyle,
   createChart,
+  createSeriesMarkers,
   type IChartApi,
   type ISeriesApi,
+  type SeriesMarker,
   type SeriesType,
+  type Time,
   type UTCTimestamp,
 } from 'lightweight-charts';
 import type { Candle } from '../core/types';
 import type { Plot, PlotLine } from './indicators';
+import { PositionBoxes } from './positionBoxes';
+
+/** Strateji pozisyonu; zamanlar unix saniye. */
+export interface ChartPosition {
+  from: number;
+  to: number;
+  dir: 'up' | 'down';
+  entry: number;
+  stop: number;
+  target: number;
+  outcome: 'tp' | 'sl' | 'open';
+}
 
 const UP = '#0ca30c';
 const DOWN = '#d03b3b';
@@ -31,9 +46,11 @@ interface Props {
   panes: Plot[];
   /** Sembol + zaman dilimi; değişince görünüm son mumlara odaklanır, aynı kalırsa korunur. */
   viewId: string;
+  /** Stokastik-RSI-ATR pozisyonları: giriş etiketi ve stop/hedef kutuları. */
+  positions?: ChartPosition[];
 }
 
-export function PriceChart({ candles, overlays, panes, viewId }: Props) {
+export function PriceChart({ candles, overlays, panes, viewId, positions }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   // Aynı seri yenilenince (dakikalık güncelleme) kullanıcının kaydırdığı görünüm korunur.
@@ -82,6 +99,20 @@ export function PriceChart({ candles, overlays, panes, viewId }: Props) {
     });
     candleSeries.setData(candles.map((c) => ({ time: t(c.t), open: c.o, high: c.h, low: c.l, close: c.c })));
     all.push(candleSeries);
+
+    const boxes = positions?.length
+      ? new PositionBoxes(positions.map((p) => ({ ...p, from: t(p.from), to: t(p.to) })))
+      : null;
+    if (boxes) candleSeries.attachPrimitive(boxes);
+    const markers: SeriesMarker<Time>[] = (positions ?? []).map((p) => ({
+      time: t(p.from),
+      position: p.dir === 'up' ? 'belowBar' : 'aboveBar',
+      shape: p.dir === 'up' ? 'arrowUp' : 'arrowDown',
+      color: p.dir === 'up' ? UP : DOWN,
+      text: p.dir === 'up' ? 'LONG GİRİŞ' : 'SHORT GİRİŞ',
+      size: 1,
+    }));
+    const markerApi = markers.length ? createSeriesMarkers(candleSeries, markers) : null;
 
     const addLine = (l: PlotLine, pane: number) => {
       const s = chart.addSeries(
@@ -142,9 +173,11 @@ export function PriceChart({ candles, overlays, panes, viewId }: Props) {
     return () => {
       // Bileşen kapanırken grafik önce yok edilmiş olabilir.
       if (chartRef.current !== chart) return;
+      markerApi?.detach();
+      if (boxes) candleSeries.detachPrimitive(boxes);
       all.forEach((s) => chart.removeSeries(s));
     };
-  }, [candles, overlays, panes, viewId]);
+  }, [candles, overlays, panes, viewId, positions]);
 
   return <div className="chart" style={{ height: MAIN_HEIGHT + panes.length * PANE_HEIGHT }} ref={box} />;
 }

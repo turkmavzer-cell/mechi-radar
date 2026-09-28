@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TF_LABEL } from '../../core/candles';
-import { formatPrice } from '../../core/labels';
+import { formatPrice, formatTime } from '../../core/labels';
+import { HIGHER_LABEL, HIGHER_TF, higherSeries, SR_PARAMS, srTrades, withHigher } from '../../core/sratr';
 import { TIMEFRAMES, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
-import { PriceChart } from '../Chart';
+import { PriceChart, type ChartPosition } from '../Chart';
 import { buildPlots, INDICATOR_BY_ID, loadIndicatorIds, saveIndicatorIds } from '../indicators';
 import { IndicatorPicker } from '../IndicatorPicker';
 import type { RadarApi } from '../lib/data';
@@ -42,7 +43,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
     let alive = true;
     setLoading(true);
     setError(null);
-    loadSeries(yahooFetch, target.symbol, [tf])
+    loadSeries(yahooFetch, target.symbol, withHigher([tf]))
       .then((s) => alive && setSeries(s))
       .catch((err) => alive && setError(err instanceof Error ? err.message : String(err)))
       .finally(() => alive && setLoading(false));
@@ -61,6 +62,45 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
   };
   const toggleIndicator = (id: string) =>
     updateIndicators(indicators.includes(id) ? indicators.filter((x) => x !== id) : [...indicators, id]);
+
+  const [showStrategy, setShowStrategy] = useState(() => {
+    try {
+      return localStorage.getItem('mechi.sratr') !== '0';
+    } catch {
+      return true;
+    }
+  });
+  const toggleStrategy = () => {
+    setShowStrategy(!showStrategy);
+    try {
+      localStorage.setItem('mechi.sratr', showStrategy ? '0' : '1');
+    } catch {
+      // Kaydedilemezse yalnızca bu oturumda geçerli olur.
+    }
+  };
+  // Strateji yalnızca kapanmış mumlarda sinyal üretir; üst zaman diliminin oluşan mumu kapanış zamanıyla elenir.
+  const { closed, trades } = useMemo(() => {
+    const closed = series?.lastOpen[tf] ? all.slice(0, -1) : all;
+    return { closed, trades: series ? srTrades(closed, tf, higherSeries(tf, series.candles)) : [] };
+  }, [series, tf, all]);
+  const positions = useMemo<ChartPosition[] | undefined>(
+    () =>
+      showStrategy
+        ? trades.map((x) => ({
+            from: closed[x.i].t,
+            to: all[x.exitI ?? all.length - 1].t,
+            dir: x.dir,
+            entry: x.entry,
+            stop: x.stop,
+            target: x.target,
+            outcome: x.outcome,
+          }))
+        : undefined,
+    [showStrategy, trades, closed, all],
+  );
+  const done = trades.filter((x) => x.outcome !== 'open');
+  const wins = done.filter((x) => x.outcome === 'tp').length;
+  const totalR = done.reduce((a, x) => a + (x.outcome === 'tp' ? SR_PARAMS.rr : -1), 0);
 
   const price = series?.meta.regularMarketPrice ?? all[all.length - 1]?.c;
 
@@ -124,6 +164,9 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
             </button>
           );
         })}
+        <button className={`ind-chip strat ${showStrategy ? 'on' : ''}`} onClick={toggleStrategy}>
+          {showStrategy ? '✓ ' : ''}Stokastik-RSI-ATR
+        </button>
         <button className="ind-add" onClick={() => setPicker(true)}>
           + İndikatör ekle
         </button>
@@ -134,10 +177,60 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
       ) : !series?.candles[tf] ? (
         <div className="chart placeholder">Yükleniyor…</div>
       ) : (
-        <PriceChart candles={all} overlays={overlays} panes={panes} viewId={`${target.symbol}|${tf}`} />
+        <PriceChart candles={all} overlays={overlays} panes={panes} viewId={`${target.symbol}|${tf}`} positions={positions} />
       )}
 
       {picker && <IndicatorPicker selected={indicators} onToggle={toggleIndicator} onClose={() => setPicker(false)} />}
+
+      {showStrategy && series?.candles[tf] && (
+        <>
+          <h2>Stokastik-RSI-ATR · {TF_LABEL[tf]}</h2>
+          <p className="legend small muted">
+            {HIGHER_LABEL[HIGHER_TF[tf]]} Stokastik 20 altı/80 üstü iken RSI(14) kendi ortalamasını (SMA 14) keserse giriş. Stop{' '}
+            {SR_PARAMS.stopAtr.toLocaleString('tr-TR')} ATR, hedef stop mesafesinin {SR_PARAMS.rr.toLocaleString('tr-TR')} katı.
+            {done.length > 0 && (
+              <>
+                {' '}
+                Bu grafikte {done.length} kapanmış işlem: {wins} hedef, {done.length - wins} stop, toplam{' '}
+                <b className={totalR > 0 ? 'pos' : totalR < 0 ? 'neg' : ''}>
+                  {totalR > 0 ? '+' : ''}
+                  {totalR.toLocaleString('tr-TR', { maximumFractionDigits: 1 })}R
+                </b>
+                .
+              </>
+            )}
+          </p>
+          {trades.length ? (
+            <div className="list">
+              {trades
+                .slice()
+                .reverse()
+                .slice(0, 12)
+                .map((x) => (
+                  <div key={x.i} className="row signal">
+                    <span className={`arrow ${x.dir}`}>{x.dir === 'up' ? '▲' : '▼'}</span>
+                    <span className="grow">
+                      <span className="title">
+                        {x.dir === 'up' ? 'LONG' : 'SHORT'} GİRİŞ {formatPrice(x.entry)}
+                      </span>
+                      <span className="sub">
+                        Stop {formatPrice(x.stop)} · Hedef {formatPrice(x.target)}
+                      </span>
+                      <span className="perf">
+                        <b className={x.outcome === 'tp' ? 'pos' : x.outcome === 'sl' ? 'neg' : 'muted'}>
+                          {x.outcome === 'tp' ? `✓ Hedef +${SR_PARAMS.rr.toLocaleString('tr-TR')}R` : x.outcome === 'sl' ? '✕ Stop −1R' : 'Açık pozisyon'}
+                        </b>
+                      </span>
+                    </span>
+                    <span className="muted small">{formatTime(closed[x.i].t)}</span>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <div className="empty">Bu zaman diliminde sinyal yok.</div>
+          )}
+        </>
+      )}
 
       <h2>İzleme ve mail</h2>
       <div className="card">

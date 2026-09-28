@@ -17,7 +17,7 @@ export interface SrParams {
   /** Filtre için bakılan kapanmış üst zaman dilimi mumu sayısı. */
   lookback: number;
 }
-export const SR_PARAMS: SrParams = { stopAtr: 2, rr: 2, lookback: 3 };
+export const SR_PARAMS: SrParams = { stopAtr: 1.5, rr: 2, lookback: 3 };
 
 export type HigherTf = Timeframe | '1w';
 

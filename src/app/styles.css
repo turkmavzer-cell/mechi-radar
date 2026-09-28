@@ -159,3 +159,5 @@ label { display: flex; flex-direction: column; gap: 4px; }
 .pick-opts button { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 0; border-radius: 10px; background: var(--surface); color: var(--muted); font-weight: 600; font-size: 13.5px; border: 1px solid transparent; }
 .pick-opts button.on { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
 .btn.small { padding: 7px 14px; font-size: 13px; }
+.ind-chip.strat { border: 1px solid var(--surface-2); color: var(--muted); }
+.ind-chip.strat.on { border-color: var(--accent); color: var(--text); }
