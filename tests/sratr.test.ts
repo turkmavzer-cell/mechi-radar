@@ -129,7 +129,7 @@ test('takip eden kâr al: hedefte kapanmaz, fiyatı takip eder, dönüşte kârl
   }
   const sig = [{ i: 29, dir: 'down' as const }];
   const fixed = simulate(cs, sig, { stopAtr: 1.5, rr: 2 })[0];
-  const trail = simulate(cs, sig, { stopAtr: 1.5, rr: 2, trail: 1 })[0];
+  const trail = simulate(cs, sig, { stopAtr: 1.5, rr: 2, trail: 1, trailLock: true })[0];
   assert.equal(fixed.outcome, 'tp');
   assert.equal(fixed.r, 2);
   assert.equal(trail.outcome, 'tp');
@@ -139,17 +139,22 @@ test('takip eden kâr al: hedefte kapanmaz, fiyatı takip eder, dönüşte kârl
   assert.ok(trail.exitPrice! <= trail.target && trail.exitPrice! > 79.8);
 });
 
-test('takip eden kâr al: stop hedefin gerisine gitmez, sonuç ≥ hedef (boşluk yoksa)', async () => {
+test('takip eden kâr al: alt sınır — kilitte hedef, geriden takipte hedef − takip mesafesi (boşluk yoksa)', async () => {
   const { BOX_CANDIDATES, simulate } = await import('../src/core/boxes');
   const cs = walk(6000, 900, 13);
-  for (const b of BOX_CANDIDATES.slice(0, 4)) {
-    const tr = simulate(cs, b.signals(cs), { stopAtr: 1.5, rr: 2, trail: 1 });
-    for (const t of tr) {
-      if (t.outcome === 'sl') assert.equal(t.r, -1);
-      if (t.outcome === 'tp') {
-        const c = cs[t.exitI!];
-        const gapped = t.dir === 'up' ? c.o < t.target : c.o > t.target;
-        if (!gapped) assert.ok(t.r! >= 2 - 1e-9, `${b.id} r=${t.r}`);
+  for (const lock of [true, false]) {
+    // stop 1,5 ATR = 1R; takip 1,5 ATR = 1R → geriden takipte alt sınır 2R − 1R = 1R.
+    const floor = lock ? 2 : 1;
+    for (const b of BOX_CANDIDATES.slice(0, 4)) {
+      const tr = simulate(cs, b.signals(cs), { stopAtr: 1.5, rr: 2, trail: 1.5, trailLock: lock });
+      for (const t of tr) {
+        if (t.outcome === 'sl') assert.equal(t.r, -1);
+        if (t.outcome === 'tp') {
+          const c = cs[t.exitI!];
+          const lim = t.entry + ((t.target - t.entry) * floor) / 2;
+          const gapped = t.dir === 'up' ? c.o < lim : c.o > lim;
+          if (!gapped) assert.ok(t.r! >= floor - 1e-9, `${b.id} kilit=${lock} r=${t.r}`);
+        }
       }
     }
   }
