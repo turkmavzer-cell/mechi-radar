@@ -139,3 +139,10 @@ label { display: flex; flex-direction: column; gap: 4px; }
 .progress { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin-top: 10px; }
 .progress > i { display: block; height: 100%; background: var(--accent); transition: width .2s; }
 .btn.ghost-plain { background: var(--surface-2); color: var(--muted); min-width: 48px; }
+
+/* Strateji karnesi */
+.card.score { gap: 6px; }
+.score-head, .score-row { display: flex; align-items: baseline; gap: 10px; }
+.score-head > span:not(.grow), .score-row > :not(.grow) { width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
+.score-row { padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.score-row .grow { min-width: 0; }

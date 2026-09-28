@@ -3,6 +3,8 @@ import { TF_LABEL } from '../../core/candles';
 import { alignText, ema200Text, formatPrice, pullbackText, STRATEGY_NAME, trendText } from '../../core/labels';
 import { sma } from '../../core/indicators';
 import { analyze, signalPerformance, TRIPLE_WINDOW } from '../../core/strategies';
+import { RESEARCH, RESEARCH_SYMBOLS } from '../../core/research';
+import { ScoreCard } from '../ScoreCard';
 import { STRATEGIES, TIMEFRAMES, type Strategy, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
@@ -19,6 +21,9 @@ const STRATEGY_HINT: Record<Strategy, string> = {
   triple: `MACD 0'ı keser, ${TRIPLE_WINDOW} mum içinde RSI 50'yi keser ve mum Bollinger orta bandının üstünde (düşüşte altında) kapanırsa ok çıkar.`,
   supertrend: 'Supertrend (10, 3) yön değiştirince ok çıkar.',
   donchian: 'Kapanış önceki 20 mumun zirvesini / dibini kırınca ok çıkar (Turtle kırılımı).',
+  bbrev: '',
+  stoch: 'Stokastik (14,3,3): %K, %D\'yi 20 altında yukarı / 80 üstünde aşağı kesince ok çıkar.',
+  rsidiv: 'Fiyat yeni dip yaparken RSI(14) daha yüksek dip yaparsa ▲, tepede tersi ▼.',
 };
 
 interface Props {
@@ -84,6 +89,21 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
         { name: 'EMA 50', values: e.e50 },
         { name: 'EMA 200', values: e.e200 },
       ];
+    if (strategy === 'bbrev') {
+      const c = closed.map((x) => x.c);
+      const mid = sma(c, 20);
+      const dev = c.map((_, i) => {
+        if (i < 19) return NaN;
+        let v = 0;
+        for (let j = i - 19; j <= i; j++) v += (c[j] - mid[i]) ** 2;
+        return 2 * Math.sqrt(v / 20);
+      });
+      return [
+        { name: 'Üst bant', values: mid.map((m, i) => m + dev[i]) },
+        { name: 'Orta (SMA 20)', values: mid },
+        { name: 'Alt bant', values: mid.map((m, i) => m - dev[i]) },
+      ];
+    }
     if (strategy === 'goldencross') {
       const c = closed.map((x) => x.c);
       return [
@@ -173,6 +193,22 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
         </>
       )}
 
+      {(() => {
+        const r = RESEARCH[strategy]?.[tf];
+        if (!r || r[0] < 100) return null;
+        const edge = r[1] - r[2];
+        return (
+          <p className="legend small muted">
+            Genel test ({RESEARCH_SYMBOLS} enstrüman, {TF_LABEL[tf]}): {r[0]} sinyalde %{Math.round(r[1])} isabet, rastgele girişe göre{' '}
+            <b className={edge >= 1.5 ? 'pos' : edge <= -1.5 ? 'neg' : ''}>
+              {edge > 0 ? '+' : ''}
+              {edge.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} puan
+            </b>
+            .
+          </p>
+        );
+      })()}
+
       {st && (
         <div className="card">
           <div className="kv">
@@ -226,6 +262,9 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
       ) : (
         <div className="empty">Bu strateji ve zaman diliminde sinyal yok.</div>
       )}
+
+      <h2>Strateji karnesi · {TF_LABEL[tf]}</h2>
+      {closed.length > 0 && <ScoreCard candles={closed} tf={tf} name={target.name} />}
 
       <h2>İzleme ve bildirim</h2>
       <div className="card">
