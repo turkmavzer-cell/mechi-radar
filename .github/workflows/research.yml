@@ -1,0 +1,33 @@
+name: Strateji araştırması
+
+# Tek seferlik geçmiş veri testi (elle başlatılır). Sonuçlar "research" dalına yazılır.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Backtest
+        run: npx tsx research/backtest.ts
+      - name: Sonuçları research dalına yaz
+        run: |
+          git config user.name "mechi-radar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp -r research/out /tmp/out
+          git checkout --orphan research-results
+          git rm -rq --cached . && rm -rf ./* .github 2>/dev/null || true
+          cp /tmp/out/* .
+          git add rows.json pooled.json meta.json
+          git commit -qm "Backtest sonuçları $(date -u +%F)"
+          git push -f origin HEAD:research
