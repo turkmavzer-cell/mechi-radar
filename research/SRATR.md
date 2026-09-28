@@ -119,3 +119,20 @@ Giriş ve stop aynı (1,5 ATR); fiyat 2R hedefe ulaşınca pozisyon kapanmaz, st
 - İşlem süresi az uzuyor (ortalama 12 → 13 mum); açık pozisyonda gelen sinyaller atlandığı için işlem sayısı çok az düşüyor.
 - **Sınırlama:** simülasyon mum verisiyle yapılıyor. Canlıda (tik bazında) takip stopu mum içinde de güncellenir; dar mesafede
   sonuç farklı olabilir. Sonuçlar spread/komisyon hariç.
+
+## Güncelleme: geriden takip (varsayılan)
+
+İlk sürümde hedefe değince stop **tam hedefe** kilitleniyordu; hedeften sonraki ilk küçük geri çekilmede işlem hedefte kapanıyor,
+takip nadiren devreye giriyordu (kullanıcı ekranında görüldü). Yeni kural: hedefe değince stop **en iyi fiyatın 1,5 ATR gerisine**
+konur (başta ≈ +1R) ve takip eder. İkinci yarı ort. R (1,5 ATR):
+
+| Strateji | Sabit 2R | Hedefe kilit | **Geriden takip** |
+|---|---|---|---|
+| SRA | +0,010 | +0,056 | **+0,071** |
+| SRA + EMA 200 | +0,051 | +0,121 | **+0,129** |
+| SRA + ADX | +0,054 | +0,107 | **+0,111** |
+| SAR + MACD | +0,080 | +0,147 | **+0,178** |
+| Squeeze | +0,082 | +0,167 | **+0,192** |
+
+Japan 225 (NIY=F) SAR + MACD 15dk: sabit +31,0R, kilit +28,6R, geriden **+36,5R** (81 işlem). 2 ve 3 ATR bazı stratejilerde
+biraz daha iyi ama kârlı işlem oranı 3 ATR'de düşüyor (%35 → %31–33) ve işlemler uzuyor; 1,5 ATR korundu.
