@@ -27,12 +27,16 @@ export type Strategy =
   | 'macd'
   | 'sratr'
   | 'sratrEma'
-  | 'sratrAdx';
+  | 'sratrAdx'
+  | 'sarmacd'
+  | 'squeeze';
 
 export const STRATEGIES: Strategy[] = [
   'sratr',
   'sratrEma',
   'sratrAdx',
+  'sarmacd',
+  'squeeze',
   'ema5813',
   'pullback2050',
   'triple',

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TF_LABEL } from '../../core/candles';
-import { formatPrice, formatTime } from '../../core/labels';
-import { HIGHER_LABEL, HIGHER_TF, higherSeries, SR_FILTERS, SR_PARAMS, SR_VARIANTS, srTrades, withHigher, type SrVariantId } from '../../core/sratr';
+import { formatPrice } from '../../core/labels';
+import { BOX_STRATEGIES } from '../../core/boxStrategies';
+import { higherSeries, SR_PARAMS, withHigher } from '../../core/sratr';
+import type { Strategy } from '../../core/types';
+import { StrategyPanel } from '../StrategyPanel';
 import { TIMEFRAMES, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
@@ -67,16 +70,16 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
     updateIndicators(indicators.includes(id) ? indicators.filter((x) => x !== id) : [...indicators, id]);
 
   // Grafikte gösterilen Stokastik-RSI-ATR sürümü (biri seçilir; seçili olana tekrar dokununca kapanır).
-  const [srId, setSrId] = useState<SrVariantId | null>(() => {
+  const [srId, setSrId] = useState<Strategy | null>(() => {
     try {
       const v = localStorage.getItem('mechi.sratr');
       if (v === '0') return null;
-      return SR_VARIANTS.some((x) => x.id === v) ? (v as SrVariantId) : 'sratr';
+      return BOX_STRATEGIES.some((x) => x.id === v) ? (v as Strategy) : 'sratr';
     } catch {
       return 'sratr';
     }
   });
-  const pickVariant = (id: SrVariantId) => {
+  const pickVariant = (id: Strategy) => {
     const next = srId === id ? null : id;
     setSrId(next);
     try {
@@ -85,12 +88,12 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
       // Kaydedilemezse yalnızca bu oturumda geçerli olur.
     }
   };
-  const variant = SR_VARIANTS.find((x) => x.id === srId);
+  const variant = BOX_STRATEGIES.find((x) => x.id === srId);
   const showStrategy = !!variant;
   // Strateji yalnızca kapanmış mumlarda sinyal üretir; üst zaman diliminin oluşan mumu kapanış zamanıyla elenir.
   const { closed, trades } = useMemo(() => {
     const closed = series?.lastOpen[tf] ? all.slice(0, -1) : all;
-    return { closed, trades: series && variant ? srTrades(closed, tf, higherSeries(tf, series.candles), SR_PARAMS, [...variant.filters]) : [] };
+    return { closed, trades: series && variant ? variant.run(closed, tf, higherSeries(tf, series.candles)) : [] };
   }, [series, tf, all, variant]);
   const positions = useMemo<ChartPosition[] | undefined>(
     () =>
@@ -107,10 +110,6 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         : undefined,
     [showStrategy, trades, closed, all],
   );
-  const done = trades.filter((x) => x.outcome !== 'open');
-  const wins = done.filter((x) => x.outcome === 'tp').length;
-  const totalR = done.reduce((a, x) => a + (x.outcome === 'tp' ? SR_PARAMS.rr : -1), 0);
-
   const price = series?.meta.regularMarketPrice ?? all[all.length - 1]?.c;
 
   const run = async (fn: () => Promise<unknown>, ok: string) => {
@@ -173,7 +172,7 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
             </button>
           );
         })}
-        {SR_VARIANTS.map((v) => (
+        {BOX_STRATEGIES.map((v) => (
           <button key={v.id} className={`ind-chip strat ${srId === v.id ? 'on' : ''}`} onClick={() => pickVariant(v.id)}>
             {srId === v.id ? '✓ ' : ''}
             {v.short}
@@ -200,56 +199,14 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         />}
 
       {variant && series?.candles[tf] && (
-        <>
-          <h2>
-            {variant.name} · {TF_LABEL[tf]}
-          </h2>
-          <p className="legend small muted">
-            {HIGHER_LABEL[HIGHER_TF[tf]]} Stokastik 20 altı/80 üstü iken RSI(14) kendi ortalamasını (SMA 14) keserse giriş. Stop{' '}
-            {SR_PARAMS.stopAtr.toLocaleString('tr-TR')} ATR, hedef stop mesafesinin {SR_PARAMS.rr.toLocaleString('tr-TR')} katı.
-            {variant.filters.map((f) => ` Ek şart: ${SR_FILTERS[f].name}.`)}
-            {done.length > 0 && (
-              <>
-                {' '}
-                {formatDate(closed[done[0].i].t)} – {formatDate(closed[closed.length - 1].t)} arasında {done.length} kapanmış işlem: {wins} hedef, {done.length - wins} stop, toplam{' '}
-                <b className={totalR > 0 ? 'pos' : totalR < 0 ? 'neg' : ''}>
-                  {totalR > 0 ? '+' : ''}
-                  {totalR.toLocaleString('tr-TR', { maximumFractionDigits: 1 })}R
-                </b>
-                .
-              </>
-            )}
-          </p>
-          {trades.length ? (
-            <div className="list">
-              {trades
-                .slice()
-                .reverse()
-                .slice(0, 12)
-                .map((x) => (
-                  <div key={x.i} className="row signal">
-                    <span className={`arrow ${x.dir}`}>{x.dir === 'up' ? '▲' : '▼'}</span>
-                    <span className="grow">
-                      <span className="title">
-                        {x.dir === 'up' ? 'LONG' : 'SHORT'} GİRİŞ {formatPrice(x.entry)}
-                      </span>
-                      <span className="sub">
-                        Stop {formatPrice(x.stop)} · Hedef {formatPrice(x.target)}
-                      </span>
-                      <span className="perf">
-                        <b className={x.outcome === 'tp' ? 'pos' : x.outcome === 'sl' ? 'neg' : 'muted'}>
-                          {x.outcome === 'tp' ? `✓ Hedef +${SR_PARAMS.rr.toLocaleString('tr-TR')}R` : x.outcome === 'sl' ? '✕ Stop −1R' : 'Açık pozisyon'}
-                        </b>
-                      </span>
-                    </span>
-                    <span className="muted small">{formatTime(closed[x.i].t)}</span>
-                  </div>
-                ))}
-            </div>
-          ) : (
-            <div className="empty">Bu zaman diliminde sinyal yok.</div>
-          )}
-        </>
+        <StrategyPanel
+          key={`${variant.id}|${tf}|${target.symbol}`}
+          title={`${variant.name} · ${TF_LABEL[tf]}`}
+          rule={variant.rule(tf)}
+          trades={trades}
+          candles={closed}
+          rr={SR_PARAMS.rr}
+        />
       )}
 
       <h2>İzleme ve mail</h2>
@@ -302,6 +259,3 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
   );
 }
 
-function formatDate(unix: number): string {
-  return new Date(unix * 1000).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
-}

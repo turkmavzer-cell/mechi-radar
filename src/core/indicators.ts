@@ -383,3 +383,17 @@ export function chandelier(high: number[], low: number[], close: number[], perio
   }
   return { stop, dir };
 }
+
+/** TTM Squeeze (LazyBear): momentum (doğrusal regresyon) ve sıkışma durumu (Bollinger 20,2 Keltner 20,1,5 içinde). */
+export function squeezeMomentum(high: number[], low: number[], close: number[], period = 20): { mom: number[]; sqz: boolean[] } {
+  const bb = bollinger(close, period, 2);
+  const kc = keltner(high, low, close, period, 1.5, period);
+  const hh = highest(high, period);
+  const ll = lowest(low, period);
+  const s = sma(close, period);
+  const base = close.map((v, i) => v - ((hh[i] + ll[i]) / 2 + s[i]) / 2);
+  return {
+    mom: linreg(base, period),
+    sqz: close.map((_, i) => bb.upper[i] < kc.upper[i] && bb.lower[i] > kc.lower[i]),
+  };
+}

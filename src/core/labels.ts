@@ -26,6 +26,8 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'sratr':
     case 'sratrEma':
     case 'sratrAdx':
+    case 'sarmacd':
+    case 'squeeze':
       return e.levels
         ? `${up ? 'LONG' : 'SHORT'} GİRİŞ ${formatPrice(e.levels.entry)} · Stop ${formatPrice(e.levels.stop)} · Hedef ${formatPrice(e.levels.target)}`
         : `${up ? 'LONG' : 'SHORT'} GİRİŞ`;
@@ -64,6 +66,8 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   sratr: 'Stokastik-RSI-ATR',
   sratrEma: 'SRA + EMA 200',
   sratrAdx: 'SRA + ADX',
+  sarmacd: 'SAR + EMA 200 + MACD',
+  squeeze: 'TTM Squeeze',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {

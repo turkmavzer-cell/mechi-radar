@@ -1,13 +1,11 @@
 import {
   atr,
-  bollinger,
   chandelier,
   ema,
   ichimoku,
-  keltner,
-  linreg,
   macd,
   psar,
+  squeezeMomentum,
   rsi,
   sma,
   stochRsi,
@@ -210,22 +208,8 @@ export const BOX_CANDIDATES: BoxCandidate[] = [
     rule: 'Bollinger (20, 2) Keltner (20, 1,5) içinden çıkar (sıkışma biter), momentum ve fiyat SMA 50 yönünde → giriş',
     signals: (c) => {
       const cl = C(c);
-      const bb = bollinger(cl, 20, 2);
-      const kc = keltner(H(c), L(c), cl, 20, 1.5, 20);
+      const { mom, sqz } = squeezeMomentum(H(c), L(c), cl);
       const s50 = sma(cl, 50);
-      const hh = H(c), ll = L(c);
-      const s20 = sma(cl, 20);
-      const base = cl.map((v, i) => {
-        if (i < 19) return NaN;
-        let h = -Infinity, l = Infinity;
-        for (let k = i - 19; k <= i; k++) {
-          h = Math.max(h, hh[k]);
-          l = Math.min(l, ll[k]);
-        }
-        return v - ((h + l) / 2 + s20[i]) / 2;
-      });
-      const mom = linreg(base, 20);
-      const sqz = cl.map((_, i) => bb.upper[i] < kc.upper[i] && bb.lower[i] > kc.lower[i]);
       const out: BoxSignal[] = [];
       for (let i = 1; i < c.length; i++) {
         if (!sqz[i - 1] || sqz[i] || Number.isNaN(mom[i]) || Number.isNaN(s50[i])) continue;

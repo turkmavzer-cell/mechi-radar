@@ -11,6 +11,7 @@ import {
   macd,
   psar,
   roc,
+  squeezeMomentum,
   rsi,
   sma,
   stochOsc,
@@ -346,6 +347,22 @@ const defs: IndicatorDef[] = [
     pane: true,
     color: GREEN,
     build: (c) => ({ lines: [], histogram: awesome(H(c), L(c)), levels: [0] }),
+  },
+  {
+    id: 'sqzmom',
+    label: 'Squeeze Momentum',
+    group: 'Alt panel',
+    pane: true,
+    color: '#22c55e',
+    build: (c) => {
+      const s = squeezeMomentum(H(c), L(c), C(c));
+      // Sıkışma sürerken sıfır çizgisinde gri noktalar (TTM Squeeze gösterimi).
+      return {
+        lines: [{ name: 'Sıkışma', color: '#94a3b8', values: s.sqz.map((q) => (q ? 0 : NaN)), style: 'dots' }],
+        histogram: s.mom,
+        levels: [0],
+      };
+    },
   },
   {
     id: 'roc',
