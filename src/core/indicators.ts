@@ -91,7 +91,59 @@ export function atr(high: number[], low: number[], close: number[], period = 14)
 
 /** Supertrend yönü: 1 yükseliş, -1 düşüş, NaN veri yetersiz. */
 export function supertrend(high: number[], low: number[], close: number[], period = 10, mult = 3): number[] {
+  return supertrendLine(high, low, close, period, mult).dir;
+}
+
+// ---- Grafik indikatörleri (hazır ayarlı) ----
+
+/** Pencere en yükseği/en düşüğü; pencerede NaN varsa NaN. */
+function extreme(values: number[], period: number, pick: (a: number, b: number) => number): number[] {
+  return values.map((_, i) => {
+    if (i < period - 1) return NaN;
+    let m = values[i];
+    for (let j = i - period + 1; j <= i; j++) {
+      if (Number.isNaN(values[j])) return NaN;
+      m = pick(m, values[j]);
+    }
+    return m;
+  });
+}
+export const highest = (values: number[], period: number) => extreme(values, period, Math.max);
+export const lowest = (values: number[], period: number) => extreme(values, period, Math.min);
+
+/** Standart sapma (anakütle, TradingView ta.stdev gibi). */
+export function stdev(values: number[], period: number): number[] {
+  const mean = sma(values, period);
+  return values.map((_, i) => {
+    if (Number.isNaN(mean[i])) return NaN;
+    let v = 0;
+    for (let j = i - period + 1; j <= i; j++) v += (values[j] - mean[i]) ** 2;
+    return Math.sqrt(v / period);
+  });
+}
+
+export function bollinger(close: number[], period = 20, mult = 2) {
+  const mid = sma(close, period);
+  const sd = stdev(close, period);
+  return { mid, upper: mid.map((m, i) => m + mult * sd[i]), lower: mid.map((m, i) => m - mult * sd[i]) };
+}
+
+export function keltner(high: number[], low: number[], close: number[], period = 20, mult = 2, atrPeriod = 10) {
+  const mid = ema(close, period);
+  const a = atr(high, low, close, atrPeriod);
+  return { mid, upper: mid.map((m, i) => m + mult * a[i]), lower: mid.map((m, i) => m - mult * a[i]) };
+}
+
+export function donchian(high: number[], low: number[], period = 20) {
+  const upper = highest(high, period);
+  const lower = lowest(low, period);
+  return { upper, lower, mid: upper.map((u, i) => (u + lower[i]) / 2) };
+}
+
+/** Supertrend çizgisi (yükselişte alt bant, düşüşte üst bant) ve yönü. */
+export function supertrendLine(high: number[], low: number[], close: number[], period = 10, mult = 3) {
   const a = atr(high, low, close, period);
+  const line = new Array<number>(close.length).fill(NaN);
   const dir = new Array<number>(close.length).fill(NaN);
   let upper = NaN;
   let lower = NaN;
@@ -107,6 +159,144 @@ export function supertrend(high: number[], low: number[], close: number[], perio
     if (d === 1 && close[i] < lower) d = -1;
     else if (d === -1 && close[i] > upper) d = 1;
     dir[i] = d;
+    line[i] = d === 1 ? lower : upper;
   }
-  return dir;
+  return { line, dir };
+}
+
+/** Parabolic SAR (0,02 / 0,02 / 0,2). */
+export function psar(high: number[], low: number[], start = 0.02, inc = 0.02, max = 0.2): number[] {
+  const n = high.length;
+  const out = new Array<number>(n).fill(NaN);
+  if (n < 2) return out;
+  let up = high[1] >= high[0];
+  let sar = up ? low[0] : high[0];
+  let ep = up ? high[1] : low[1];
+  let af = start;
+  out[1] = sar;
+  for (let i = 2; i < n; i++) {
+    sar = sar + af * (ep - sar);
+    if (up) {
+      sar = Math.min(sar, low[i - 1], low[i - 2]);
+      if (low[i] < sar) {
+        up = false;
+        sar = ep;
+        ep = low[i];
+        af = start;
+      } else if (high[i] > ep) {
+        ep = high[i];
+        af = Math.min(af + inc, max);
+      }
+    } else {
+      sar = Math.max(sar, high[i - 1], high[i - 2]);
+      if (high[i] > sar) {
+        up = true;
+        sar = ep;
+        ep = high[i];
+        af = start;
+      } else if (low[i] < ep) {
+        ep = low[i];
+        af = Math.min(af + inc, max);
+      }
+    }
+    out[i] = sar;
+  }
+  return out;
+}
+
+/** Ichimoku (9, 26, 52); öncü açıklıklar kaydırılmadan döner. */
+export function ichimoku(high: number[], low: number[], conv = 9, base = 26, spanB = 52) {
+  const mid = (p: number) => {
+    const h = highest(high, p);
+    const l = lowest(low, p);
+    return h.map((x, i) => (x + l[i]) / 2);
+  };
+  const tenkan = mid(conv);
+  const kijun = mid(base);
+  return { tenkan, kijun, spanA: tenkan.map((t, i) => (t + kijun[i]) / 2), spanB: mid(spanB) };
+}
+
+/** Stokastik %K (yumuşatılmış) ve %D. */
+export function stochOsc(high: number[], low: number[], close: number[], period = 14, smoothK = 3, smoothD = 3) {
+  const h = highest(high, period);
+  const l = lowest(low, period);
+  const raw = close.map((c, i) => (h[i] === l[i] ? 50 : (100 * (c - l[i])) / (h[i] - l[i])));
+  const k = smaNaN(raw, smoothK);
+  return { k, d: smaNaN(k, smoothD) };
+}
+
+/** Başındaki NaN'ları atlayarak SMA. */
+function smaNaN(values: number[], period: number): number[] {
+  const start = values.findIndex((v) => !Number.isNaN(v));
+  const out = new Array<number>(values.length).fill(NaN);
+  if (start < 0) return out;
+  sma(values.slice(start), period).forEach((v, j) => (out[start + j] = v));
+  return out;
+}
+
+export function stochRsi(close: number[], rsiLen = 14, stochLen = 14, smoothK = 3, smoothD = 3) {
+  const r = rsi(close, rsiLen);
+  const h = highest(r, stochLen);
+  const l = lowest(r, stochLen);
+  const raw = r.map((v, i) => (Number.isNaN(h[i]) ? NaN : h[i] === l[i] ? 50 : (100 * (v - l[i])) / (h[i] - l[i])));
+  const k = smaNaN(raw, smoothK);
+  return { k, d: smaNaN(k, smoothD) };
+}
+
+export function cci(high: number[], low: number[], close: number[], period = 20): number[] {
+  const tp = close.map((c, i) => (high[i] + low[i] + c) / 3);
+  const m = sma(tp, period);
+  return tp.map((v, i) => {
+    if (Number.isNaN(m[i])) return NaN;
+    let dev = 0;
+    for (let j = i - period + 1; j <= i; j++) dev += Math.abs(tp[j] - m[i]);
+    dev /= period;
+    return dev === 0 ? 0 : (v - m[i]) / (0.015 * dev);
+  });
+}
+
+export function williamsR(high: number[], low: number[], close: number[], period = 14): number[] {
+  const h = highest(high, period);
+  const l = lowest(low, period);
+  return close.map((c, i) => (h[i] === l[i] ? -50 : (-100 * (h[i] - c)) / (h[i] - l[i])));
+}
+
+/** ADX ve yön göstergeleri (+DI / -DI), Wilder 14. */
+export function adx(high: number[], low: number[], close: number[], period = 14) {
+  const plusDM = high.map((h, i) => {
+    if (i === 0) return NaN;
+    const up = h - high[i - 1];
+    const down = low[i - 1] - low[i];
+    return up > down && up > 0 ? up : 0;
+  });
+  const minusDM = low.map((l, i) => {
+    if (i === 0) return NaN;
+    const up = high[i] - high[i - 1];
+    const down = low[i - 1] - l;
+    return down > up && down > 0 ? down : 0;
+  });
+  const tr = high.map((h, i) =>
+    i === 0 ? NaN : Math.max(h - low[i], Math.abs(h - close[i - 1]), Math.abs(low[i] - close[i - 1])),
+  );
+  const atrv = rma(tr, period);
+  const plus = rma(plusDM, period).map((v, i) => (100 * v) / atrv[i]);
+  const minus = rma(minusDM, period).map((v, i) => (100 * v) / atrv[i]);
+  const dx = plus.map((p, i) => {
+    const s = p + minus[i];
+    return Number.isNaN(s) ? NaN : s === 0 ? 0 : (100 * Math.abs(p - minus[i])) / s;
+  });
+  return { adx: rma(dx, period), plus, minus };
+}
+
+/** Awesome Oscillator: medyan fiyatın SMA 5 - SMA 34 farkı. */
+export function awesome(high: number[], low: number[]): number[] {
+  const mid = high.map((h, i) => (h + low[i]) / 2);
+  const f = sma(mid, 5);
+  const s = sma(mid, 34);
+  return f.map((v, i) => v - s[i]);
+}
+
+/** Değişim oranı (ROC), yüzde. */
+export function roc(close: number[], period = 10): number[] {
+  return close.map((c, i) => (i < period ? NaN : (100 * (c - close[i - period])) / close[i - period]));
 }

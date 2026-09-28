@@ -139,4 +139,23 @@ label { display: flex; flex-direction: column; gap: 4px; }
 .score-head > span:not(.grow), .score-row > :not(.grow) { width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
 .score-row { padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
 .score-row .grow { min-width: 0; }
-.chart.tall { height: 440px; }
+
+/* İndikatörler */
+.ind-row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.ind-chip, .ind-add { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap; background: var(--surface); color: var(--text); }
+.ind-chip i, .pick-row i, .pick-opts i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.ind-chip .x { color: var(--muted); font-size: 15px; line-height: 1; }
+.ind-add { background: var(--accent); color: #fff; }
+.sheet-back { position: fixed; inset: 0; background: rgba(0, 0, 0, .55); z-index: 50; display: flex; align-items: flex-end; }
+.sheet { width: 100%; max-height: 80vh; background: var(--bg); border-radius: 18px 18px 0 0; display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--surface-2); }
+.sheet-body { overflow-y: auto; padding: 6px 16px 18px; }
+.pick-group { margin-top: 10px; }
+.pick-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 4px; }
+.pick-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px; margin-top: 4px; border-radius: 12px; background: var(--surface); color: var(--text); font-size: 14px; text-align: left; }
+.pick-row .check { width: 24px; text-align: center; color: var(--muted); font-weight: 700; }
+.pick-row.on .check { color: var(--accent); }
+.pick-opts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
+.pick-opts button { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 0; border-radius: 10px; background: var(--surface); color: var(--muted); font-weight: 600; font-size: 13.5px; border: 1px solid transparent; }
+.pick-opts button.on { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
+.btn.small { padding: 7px 14px; font-size: 13px; }

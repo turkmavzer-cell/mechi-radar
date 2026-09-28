@@ -1,30 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TF_LABEL } from '../../core/candles';
-import { alignText, ema200Text, formatPrice, pullbackText, STRATEGY_NAME, trendText } from '../../core/labels';
-import { macd, sma } from '../../core/indicators';
-import { analyze, signalPerformance, TRIPLE_WINDOW } from '../../core/strategies';
-import { RESEARCH, RESEARCH_SYMBOLS } from '../../core/research';
-import { ScoreCard } from '../ScoreCard';
-import { STRATEGIES, TIMEFRAMES, type Strategy, type Timeframe } from '../../core/types';
+import { formatPrice } from '../../core/labels';
+import { TIMEFRAMES, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
-import { LINE_COLORS, PriceChart, type ChartLine, type ChartPane } from '../Chart';
+import { PriceChart } from '../Chart';
+import { buildPlots, INDICATOR_BY_ID, loadIndicatorIds, saveIndicatorIds } from '../indicators';
+import { IndicatorPicker } from '../IndicatorPicker';
 import type { RadarApi } from '../lib/data';
-import { SignalRow } from '../ui';
 import { yahooFetch } from '../lib/http';
-
-const STRATEGY_HINT: Record<Strategy, string> = {
-  ema5813: '',
-  pullback2050: '',
-  goldencross: '',
-  triple: `MACD 0'ı keser, ${TRIPLE_WINDOW} mum içinde RSI 50'yi keser ve mum Bollinger orta bandının üstünde (düşüşte altında) kapanırsa ok çıkar.`,
-  supertrend: 'Supertrend (10, 3) yön değiştirince ok çıkar.',
-  donchian: 'Kapanış önceki 20 mumun zirvesini / dibini kırınca ok çıkar (Turtle kırılımı).',
-  bbrev: '',
-  stoch: 'Stokastik (14,3,3): %K, %D\'yi 20 altında yukarı / 80 üstünde aşağı kesince ok çıkar.',
-  rsidiv: 'Fiyat yeni dip yaparken RSI(14) daha yüksek dip yaparsa ▲, tepede tersi ▼.',
-  macd: '',
-};
 
 interface Props {
   target: OpenTarget;
@@ -36,7 +20,8 @@ interface Props {
 
 export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: Props) {
   const [tf, setTf] = useState<Timeframe>('15m');
-  const [strategy, setStrategy] = useState<Strategy>('ema5813');
+  const [indicators, setIndicators] = useState<string[]>(loadIndicatorIds);
+  const [picker, setPicker] = useState(false);
   const [series, setSeries] = useState<SeriesSet | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,68 +51,17 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
     };
   }, [target.symbol, tf, tick]);
 
-  const { all, closed, analysis } = useMemo(() => {
-    const candles = series?.candles[tf] ?? [];
-    const closed = series?.lastOpen[tf] ? candles.slice(0, -1) : candles;
-    return { all: candles, closed, analysis: analyze(target.symbol, tf, closed) };
-  }, [series, tf, target.symbol]);
-  const st = analysis.status;
-  const perf = useMemo(() => signalPerformance(analysis.events, all), [analysis, all]);
-  const history = analysis.events.filter((e) => e.strategy === strategy).reverse().slice(0, 10);
+  const all = useMemo(() => series?.candles[tf] ?? [], [series, tf]);
+  // İndikatörler TradingView'deki gibi oluşmakta olan son mum dahil hesaplanır.
+  const { overlays, panes } = useMemo(() => buildPlots(indicators, all), [indicators, all]);
 
-  // MACD seçiliyse fiyatın altında ayrı panel: mavi MACD, kırmızı sinyal, histogram, sıfır çizgisi.
-  const pane = useMemo<ChartPane | undefined>(() => {
-    if (strategy !== 'macd') return undefined;
-    const m = macd(closed.map((x) => x.c));
-    return {
-      lines: [
-        { name: 'MACD', values: m.line, color: '#3987e5' },
-        { name: 'Sinyal', values: m.signal, color: '#e66767' },
-      ],
-      histogram: m.line.map((v, i) => v - m.signal[i]),
-      zeroLine: true,
-    };
-  }, [closed, strategy]);
+  const updateIndicators = (ids: string[]) => {
+    setIndicators(ids);
+    saveIndicatorIds(ids);
+  };
+  const toggleIndicator = (id: string) =>
+    updateIndicators(indicators.includes(id) ? indicators.filter((x) => x !== id) : [...indicators, id]);
 
-  // Grafikte çizilecek çizgiler; Üçlü Onay, Supertrend ve Donchian yalnızca ok işaretiyle gösterilir.
-  const lines = useMemo<ChartLine[]>(() => {
-    const e = analysis.emas;
-    if (strategy === 'ema5813')
-      return [
-        { name: 'EMA 5', values: e.e5 },
-        { name: 'EMA 8', values: e.e8 },
-        { name: 'EMA 13', values: e.e13 },
-      ];
-    if (strategy === 'pullback2050')
-      return [
-        { name: 'EMA 20', values: e.e20 },
-        { name: 'EMA 50', values: e.e50 },
-        { name: 'EMA 200', values: e.e200 },
-      ];
-    if (strategy === 'bbrev') {
-      const c = closed.map((x) => x.c);
-      const mid = sma(c, 20);
-      const dev = c.map((_, i) => {
-        if (i < 19) return NaN;
-        let v = 0;
-        for (let j = i - 19; j <= i; j++) v += (c[j] - mid[i]) ** 2;
-        return 2 * Math.sqrt(v / 20);
-      });
-      return [
-        { name: 'Üst bant', values: mid.map((m, i) => m + dev[i]) },
-        { name: 'Orta (SMA 20)', values: mid },
-        { name: 'Alt bant', values: mid.map((m, i) => m - dev[i]) },
-      ];
-    }
-    if (strategy === 'goldencross') {
-      const c = closed.map((x) => x.c);
-      return [
-        { name: 'SMA 50', values: sma(c, 50) },
-        { name: 'SMA 200', values: sma(c, 200) },
-      ];
-    }
-    return [];
-  }, [analysis, closed, strategy]);
   const price = series?.meta.regularMarketPrice ?? all[all.length - 1]?.c;
 
   const run = async (fn: () => Promise<unknown>, ok: string) => {
@@ -178,12 +112,21 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         ))}
       </div>
 
-      <div className="seg scroll">
-        {STRATEGIES.map((x) => (
-          <button key={x} className={x === strategy ? 'on' : ''} onClick={() => setStrategy(x)}>
-            {STRATEGY_NAME[x]}
-          </button>
-        ))}
+      <div className="ind-row">
+        {indicators.map((id) => {
+          const d = INDICATOR_BY_ID.get(id);
+          if (!d) return null;
+          return (
+            <button key={id} className="ind-chip" onClick={() => toggleIndicator(id)} aria-label={`${d.label} kaldır`}>
+              <i style={{ background: d.color }} />
+              {d.label}
+              <span className="x">×</span>
+            </button>
+          );
+        })}
+        <button className="ind-add" onClick={() => setPicker(true)}>
+          + İndikatör ekle
+        </button>
       </div>
 
       {error && !series?.candles[tf] ? (
@@ -191,105 +134,10 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
       ) : !series?.candles[tf] ? (
         <div className="chart placeholder">Yükleniyor…</div>
       ) : (
-        <>
-          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} viewId={`${target.symbol}|${tf}`} pane={pane} />
-          <div className="legend-row small">
-            {pane ? (
-              <>
-                {pane.lines.map((l) => (
-                  <span key={l.name}>
-                    <i style={{ background: l.color }} />
-                    {l.name}
-                  </span>
-                ))}
-                <span>Histogram</span>
-              </>
-            ) : lines.length ? (
-              lines.map((l, i) => (
-                <span key={l.name}>
-                  <i style={{ background: LINE_COLORS[i] }} />
-                  {l.name}
-                </span>
-              ))
-            ) : (
-              <span>{STRATEGY_HINT[strategy]}</span>
-            )}
-          </div>
-        </>
+        <PriceChart candles={all} overlays={overlays} panes={panes} viewId={`${target.symbol}|${tf}`} />
       )}
 
-      {(() => {
-        const r = RESEARCH[strategy]?.[tf];
-        if (!r || r[0] < 100) return null;
-        const edge = r[1] - r[2];
-        return (
-          <p className="legend small muted">
-            Genel test ({RESEARCH_SYMBOLS} enstrüman, {TF_LABEL[tf]}): {r[0]} sinyalde %{Math.round(r[1])} isabet, rastgele girişe göre{' '}
-            <b className={edge >= 1.5 ? 'pos' : edge <= -1.5 ? 'neg' : ''}>
-              {edge > 0 ? '+' : ''}
-              {edge.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} puan
-            </b>
-            .
-          </p>
-        );
-      })()}
-
-      {st && (
-        <div className="card">
-          <div className="kv">
-            <span>EMA 5·8·13</span>
-            <b className={st.ema5813Dir ?? st.align}>
-              {st.ema5813Dir && st.ema5813Dir !== 'neutral'
-                ? `Son sinyal ${st.ema5813Dir === 'up' ? 'yükseliş' : 'düşüş'} · ${alignText(st).toLowerCase()}`
-                : alignText(st)}
-            </b>
-          </div>
-          <div className="kv">
-            <span>EMA 20·50</span>
-            <b className={st.pullbackDir}>{pullbackText(st)}</b>
-          </div>
-          <div className="kv">
-            <span>Üçlü Onay</span>
-            <b className={st.triple}>
-              {st.tripleScore == null
-                ? 'Veri yetersiz'
-                : trendText(st.triple, 'Yükseliş bölgesi (3/3)', 'Düşüş bölgesi (0/3)', `Karışık (${st.tripleScore}/3 yukarı)`)}
-            </b>
-          </div>
-          <div className="kv">
-            <span>Supertrend</span>
-            <b className={st.supertrend}>{trendText(st.supertrend, 'Yükseliş', 'Düşüş', 'Veri yetersiz')}</b>
-          </div>
-          <div className="kv">
-            <span>SMA 50/200</span>
-            <b className={st.golden}>{trendText(st.golden, 'SMA 50 üstte (altın)', 'SMA 50 altta (ölüm)', 'Veri yetersiz')}</b>
-          </div>
-          <div className="kv">
-            <span>Donchian 20</span>
-            <b className={st.donchian}>{trendText(st.donchian, 'Son kırılım yukarı', 'Son kırılım aşağı', 'Kırılım yok')}</b>
-          </div>
-          <div className="kv">
-            <span>EMA 200</span>
-            <b className={st.above200 == null ? '' : st.above200 ? 'up' : 'down'}>{ema200Text(st)}</b>
-          </div>
-        </div>
-      )}
-
-      <h2>
-        Sinyal geçmişi · {STRATEGY_NAME[strategy]} · {TF_LABEL[tf]}
-      </h2>
-      {history.length ? (
-        <div className="list">
-          {history.map((e) => (
-            <SignalRow key={`${e.strategy}${e.time}`} e={e} name={target.name} perf={perf.get(e)} />
-          ))}
-        </div>
-      ) : (
-        <div className="empty">Bu strateji ve zaman diliminde sinyal yok.</div>
-      )}
-
-      <h2>Strateji karnesi · {TF_LABEL[tf]}</h2>
-      {closed.length > 0 && <ScoreCard candles={closed} tf={tf} name={target.name} />}
+      {picker && <IndicatorPicker selected={indicators} onToggle={toggleIndicator} onClose={() => setPicker(false)} />}
 
       <h2>İzleme ve mail</h2>
       <div className="card">
