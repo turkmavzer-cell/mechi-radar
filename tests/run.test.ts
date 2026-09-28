@@ -111,3 +111,15 @@ test('açık son mum sinyal hesabına girmez', async () => {
   assert.equal(st.symbols.TEST.tf['15m']!.time, agg[agg.length - 2].t);
   assert.equal(analyze('TEST', '15m', agg.slice(0, -1)).status!.time, agg[agg.length - 2].t);
 });
+
+test('bildirim: aynı mumdaki Stokastik-RSI-ATR sürümleri tek bildirimde birleşir', async () => {
+  const { buildPushMessages } = await import('../server/notify');
+  const base = { symbol: 'X', tf: '1h' as const, dir: 'up' as const, strength: 'strong' as const, time: 100, close: 10, levels: { entry: 10, stop: 9, target: 12 } };
+  const msgs = buildPushMessages([
+    { event: { ...base, strategy: 'sratr' }, name: 'X' },
+    { event: { ...base, strategy: 'sratrAdx' }, name: 'X' },
+    { event: { ...base, strategy: 'macd', levels: undefined }, name: 'X' },
+  ]);
+  assert.equal(msgs.length, 2);
+  assert.match(msgs[0].body, /^LONG GİRİŞ .* · Stokastik-RSI-ATR, SRA \+ ADX/);
+});
