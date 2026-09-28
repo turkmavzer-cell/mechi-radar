@@ -89,26 +89,22 @@ test('performans: sonraki sinyale kadar hareket ve en iyi seviye', () => {
   assert.ok(down.bestPct < 0);
 });
 
-test('MACD: sıfır kesişimi ve sıfırın altında/üstünde devam kesişimi', () => {
-  // Dalgalı düşüş ve dalgalı yükseliş: hem sıfır hem devam kesişimleri oluşur.
+test('MACD: yalnızca MACD çizgisinin sıfır kesişiminde sinyal', () => {
   const closes = Array.from({ length: 400 }, (_, i) => 100 + 15 * Math.sin(i / 60) + 2 * Math.sin(i / 6));
   const cs = fromCloses(closes, 3600);
   const m = macd(closes);
   const ev = analyze('X', '1h', cs).events.filter((e) => e.strategy === 'macd');
   const idx = new Map(cs.map((c, i) => [c.t, i]));
-  assert.ok(ev.some((e) => e.kind === 'zero' && e.dir === 'up'));
-  assert.ok(ev.some((e) => e.kind === 'zero' && e.dir === 'down'));
-  assert.ok(ev.some((e) => e.kind === 'cont'), 'devam kesişimi bekleniyor');
+  assert.ok(ev.some((e) => e.dir === 'up'));
+  assert.ok(ev.some((e) => e.dir === 'down'));
   for (const e of ev) {
     const i = idx.get(e.time)!;
-    if (e.kind === 'zero') {
-      assert.ok(e.dir === 'up' ? m.line[i - 1] <= 0 && m.line[i] > 0 : m.line[i - 1] >= 0 && m.line[i] < 0);
-    } else if (e.dir === 'down') {
-      // İki çizgi de sıfırın altında, mavi kırmızıyı yukarıdan aşağı keser
-      assert.ok(m.line[i] < 0 && m.signal[i] < 0 && m.line[i - 1] >= m.signal[i - 1] && m.line[i] < m.signal[i]);
-    } else {
-      assert.ok(m.line[i] > 0 && m.signal[i] > 0 && m.line[i - 1] <= m.signal[i - 1] && m.line[i] > m.signal[i]);
-    }
+    assert.ok(e.dir === 'up' ? m.line[i - 1] <= 0 && m.line[i] > 0 : m.line[i - 1] >= 0 && m.line[i] < 0);
   }
-  assert.match(signalTitle(ev.find((e) => e.kind === 'cont' && e.dir === 'down') ?? ev[0]), /MACD/);
+  // Her sıfır kesişimi yakalanır; yönler dönüşümlüdür (sıfır üstü/altı ek kesişim sinyali yok).
+  let crosses = 0;
+  for (let i = 1; i < closes.length; i++) if (!Number.isNaN(m.line[i - 1]) && (m.line[i - 1] <= 0) !== (m.line[i] <= 0)) crosses++;
+  assert.equal(ev.length, crosses);
+  for (let k = 1; k < ev.length; k++) assert.notEqual(ev[k].dir, ev[k - 1].dir);
+  assert.match(signalTitle(ev[0]), /MACD sıfırı/);
 });

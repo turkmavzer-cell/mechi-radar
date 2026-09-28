@@ -19,7 +19,7 @@ GitHub Actions (5 dk'da bir) → Yahoo Finance mum verisi → EMA hesabı → si
 | EMA 5·8·13 | EMA5 > EMA8 > EMA13 ve üçü de yükseliyor (düşüş: tersi). Sinyaller sırayla değişir: yükselişten sonra yeni yükseliş için önce düşüş dizilimi ve düşüş sinyali gerekir (tersi de aynı). | 15/20/30 dk: *Kısa vade*, 1/2/4 s: *Orta vade*, 1 g: *Uzun vade* … yükseliş/düşüş başlangıcı |
 | EMA 20·50 pullback | Kopuş: EMA 20, EMA 50'yi aşağıdan yukarı keser → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanış (kırılım). EMA 50 altında kapanış senaryoyu iptal eder; yeni kesişim beklenir. Düşüş: tersi. | Pullback onayı · yükseliş/düşüş devamı |
 | Üçlü Onay (MACD + RSI + Bollinger) | MACD çizgisi 0'ı keser; en fazla 3 mum öncesinde/sonrasında RSI(14) 50'yi keser (sıra fark etmez); son kesişimden sonraki 3 mum içinde Bollinger orta bandının (SMA 20) üstünde kapanan ilk mumda ok. Düşüş: tersi. Göstergeler çizilmez. | Üçlü onay · yükseliş/düşüş |
-| MACD (12, 26, 9) | MACD çizgisi 0'ı yukarı keser (AL) / aşağı keser (SAT). Ek olarak: iki çizgi 0 altındayken MACD sinyal çizgisini aşağı keserse tekrar SAT, 0 üstündeyken yukarı keserse tekrar AL. Grafikte alt panelde MACD, sinyal ve histogram. | MACD sıfırı yukarı/aşağı kesti · sıfır üstü/altı kesişim |
+| MACD (12, 26, 9) | MACD çizgisi 0'ı yukarı keser (AL) / aşağı keser (SAT). Grafikte alt panelde MACD, sinyal ve histogram. | MACD sıfırı yukarı/aşağı kesti |
 | Supertrend (10, 3) | Yön değişimi | Supertrend yükselişe/düşüşe döndü |
 | Altın / Ölüm kesişimi | SMA 50, SMA 200'ü yukarı / aşağı keser | Altın kesişim / Ölüm kesişimi |
 | Donchian 20 (Turtle) | Kapanış önceki 20 mumun zirvesini / dibini kırar; sinyal yalnızca kırılım yönü değişince | 20 mumun zirvesi/dibi kırıldı |
