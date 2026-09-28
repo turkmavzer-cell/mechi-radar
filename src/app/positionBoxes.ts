@@ -94,9 +94,10 @@ export class PositionBoxes implements ISeriesPrimitive<Time> {
           const label = b.label ?? (b.outcome === 'tp' ? '✓ Hedef' : b.outcome === 'sl' ? '✕ Stop' : 'Açık');
           ctx.font = `${Math.round(10 * vr)}px sans-serif`;
           ctx.fillStyle = b.outcome === 'tp' ? '#22c55e' : b.outcome === 'sl' ? '#f05252' : '#94a3b8';
-          const y = b.outcome === 'sl' ? yS : beyond ? yX! : yT;
+          // Etiket gerçek çıkışın yanında: takipte kesikli çizgi (tepe yalnızca görülen en iyi fiyattır).
+          const y = b.outcome === 'sl' ? yS : yL != null ? yL : yT;
           ctx.textBaseline = y > yE ? 'top' : 'bottom';
-          ctx.fillText(label, left + 2 * hr, Math.round((y + (y > yE ? 2 : -2)) * vr));
+          ctx.fillText(label, left + 2 * hr, Math.round((y + (y > yE ? 4 : -4)) * vr));
         }
       });
     },
