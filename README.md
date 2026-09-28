@@ -29,6 +29,7 @@ Kredi kartı gerekmez: Firebase ücretsiz planda (Firestore, Auth, FCM), zamanla
 | MACD (12, 26, 9) | MACD çizgisi 0'ı yukarı keser (AL) / aşağı keser (SAT). Grafikte alt panelde MACD, sinyal ve histogram. | MACD sıfırı yukarı/aşağı kesti |
 | Stokastik-RSI-ATR | Bir üst zaman diliminde Stokastik %K (14,3,3) son 3 kapanmış mumdan birinde 20 altı (long) / 80 üstü (short) iken RSI(14) kendi SMA 14'ünü yukarı / aşağı keser; mum kapanışında giriş. Stop giriş ∓ 1,5×ATR(14), hedef 2R. Pozisyon hedef/stopla kapanır. Test: `research/SRATR.md`. | LONG/SHORT GİRİŞ · Stop · Hedef |
 | SRA + EMA 200 / SRA + ADX | Stokastik-RSI-ATR'ye tek ek şart: fiyat EMA 200'ün sinyal yönündeki tarafında olmalı / ADX(14) < 25. Testte ikisi de hem seçim hem doğrulama yarısında mevcut stratejiden iyi çıktı. | LONG/SHORT GİRİŞ · Stop · Hedef |
+| SAR + EMA 200 + MACD / TTM Squeeze | 11 popüler stratejinin aynı kutu kurallarıyla (stop 1,5 ATR, hedef 2R) testinde ilk yarıda en iyi iki; ikinci yarıda da doğrulandı. Test: `research/SRATR.md`. | LONG/SHORT GİRİŞ · Stop · Hedef |
 | Supertrend (10, 3) | Yön değişimi | Supertrend yükselişe/düşüşe döndü |
 | Altın / Ölüm kesişimi | SMA 50, SMA 200'ü yukarı / aşağı keser | Altın kesişim / Ölüm kesişimi |
 | Donchian 20 (Turtle) | Kapanış önceki 20 mumun zirvesini / dibini kırar; sinyal yalnızca kırılım yönü değişince | 20 mumun zirvesi/dibi kırıldı |

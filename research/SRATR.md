@@ -63,3 +63,36 @@ Tam tablo: `research/sratr-filtre-sonuclar.md`.
   hedefi yakınlaştırmak (1:1'de %51) ama o zaman işlem başına kazanç düşüyor.
 - İkili birleşimlerden **EMA 200 + EMA 50** her iki yarıda +0,18/+0,26R verdi ama yalnızca ~650 işlem; örnek küçük olduğu için eklenmedi.
 - İstatistik: ikinci yarıda ortalama R'nin sıfırdan farkı ADX sürümünde z≈2,2, EMA 200 sürümünde z≈1,4 (örnek küçük). Sonuçlar spread/komisyon hariç.
+
+# Popüler indikatör stratejileri (kutu testi)
+
+Web'de "test edilmiş / en iyi" iddiasıyla öne çıkan 11 strateji, Stokastik-RSI-ATR ile **aynı kutu kurallarıyla**
+(giriş sinyal mumunun kapanışı, stop 1,5 ATR, hedef 2R, açık pozisyonda yeni sinyal yok) 18 enstrümanda test edildi.
+İlk yarıda seçim, ikinci yarıda doğrulama. Orijinal stratejilerin kendi çıkış kuralları (ör. Connors'ta RSI > 65'te çıkış, stopsuz)
+kullanılmadı; bu yüzden sonuçlar iddia edilen isabet oranlarıyla doğrudan karşılaştırılamaz. Tam tablo: `research/populer-stratejiler-sonuclar.md`.
+
+| Strateji | Kaynak / iddia | İlk yarı ort. R | İkinci yarı ort. R | Hedef % |
+|---|---|---|---|---|
+| **Parabolic SAR + EMA 200 + MACD** | Davidd Tech, %70 isabet iddiası | **+0,068** | **+0,081** | %36 |
+| **TTM Squeeze (+ SMA 50)** | John Carter / LazyBear | **+0,054** | **+0,083** | %36 |
+| Supertrend + EMA 200 | Trading Rush, ~%46 isabet | +0,052 | +0,071 | %36 |
+| IBS | QuantifiedStrategies, SPY'de ~%78 | +0,044 | +0,043 | %35 |
+| Williams %R (2) | QuantifiedStrategies, ~%81 | +0,040 | +0,049 | %35 |
+| Ichimoku bulut kırılımı | Trading Rush, ~%53 | +0,040 | +0,032 | %34 |
+| MACD + EMA 200 | Trading Rush, ~%62–65 | +0,036 | +0,016 | %34 |
+| Chandelier Exit + ZLSMA | YouTube, %90+ iddiası | +0,029 | +0,017 | %34 |
+| UT Bot + EMA 200 | TradingView popüler | +0,029 | +0,030 | %34 |
+| Connors RSI(2) | Larry Connors, %70–85 | +0,026 | +0,023 | %34 |
+| EMA 8/21/55 + Stokastik RSI | YouTube scalping | +0,012 | +0,021 | %34 |
+| *(karşılaştırma) Stokastik-RSI-ATR* | | +0,037 | +0,009 | %34 |
+
+**Eklenenler:** SAR + EMA 200 + MACD ve TTM Squeeze. İkisi de ikinci yarıda mevcut SRA'nın ~9 katı ortalama R verdi;
+ikinci yarıda ortalama R'nin sıfırdan farkı z≈3,8 (SAR, 4.387 işlem) ve z≈3,3 (Squeeze, 3.252 işlem); işlemler birbirinden tam bağımsız olmadığı için bu değerler biraz iyimser.
+
+- **Hiçbir strateji iddia edilen isabet oranlarına yaklaşmadı.** 2R hedefte hepsi %34–36 hedefe ulaşıyor; fark kazanan/kaybeden seçiminde.
+- İkisi de en iyi **günlük** grafikte (SAR +0,29R, Squeeze +0,18R), sonra 2s–4s. 15–30dk'da kenar çok küçük.
+- Sonuçlar spread/komisyon hariç.
+
+Kaynaklar: Trading Rush (tradingrush.net: MACD 200 EMA, Supertrend, Ichimoku 100/200 test), QuantifiedStrategies (Williams %R, IBS, RSI-2),
+StockCharts ChartSchool (RSI-2), Davidd Tech (Medium: MACD + Parabolic SAR + 200 EMA), TradeSearcher (UT Bot + STC testi),
+TradingView (Chandelier Exit + ZLSMA, Squeeze Momentum LazyBear).

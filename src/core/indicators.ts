@@ -300,3 +300,100 @@ export function awesome(high: number[], low: number[]): number[] {
 export function roc(close: number[], period = 10): number[] {
   return close.map((c, i) => (i < period ? NaN : (100 * (c - close[i - period])) / close[i - period]));
 }
+
+/** Doğrusal regresyon değeri (TradingView ta.linreg, offset 0). */
+export function linreg(values: number[], period: number): number[] {
+  const out = new Array<number>(values.length).fill(NaN);
+  const sx = (period * (period - 1)) / 2;
+  const sxx = ((period - 1) * period * (2 * period - 1)) / 6;
+  for (let i = period - 1; i < values.length; i++) {
+    let sy = 0;
+    let sxy = 0;
+    let bad = false;
+    for (let k = 0; k < period; k++) {
+      const v = values[i - period + 1 + k];
+      if (Number.isNaN(v)) {
+        bad = true;
+        break;
+      }
+      sy += v;
+      sxy += k * v;
+    }
+    if (bad) continue;
+    const slope = (period * sxy - sx * sy) / (period * sxx - sx * sx);
+    const icpt = (sy - slope * sx) / period;
+    out[i] = icpt + slope * (period - 1);
+  }
+  return out;
+}
+
+/** Sıfır gecikmeli en küçük kareler ortalaması (ZLSMA). */
+export function zlsma(close: number[], period = 32): number[] {
+  const l = linreg(close, period);
+  const l2 = linreg(l, period);
+  return l.map((v, i) => v + (v - l2[i]));
+}
+
+/** UT Bot: ATR izleyen stop (anahtar değer × ATR). Yön 1/-1. */
+export function utBot(close: number[], high: number[], low: number[], key = 1, period = 10): { stop: number[]; dir: number[] } {
+  const a = atr(high, low, close, period);
+  const stop = new Array<number>(close.length).fill(NaN);
+  const dir = new Array<number>(close.length).fill(NaN);
+  let prev = NaN;
+  for (let i = 0; i < close.length; i++) {
+    if (Number.isNaN(a[i])) continue;
+    const loss = key * a[i];
+    const c = close[i];
+    const pc = close[i - 1] ?? c;
+    let s: number;
+    if (Number.isNaN(prev)) s = c - loss;
+    else if (c > prev && pc > prev) s = Math.max(prev, c - loss);
+    else if (c < prev && pc < prev) s = Math.min(prev, c + loss);
+    else s = c > prev ? c - loss : c + loss;
+    stop[i] = s;
+    dir[i] = c > s ? 1 : -1;
+    prev = s;
+  }
+  return { stop, dir };
+}
+
+/** Chandelier Exit (22, 3): yön 1/-1 ve aktif stop çizgisi. */
+export function chandelier(high: number[], low: number[], close: number[], period = 22, mult = 3): { stop: number[]; dir: number[] } {
+  const a = atr(high, low, close, period);
+  const hh = highest(close, period);
+  const ll = lowest(close, period);
+  const stop = new Array<number>(close.length).fill(NaN);
+  const dir = new Array<number>(close.length).fill(NaN);
+  let longS = NaN;
+  let shortS = NaN;
+  let d = 1;
+  for (let i = 0; i < close.length; i++) {
+    if (Number.isNaN(a[i]) || Number.isNaN(hh[i])) continue;
+    let ls = hh[i] - mult * a[i];
+    let ss = ll[i] + mult * a[i];
+    const pc = close[i - 1] ?? close[i];
+    if (!Number.isNaN(longS) && pc > longS) ls = Math.max(ls, longS);
+    if (!Number.isNaN(shortS) && pc < shortS) ss = Math.min(ss, shortS);
+    if (!Number.isNaN(shortS) && close[i] > shortS) d = 1;
+    else if (!Number.isNaN(longS) && close[i] < longS) d = -1;
+    longS = ls;
+    shortS = ss;
+    dir[i] = d;
+    stop[i] = d === 1 ? ls : ss;
+  }
+  return { stop, dir };
+}
+
+/** TTM Squeeze (LazyBear): momentum (doğrusal regresyon) ve sıkışma durumu (Bollinger 20,2 Keltner 20,1,5 içinde). */
+export function squeezeMomentum(high: number[], low: number[], close: number[], period = 20): { mom: number[]; sqz: boolean[] } {
+  const bb = bollinger(close, period, 2);
+  const kc = keltner(high, low, close, period, 1.5, period);
+  const hh = highest(high, period);
+  const ll = lowest(low, period);
+  const s = sma(close, period);
+  const base = close.map((v, i) => v - ((hh[i] + ll[i]) / 2 + s[i]) / 2);
+  return {
+    mom: linreg(base, period),
+    sqz: close.map((_, i) => bb.upper[i] < kc.upper[i] && bb.lower[i] > kc.lower[i]),
+  };
+}
