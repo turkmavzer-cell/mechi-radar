@@ -35,8 +35,10 @@ export type Trend = 'up' | 'down' | 'neutral';
 
 /** Bir enstrümanın bir zaman dilimindeki güncel durumu. */
 export interface TfStatus {
-  /** EMA 5/8/13 dizilimi. */
+  /** EMA 5/8/13 dizilimi (şu anki mum). */
   align: Trend;
+  /** Son EMA 5/8/13 sinyalinin yönü: bir sonraki ters sinyale kadar geçerli yön. */
+  ema5813Dir?: Trend;
   /** EMA 20/50 ilişkisi ve pullback aşaması. */
   pullback: PullbackPhase;
   pullbackDir: Trend;

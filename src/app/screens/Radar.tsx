@@ -1,7 +1,11 @@
-import { formatPrice } from '../../core/labels';
+import { useMemo } from 'react';
+import { formatPrice, formatPct } from '../../core/labels';
+import type { SignalEvent, Timeframe } from '../../core/types';
+import { DEFAULT_CONFIG } from '../../../server/defaults';
 import type { RadarApi } from '../lib/data';
+import { useLive } from '../lib/live';
 import type { OpenTarget } from '../App';
-import { agoText, SignalRow, TrendChip } from '../ui';
+import { SignalRow, SkeletonList, TrendChip, clockText } from '../ui';
 
 interface Props {
   api: RadarApi;
@@ -10,37 +14,59 @@ interface Props {
   onGoSettings: () => void;
 }
 
+const TFS: Timeframe[] = ['15m', '4h', '1d'];
+const RECENT_HOURS = 24;
+
 export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
-  const { data, loading, error, refresh } = api;
-  const watch = data.config?.watchlist ?? [];
-  const names = new Map(watch.map((w) => [w.symbol, w.name]));
-  const recent = data.signals.filter((s) => names.has(s.symbol)).slice(0, 5);
+  const watch = api.data.config?.watchlist ?? DEFAULT_CONFIG.watchlist;
+  const symbols = useMemo(() => watch.map((w) => w.symbol), [watch]);
+  const names = useMemo(() => new Map(watch.map((w) => [w.symbol, w.name])), [watch]);
+  const live = useLive('radar', symbols, TFS, 2 * 60 * 1000);
+
+  // Son 24 saatte izleme listesinde oluşan tüm sinyaller (tüm stratejiler), en yeniden eskiye.
+  const recent = useMemo(() => {
+    const since = Date.now() / 1000 - RECENT_HOURS * 3600;
+    const list: SignalEvent[] = [];
+    for (const s of Object.values(live.data)) list.push(...s.events.filter((e) => e.time >= since));
+    return list.sort((a, b) => b.time - a.time).slice(0, 8);
+  }, [live.data]);
+
+  const first = live.loading && !live.updatedAt;
 
   return (
     <div>
       <header className="top">
-        <div>
-          <h1>Mechi Radar</h1>
-          <div className="muted small">Son kontrol: {agoText(data.state?.updatedAt)}</div>
+        <div className="brand">
+          <span className="logo" aria-hidden>
+            ◎
+          </span>
+          <div>
+            <h1>Mechi Radar</h1>
+            <div className="muted small">
+              {live.loading
+                ? `Güncelleniyor… ${live.progress.done}/${live.progress.total}`
+                : live.updatedAt
+                  ? `Güncellendi ${clockText(live.updatedAt)}`
+                  : 'Henüz güncellenmedi'}
+            </div>
+          </div>
         </div>
-        <button className="icon-btn" onClick={refresh} aria-label="Yenile" disabled={loading}>
-          <span className={loading ? 'spin' : ''}>⟳</span>
+        <button className="icon-btn" onClick={live.refresh} aria-label="Yenile" disabled={live.loading}>
+          <span className={live.loading ? 'spin' : ''}>⟳</span>
         </button>
       </header>
 
-      {error && <div className="notice err">{error}</div>}
       {!hasToken && (
         <button className="notice link" onClick={onGoSettings}>
-          İzleme listesine ekleme yapmak ve bildirim açmak için bir kez GitHub token girmen gerekiyor. <b>Ayarlar'a git ›</b>
+          İzleme listesine ekleme yapmak için bir kez GitHub token girmen gerekiyor. <b>Ayarlar'a git ›</b>
         </button>
       )}
-      {!data.state && !loading && !error && (
-        <div className="notice">Henüz veri yok. İlk kontrol GitHub'da çalıştıktan sonra burada görünecek.</div>
-      )}
 
-      <h2>Son sinyaller</h2>
-      {recent.length === 0 ? (
-        <div className="empty">Henüz yeni sinyal yok.</div>
+      <h2>Son {RECENT_HOURS} saatin sinyalleri</h2>
+      {first ? (
+        <SkeletonList rows={3} />
+      ) : recent.length === 0 ? (
+        <div className="empty">Son {RECENT_HOURS} saatte 15dk, 4s ve 1g mumlarında yeni sinyal yok.</div>
       ) : (
         <div className="list">
           {recent.map((e) => (
@@ -48,6 +74,7 @@ export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
               key={`${e.symbol}${e.tf}${e.strategy}${e.time}`}
               e={e}
               name={names.get(e.symbol)}
+              showStrategy
               onClick={() => onOpen({ symbol: e.symbol, name: names.get(e.symbol) ?? e.symbol })}
             />
           ))}
@@ -55,41 +82,43 @@ export function RadarScreen({ api, onOpen, hasToken, onGoSettings }: Props) {
       )}
 
       <h2>İzleme listem</h2>
-      <div className="list">
-        {watch.map((w) => {
-          const st = data.state?.symbols[w.symbol];
-          const ch = st?.changePct;
-          return (
-            <button key={w.symbol} className="row" onClick={() => onOpen({ symbol: w.symbol, name: w.name })}>
-              <span className="grow">
-                <span className="title">
-                  {w.name} {w.alerts.length > 0 && <span className="bell" title="Mail açık">🔔</span>}
+      {first ? (
+        <SkeletonList rows={watch.length || 4} />
+      ) : (
+        <div className="list">
+          {watch.map((w) => {
+            const s = live.data[w.symbol];
+            const err = live.errors[w.symbol];
+            const ch = s?.changePct;
+            return (
+              <button key={w.symbol} className="row" onClick={() => onOpen({ symbol: w.symbol, name: w.name })}>
+                <span className="grow">
+                  <span className="title">
+                    {w.name} {w.alerts.length > 0 && <span className="bell" title="Bildirim açık">🔔</span>}
+                  </span>
+                  <span className="chips">
+                    {TFS.map((tf) => (
+                      <TrendChip key={tf} tf={tf} trend={s?.tf[tf]?.ema5813Dir ?? s?.tf[tf]?.align} />
+                    ))}
+                  </span>
                 </span>
-                <span className="chips">
-                  <TrendChip tf="15m" trend={st?.tf['15m']?.align} />
-                  <TrendChip tf="4h" trend={st?.tf['4h']?.align} />
-                  <TrendChip tf="1d" trend={st?.tf['1d']?.align} />
+                <span className="price">
+                  <span>{formatPrice(s?.price)}</span>
+                  {ch != null ? (
+                    <span className={`small ${ch >= 0 ? 'pos' : 'neg'}`}>{formatPct(ch)}</span>
+                  ) : (
+                    err && <span className="small muted">veri yok</span>
+                  )}
                 </span>
-              </span>
-              <span className="price">
-                <span>{formatPrice(st?.price)}</span>
-                {st?.error ? (
-                  <span className="small muted">veri alınamadı</span>
-                ) : (
-                  ch != null && (
-                    <span className={`small ${ch >= 0 ? 'pos' : 'neg'}`}>
-                      {ch >= 0 ? '+' : ''}
-                      {ch.toLocaleString('tr-TR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%
-                    </span>
-                  )
-                )}
-              </span>
-            </button>
-          );
-        })}
-        {watch.length === 0 && <div className="empty">Liste boş. Keşfet'ten enstrüman ekleyebilirsin.</div>}
-      </div>
-      <p className="legend muted small">▲ yükseliş dizilimi · ▼ düşüş dizilimi · – belirsiz (EMA 5·8·13)</p>
+              </button>
+            );
+          })}
+          {watch.length === 0 && <div className="empty">Liste boş. Keşfet'ten enstrüman ekleyebilirsin.</div>}
+        </div>
+      )}
+      <p className="legend muted small">
+        Oklar EMA 5·8·13'ün son sinyal yönünü gösterir; yön, ters yönde yeni sinyal gelene kadar geçerlidir.
+      </p>
     </div>
   );
 }

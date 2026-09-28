@@ -118,6 +118,8 @@ const SOURCE: Record<Timeframe, '5m' | '60m' | '1d'> = {
   '1d': '1d',
 };
 const RANGE: Record<'5m' | '60m' | '1d', string> = { '5m': '30d', '60m': '1y', '1d': '5y' };
+/** Telefonda hızlı özet için daha kısa geçmiş (EMA 200 için yine yeterli mum kalır). */
+const RANGE_LIGHT: Record<'5m' | '60m' | '1d', string> = { '5m': '10d', '60m': '6mo', '1d': '2y' };
 
 /** İstenen zaman dilimleri için mumları indirir ve birleştirir. */
 export async function loadSeries(
@@ -125,10 +127,12 @@ export async function loadSeries(
   symbol: string,
   tfs: Timeframe[],
   now = Math.floor(Date.now() / 1000),
+  light = false,
 ): Promise<SeriesSet> {
   const sources = [...new Set(tfs.map((tf) => SOURCE[tf]))];
-  const raw = new Map<string, { meta: ChartMeta; candles: Candle[] }>();
-  for (const src of sources) raw.set(src, await fetchChart(fetchFn, symbol, src, RANGE[src]));
+  const ranges = light ? RANGE_LIGHT : RANGE;
+  const fetched = await Promise.all(sources.map((src) => fetchChart(fetchFn, symbol, src, ranges[src])));
+  const raw = new Map<string, { meta: ChartMeta; candles: Candle[] }>(sources.map((src, i) => [src, fetched[i]]));
   const meta = raw.values().next().value!.meta;
   const session = isSessionMarket(meta);
   const set: SeriesSet = { meta, candles: {}, lastOpen: {} };

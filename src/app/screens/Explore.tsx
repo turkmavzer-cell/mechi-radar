@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { searchSymbols, type SearchHit } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
+import { yahooFetch } from '../lib/http';
 
 const QUICK: OpenTarget[] = [
   { symbol: 'NIY=F', name: 'Japan 225 (vadeli)' },
@@ -17,19 +18,34 @@ export function ExploreScreen({ onOpen }: { onOpen: (t: OpenTarget) => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = async () => {
-    const query = q.trim();
-    if (!query) return;
+  const seq = useRef(0);
+
+  const search = async (query: string) => {
+    const id = ++seq.current;
     setLoading(true);
     setError(null);
     try {
-      setHits(await searchSymbols(fetch, query));
+      const res = await searchSymbols(yahooFetch, query);
+      if (id === seq.current) setHits(res);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      if (id === seq.current) setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false);
+      if (id === seq.current) setLoading(false);
     }
   };
+
+  // Yazarken otomatik ara (yazma bittikten 400 ms sonra); kutu boşalınca hızlı erişime dön.
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length < 2) {
+      seq.current++;
+      setHits(null);
+      setLoading(false);
+      return;
+    }
+    const id = setTimeout(() => search(query), 400);
+    return () => clearTimeout(id);
+  }, [q]);
 
   return (
     <div>
@@ -40,7 +56,7 @@ export function ExploreScreen({ onOpen }: { onOpen: (t: OpenTarget) => void }) {
         className="search"
         onSubmit={(e) => {
           e.preventDefault();
-          search();
+          if (q.trim()) search(q.trim());
         }}
       >
         <input
@@ -49,9 +65,11 @@ export function ExploreScreen({ onOpen }: { onOpen: (t: OpenTarget) => void }) {
           placeholder="Hisse, endeks, parite ara (ör. THYAO, Nikkei, EURUSD)"
           enterKeyHint="search"
         />
-        <button className="btn" disabled={loading}>
-          {loading ? '…' : 'Ara'}
-        </button>
+        {q ? (
+          <button type="button" className="btn ghost-plain" onClick={() => setQ('')} aria-label="Temizle">
+            {loading ? '…' : '✕'}
+          </button>
+        ) : null}
       </form>
       {error && <div className="notice err">Arama yapılamadı: {error}</div>}
 

@@ -9,6 +9,7 @@ import type { OpenTarget } from '../App';
 import { LINE_COLORS, PriceChart, type ChartLine } from '../Chart';
 import type { RadarApi } from '../lib/data';
 import { SignalRow } from '../ui';
+import { yahooFetch } from '../lib/http';
 
 const STRATEGY_HINT: Record<Strategy, string> = {
   ema5813: '',
@@ -39,18 +40,25 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
 
   const watchItem = api.data.config?.watchlist.find((w) => w.symbol === target.symbol);
 
+  // Ekran açıkken grafik dakikada bir yenilenir.
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
   useEffect(() => {
     let alive = true;
     setLoading(true);
     setError(null);
-    loadSeries(fetch, target.symbol, [tf])
+    loadSeries(yahooFetch, target.symbol, [tf])
       .then((s) => alive && setSeries(s))
       .catch((err) => alive && setError(err instanceof Error ? err.message : String(err)))
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, [target.symbol, tf]);
+  }, [target.symbol, tf, tick]);
 
   const { all, closed, analysis } = useMemo(() => {
     const candles = series?.candles[tf] ?? [];
@@ -118,7 +126,9 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
           ←
         </button>
         <div className="grow">
-          <h1>{target.name}</h1>
+          <h1>
+            {target.name} {loading && series?.candles[tf] && <span className="spin muted small">⟳</span>}
+          </h1>
           <div className="muted small">
             {target.symbol} · {formatPrice(price)}
           </div>
@@ -141,13 +151,13 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         ))}
       </div>
 
-      {error ? (
+      {error && !series?.candles[tf] ? (
         <div className="notice err">Veri alınamadı: {error}</div>
-      ) : loading && !series ? (
+      ) : !series?.candles[tf] ? (
         <div className="chart placeholder">Yükleniyor…</div>
       ) : (
         <>
-          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} />
+          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} viewId={`${target.symbol}|${tf}`} />
           <div className="legend-row small">
             {lines.length ? (
               lines.map((l, i) => (
@@ -167,7 +177,11 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         <div className="card">
           <div className="kv">
             <span>EMA 5·8·13</span>
-            <b className={st.align}>{alignText(st)}</b>
+            <b className={st.ema5813Dir ?? st.align}>
+              {st.ema5813Dir && st.ema5813Dir !== 'neutral'
+                ? `Son sinyal ${st.ema5813Dir === 'up' ? 'yükseliş' : 'düşüş'} · ${alignText(st).toLowerCase()}`
+                : alignText(st)}
+            </b>
           </div>
           <div className="kv">
             <span>EMA 20·50</span>
