@@ -3,24 +3,9 @@
 // çalıştırılır; sonuç R cinsinden (hedef = +RR, stop = −1) research/out/sratr.* dosyalarına yazılır.
 // Çalıştırma: npx tsx research/sratr.ts
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { aggregate, TF_SECONDS } from '../src/core/candles';
 import { higherSeries, srTrades, type SrParams } from '../src/core/sratr';
-import { TIMEFRAMES, type Candle, type Timeframe } from '../src/core/types';
-import { fetchChart, isSessionMarket, lastIsOpen } from '../src/core/yahoo';
-
-const SYMBOLS = [
-  'EURUSD=X', 'USDJPY=X', 'GBPUSD=X', '^GSPC', '^NDX', '^GDAXI', 'NIY=F', 'XU100.IS', 'GC=F',
-  'CL=F', 'AAPL', 'MSFT', 'NVDA', 'THYAO.IS', 'GARAN.IS', 'ASELS.IS', 'BTC-USD', 'ETH-USD',
-];
-const SOURCE: Record<Timeframe, { interval: '5m' | '60m' | '1d'; range: string }> = {
-  '15m': { interval: '5m', range: '60d' },
-  '20m': { interval: '5m', range: '60d' },
-  '30m': { interval: '5m', range: '60d' },
-  '1h': { interval: '60m', range: '730d' },
-  '2h': { interval: '60m', range: '730d' },
-  '4h': { interval: '60m', range: '730d' },
-  '1d': { interval: '1d', range: '10y' },
-};
+import { TIMEFRAMES } from '../src/core/types';
+import { loadAll, SYMBOLS } from './load';
 
 const COMBOS: SrParams[] = [];
 for (const lookback of [1, 3]) for (const stopAtr of [1.5, 2]) for (const rr of [1, 1.5, 2, 3]) COMBOS.push({ stopAtr, rr, lookback });
@@ -33,30 +18,10 @@ const get = (k: string) => {
   if (!a) acc.set(k, (a = { n: 0, tp: 0, r: 0, gross: 0, loss: 0, symbols: new Set(), posSymbols: new Map() }));
   return a;
 };
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
-  const now = Math.floor(Date.now() / 1000);
   for (const symbol of SYMBOLS) {
-    const raw = new Map<string, Awaited<ReturnType<typeof fetchChart>>>();
-    for (const src of new Set(Object.values(SOURCE).map((x) => `${x.interval}|${x.range}`))) {
-      const [interval, range] = src.split('|');
-      try {
-        raw.set(src, await fetchChart(fetch, symbol, interval as '5m' | '60m' | '1d', range));
-      } catch (err) {
-        console.warn(`${symbol} ${interval}: ${err}`);
-      }
-      await sleep(500);
-    }
-    const all: Partial<Record<Timeframe, Candle[]>> = {};
-    for (const tf of TIMEFRAMES) {
-      const src = raw.get(`${SOURCE[tf].interval}|${SOURCE[tf].range}`);
-      if (!src) continue;
-      const session = isSessionMarket(src.meta);
-      let cs = tf === '1d' ? src.candles : aggregate(src.candles, TF_SECONDS[tf], session, src.meta.gmtoffset ?? 0);
-      if (lastIsOpen(cs, tf, src.meta, now)) cs = cs.slice(0, -1);
-      all[tf] = cs;
-    }
+    const all = await loadAll(symbol);
     for (const tf of TIMEFRAMES) {
       const cs = all[tf];
       const higher = higherSeries(tf, all);

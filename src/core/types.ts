@@ -25,10 +25,14 @@ export type Strategy =
   | 'stoch'
   | 'rsidiv'
   | 'macd'
-  | 'sratr';
+  | 'sratr'
+  | 'sratrEma'
+  | 'sratrAdx';
 
 export const STRATEGIES: Strategy[] = [
   'sratr',
+  'sratrEma',
+  'sratrAdx',
   'ema5813',
   'pullback2050',
   'triple',

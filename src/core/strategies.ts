@@ -1,6 +1,6 @@
 import { ema, macd, rsi, sma, supertrend } from './indicators';
 import { bbReversion, rsiDivergence, stochastic } from './extra';
-import { srTrades, type HigherSeries } from './sratr';
+import { SR_VARIANTS, srTrades, SR_PARAMS, type HigherSeries } from './sratr';
 import type { Candle, Direction, PullbackPhase, SignalEvent, Strength, TfStatus, Timeframe, Trend } from './types';
 
 export interface EmaSet {
@@ -158,10 +158,11 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[], higher
   for (const s of rsiDivergence(candles)) push(s.i, 'rsidiv', s.dir);
   for (const s of macdSignals(candles)) push(s.i, 'macd', s.dir);
   // Stokastik-RSI-ATR yalnızca üst zaman dilimi verisi verildiyse hesaplanır.
-  for (const s of srTrades(candles, tf, higher)) {
-    push(s.i, 'sratr', s.dir);
-    events[events.length - 1].levels = { entry: s.entry, stop: s.stop, target: s.target };
-  }
+  for (const v of SR_VARIANTS)
+    for (const s of srTrades(candles, tf, higher, SR_PARAMS, [...v.filters])) {
+      push(s.i, v.id, s.dir);
+      events[events.length - 1].levels = { entry: s.entry, stop: s.stop, target: s.target };
+    }
   // Stratejiler ayrı döngülerde çalıştığı için olayları zamana göre sırala.
   events.sort((a, b) => a.time - b.time);
 

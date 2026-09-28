@@ -24,6 +24,8 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'donchian':
       return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
     case 'sratr':
+    case 'sratrEma':
+    case 'sratrAdx':
       return e.levels
         ? `${up ? 'LONG' : 'SHORT'} GİRİŞ ${formatPrice(e.levels.entry)} · Stop ${formatPrice(e.levels.stop)} · Hedef ${formatPrice(e.levels.target)}`
         : `${up ? 'LONG' : 'SHORT'} GİRİŞ`;
@@ -60,6 +62,8 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   rsidiv: 'RSI Uyumsuzluğu',
   macd: 'MACD',
   sratr: 'Stokastik-RSI-ATR',
+  sratrEma: 'SRA + EMA 200',
+  sratrAdx: 'SRA + ADX',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {

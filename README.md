@@ -28,6 +28,7 @@ Kredi kartı gerekmez: Firebase ücretsiz planda (Firestore, Auth, FCM), zamanla
 | Üçlü Onay (MACD + RSI + Bollinger) | MACD çizgisi 0'ı keser; en fazla 3 mum öncesinde/sonrasında RSI(14) 50'yi keser (sıra fark etmez); son kesişimden sonraki 3 mum içinde Bollinger orta bandının (SMA 20) üstünde kapanan ilk mumda ok. Düşüş: tersi. Göstergeler çizilmez. | Üçlü onay · yükseliş/düşüş |
 | MACD (12, 26, 9) | MACD çizgisi 0'ı yukarı keser (AL) / aşağı keser (SAT). Grafikte alt panelde MACD, sinyal ve histogram. | MACD sıfırı yukarı/aşağı kesti |
 | Stokastik-RSI-ATR | Bir üst zaman diliminde Stokastik %K (14,3,3) son 3 kapanmış mumdan birinde 20 altı (long) / 80 üstü (short) iken RSI(14) kendi SMA 14'ünü yukarı / aşağı keser; mum kapanışında giriş. Stop giriş ∓ 1,5×ATR(14), hedef 2R. Pozisyon hedef/stopla kapanır. Test: `research/SRATR.md`. | LONG/SHORT GİRİŞ · Stop · Hedef |
+| SRA + EMA 200 / SRA + ADX | Stokastik-RSI-ATR'ye tek ek şart: fiyat EMA 200'ün sinyal yönündeki tarafında olmalı / ADX(14) < 25. Testte ikisi de hem seçim hem doğrulama yarısında mevcut stratejiden iyi çıktı. | LONG/SHORT GİRİŞ · Stop · Hedef |
 | Supertrend (10, 3) | Yön değişimi | Supertrend yükselişe/düşüşe döndü |
 | Altın / Ölüm kesişimi | SMA 50, SMA 200'ü yukarı / aşağı keser | Altın kesişim / Ölüm kesişimi |
 | Donchian 20 (Turtle) | Kapanış önceki 20 mumun zirvesini / dibini kırar; sinyal yalnızca kırılım yönü değişince | 20 mumun zirvesi/dibi kırıldı |

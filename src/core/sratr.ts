@@ -1,5 +1,5 @@
 import { TF_SECONDS } from './candles';
-import { atr, rsi, sma, stochOsc } from './indicators';
+import { adx, atr, bollinger, ema, macd, rsi, sma, stochOsc, supertrend } from './indicators';
 import type { Candle, Direction, Timeframe } from './types';
 
 /**
@@ -97,7 +97,117 @@ export interface SrTrade {
   outcome: 'tp' | 'sl' | 'open';
 }
 
-export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries | undefined, params: SrParams = SR_PARAMS): SrTrade[] {
+/** Girişe ek şart: true dönerse giriş yapılır. */
+export type SrFilter = (i: number, dir: Direction) => boolean;
+
+interface FilterInput {
+  candles: Candle[];
+  /** Her mumda bilinen son kapanmış üst zaman dilimi mumunun indeksi. */
+  hIdx: number[];
+  higher: HigherSeries;
+}
+
+/** Mevcut stratejiye tek bir indikatör ekleyen aday filtreler (araştırma ve yeni varyantlar için). */
+export const SR_FILTERS: Record<string, { name: string; make: (x: FilterInput) => SrFilter }> = {
+  ema200: {
+    name: 'fiyat EMA 200 üstündeyse yalnızca LONG, altındaysa yalnızca SHORT',
+    make: ({ candles }) => {
+      const e = ema(candles.map((c) => c.c), 200);
+      return (i, d) => !Number.isNaN(e[i]) && (d === 'up' ? candles[i].c > e[i] : candles[i].c < e[i]);
+    },
+  },
+  ema50: {
+    name: 'EMA 50 trend yönü',
+    make: ({ candles }) => {
+      const e = ema(candles.map((c) => c.c), 50);
+      return (i, d) => !Number.isNaN(e[i]) && (d === 'up' ? candles[i].c > e[i] : candles[i].c < e[i]);
+    },
+  },
+  adxTrend: {
+    name: 'ADX > 20 (trend var)',
+    make: ({ candles }) => {
+      const a = adx(candles.map((c) => c.h), candles.map((c) => c.l), candles.map((c) => c.c)).adx;
+      return (i) => a[i] > 20;
+    },
+  },
+  adxRange: {
+    name: 'ADX(14) 25 altında (güçlü trend yokken)',
+    make: ({ candles }) => {
+      const a = adx(candles.map((c) => c.h), candles.map((c) => c.l), candles.map((c) => c.c)).adx;
+      return (i) => a[i] < 25;
+    },
+  },
+  macdHist: {
+    name: 'MACD histogramı sinyal yönünde',
+    make: ({ candles }) => {
+      const m = macd(candles.map((c) => c.c));
+      const h = m.line.map((v, i) => v - m.signal[i]);
+      return (i, d) => (d === 'up' ? h[i] > h[i - 1] : h[i] < h[i - 1]);
+    },
+  },
+  rsiZone: {
+    name: 'RSI 50 altında al / üstünde sat',
+    make: ({ candles }) => {
+      const r = rsi(candles.map((c) => c.c), 14);
+      return (i, d) => (d === 'up' ? r[i] < 50 : r[i] > 50);
+    },
+  },
+  bbMid: {
+    name: 'Bollinger orta bandın altında al / üstünde sat',
+    make: ({ candles }) => {
+      const b = bollinger(candles.map((c) => c.c));
+      return (i, d) => (d === 'up' ? candles[i].c < b.mid[i] : candles[i].c > b.mid[i]);
+    },
+  },
+  bbTouch: {
+    name: 'Son 5 mumda Bollinger alt/üst banda değmiş',
+    make: ({ candles }) => {
+      const b = bollinger(candles.map((c) => c.c));
+      return (i, d) => {
+        for (let k = Math.max(0, i - 4); k <= i; k++) if (d === 'up' ? candles[k].l <= b.lower[k] : candles[k].h >= b.upper[k]) return true;
+        return false;
+      };
+    },
+  },
+  supertrend: {
+    name: 'Supertrend (10, 3) aynı yönde',
+    make: ({ candles }) => {
+      const st = supertrend(candles.map((c) => c.h), candles.map((c) => c.l), candles.map((c) => c.c));
+      return (i, d) => st[i] === (d === 'up' ? 1 : -1);
+    },
+  },
+  htfTurn: {
+    name: 'Üst zaman dilimi Stokastik dönmüş (%K, %D\'yi kesmiş)',
+    make: ({ higher, hIdx }) => {
+      const hc = higher.candles;
+      const s = stochOsc(hc.map((c) => c.h), hc.map((c) => c.l), hc.map((c) => c.c));
+      return (i, d) => {
+        const h = hIdx[i];
+        return d === 'up' ? s.k[h] > s.d[h] : s.k[h] < s.d[h];
+      };
+    },
+  },
+  candle: {
+    name: 'Giriş mumu sinyal yönünde kapanmış',
+    make: ({ candles }) => (i, d) => (d === 'up' ? candles[i].c > candles[i].o : candles[i].c < candles[i].o),
+  },
+};
+
+/** Stokastik-RSI-ATR ailesi: mevcut strateji ve testte daha iyi sonuç veren iki ek indikatörlü sürüm. */
+export const SR_VARIANTS = [
+  { id: 'sratr', name: 'Stokastik-RSI-ATR', short: 'SRA', filters: [] as string[] },
+  { id: 'sratrEma', name: 'Stokastik-RSI-ATR + EMA 200', short: 'SRA + EMA 200', filters: ['ema200'] },
+  { id: 'sratrAdx', name: 'Stokastik-RSI-ATR + ADX', short: 'SRA + ADX', filters: ['adxRange'] },
+] as const;
+export type SrVariantId = (typeof SR_VARIANTS)[number]['id'];
+
+export function srTrades(
+  candles: Candle[],
+  tf: Timeframe,
+  higher: HigherSeries | undefined,
+  params: SrParams = SR_PARAMS,
+  filters: string[] = [],
+): SrTrade[] {
   if (!higher || candles.length < 30) return [];
   const close = candles.map((c) => c.c);
   const { rsi: r, sma: rMa } = rsiWithSma(close);
@@ -114,6 +224,7 @@ export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries 
     hc.map((c) => c.c),
   ).k;
   const hIdx = alignHigher(candles, tf, higher);
+  const extra = filters.map((id) => SR_FILTERS[id].make({ candles, hIdx, higher }));
 
   const trades: SrTrade[] = [];
   let busyUntil = -1;
@@ -130,7 +241,7 @@ export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries 
       if (hk[k] > 80) high = true;
     }
     const dir: Direction | null = up && low ? 'up' : down && high ? 'down' : null;
-    if (!dir) continue;
+    if (!dir || !extra.every((f) => f(i, dir))) continue;
     const entry = close[i];
     const risk = params.stopAtr * a[i];
     const s = dir === 'up' ? 1 : -1;

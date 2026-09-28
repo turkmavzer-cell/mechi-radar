@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TF_LABEL } from '../../core/candles';
 import { formatPrice, formatTime } from '../../core/labels';
-import { HIGHER_LABEL, HIGHER_TF, higherSeries, SR_PARAMS, srTrades, withHigher } from '../../core/sratr';
+import { HIGHER_LABEL, HIGHER_TF, higherSeries, SR_FILTERS, SR_PARAMS, SR_VARIANTS, srTrades, withHigher, type SrVariantId } from '../../core/sratr';
 import { TIMEFRAMES, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
@@ -67,26 +67,32 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
   const toggleIndicator = (id: string) =>
     updateIndicators(indicators.includes(id) ? indicators.filter((x) => x !== id) : [...indicators, id]);
 
-  const [showStrategy, setShowStrategy] = useState(() => {
+  // Grafikte gösterilen Stokastik-RSI-ATR sürümü (biri seçilir; seçili olana tekrar dokununca kapanır).
+  const [srId, setSrId] = useState<SrVariantId | null>(() => {
     try {
-      return localStorage.getItem('mechi.sratr') !== '0';
+      const v = localStorage.getItem('mechi.sratr');
+      if (v === '0') return null;
+      return SR_VARIANTS.some((x) => x.id === v) ? (v as SrVariantId) : 'sratr';
     } catch {
-      return true;
+      return 'sratr';
     }
   });
-  const toggleStrategy = () => {
-    setShowStrategy(!showStrategy);
+  const pickVariant = (id: SrVariantId) => {
+    const next = srId === id ? null : id;
+    setSrId(next);
     try {
-      localStorage.setItem('mechi.sratr', showStrategy ? '0' : '1');
+      localStorage.setItem('mechi.sratr', next ?? '0');
     } catch {
       // Kaydedilemezse yalnızca bu oturumda geçerli olur.
     }
   };
+  const variant = SR_VARIANTS.find((x) => x.id === srId);
+  const showStrategy = !!variant;
   // Strateji yalnızca kapanmış mumlarda sinyal üretir; üst zaman diliminin oluşan mumu kapanış zamanıyla elenir.
   const { closed, trades } = useMemo(() => {
     const closed = series?.lastOpen[tf] ? all.slice(0, -1) : all;
-    return { closed, trades: series ? srTrades(closed, tf, higherSeries(tf, series.candles)) : [] };
-  }, [series, tf, all]);
+    return { closed, trades: series && variant ? srTrades(closed, tf, higherSeries(tf, series.candles), SR_PARAMS, [...variant.filters]) : [] };
+  }, [series, tf, all, variant]);
   const positions = useMemo<ChartPosition[] | undefined>(
     () =>
       showStrategy
@@ -168,9 +174,12 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
             </button>
           );
         })}
-        <button className={`ind-chip strat ${showStrategy ? 'on' : ''}`} onClick={toggleStrategy}>
-          {showStrategy ? '✓ ' : ''}Stokastik-RSI-ATR
-        </button>
+        {SR_VARIANTS.map((v) => (
+          <button key={v.id} className={`ind-chip strat ${srId === v.id ? 'on' : ''}`} onClick={() => pickVariant(v.id)}>
+            {srId === v.id ? '✓ ' : ''}
+            {v.short}
+          </button>
+        ))}
         <button className="ind-add" onClick={() => setPicker(true)}>
           + İndikatör ekle
         </button>
@@ -191,16 +200,19 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
           onClose={() => setPicker(false)}
         />}
 
-      {showStrategy && series?.candles[tf] && (
+      {variant && series?.candles[tf] && (
         <>
-          <h2>Stokastik-RSI-ATR · {TF_LABEL[tf]}</h2>
+          <h2>
+            {variant.name} · {TF_LABEL[tf]}
+          </h2>
           <p className="legend small muted">
             {HIGHER_LABEL[HIGHER_TF[tf]]} Stokastik 20 altı/80 üstü iken RSI(14) kendi ortalamasını (SMA 14) keserse giriş. Stop{' '}
             {SR_PARAMS.stopAtr.toLocaleString('tr-TR')} ATR, hedef stop mesafesinin {SR_PARAMS.rr.toLocaleString('tr-TR')} katı.
+            {variant.filters.map((f) => ` Ek şart: ${SR_FILTERS[f].name}.`)}
             {done.length > 0 && (
               <>
                 {' '}
-                Bu grafikte {done.length} kapanmış işlem: {wins} hedef, {done.length - wins} stop, toplam{' '}
+                {formatDate(closed[done[0].i].t)} – {formatDate(closed[closed.length - 1].t)} arasında {done.length} kapanmış işlem: {wins} hedef, {done.length - wins} stop, toplam{' '}
                 <b className={totalR > 0 ? 'pos' : totalR < 0 ? 'neg' : ''}>
                   {totalR > 0 ? '+' : ''}
                   {totalR.toLocaleString('tr-TR', { maximumFractionDigits: 1 })}R
@@ -282,4 +294,8 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
       <p className="legend muted small">Teknik gösterge bilgisidir, yatırım tavsiyesi değildir.</p>
     </div>
   );
+}
+
+function formatDate(unix: number): string {
+  return new Date(unix * 1000).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
