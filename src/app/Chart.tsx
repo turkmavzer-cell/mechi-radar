@@ -27,6 +27,8 @@ export interface ChartPosition {
   stop: number;
   target: number;
   outcome: 'tp' | 'sl' | 'open';
+  exitPrice?: number;
+  label?: string;
 }
 
 const UP = '#0ca30c';
