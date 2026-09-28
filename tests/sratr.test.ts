@@ -90,3 +90,27 @@ test('Stokastik-RSI-ATR filtreleri: her giriş filtre şartını sağlar', async
     for (const t of ts) assert.ok(f(t.i, t.dir), `${id} şartı sağlanmadı`);
   }
 });
+
+test('kutu adayları: her strateji sinyal üretir, sinyaller geçerli indekste', async () => {
+  const { BOX_CANDIDATES, simulate } = await import('../src/core/boxes');
+  const cs = walk(6000, 900, 9);
+  for (const b of BOX_CANDIDATES) {
+    const sig = b.signals(cs);
+    assert.ok(sig.length > 0, `${b.id} sinyal yok`);
+    assert.ok(sig.every((s) => s.i > 0 && s.i < cs.length));
+    const tr = simulate(cs, sig);
+    for (let k = 1; k < tr.length; k++) assert.ok(tr[k].i > tr[k - 1].exitI!);
+  }
+});
+
+test('kutu adayları: geleceğe bakmaz (kısaltılmış veride aynı sinyaller)', async () => {
+  const { BOX_CANDIDATES } = await import('../src/core/boxes');
+  const cs = walk(3000, 900, 21);
+  for (const b of BOX_CANDIDATES) {
+    const full = b.signals(cs);
+    for (const n of [1200, 2100]) {
+      const part = b.signals(cs.slice(0, n)).map((s) => `${s.i}${s.dir}`);
+      assert.deepEqual(part, full.filter((s) => s.i < n).map((s) => `${s.i}${s.dir}`), `${b.id} @${n}`);
+    }
+  }
+});
