@@ -124,6 +124,8 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
             target: x.target,
             outcome: x.outcome,
             exitPrice: x.exitPrice,
+            peak: x.peak,
+            trailLine: x.trailing ? (x.outcome === 'open' ? x.trailStop : x.exitPrice) : undefined,
             label: x.outcome === 'tp' && x.r != null ? `✓ ${fmtR(x.r)}` : x.trailing ? 'Takipte' : undefined,
           }))
         : undefined,

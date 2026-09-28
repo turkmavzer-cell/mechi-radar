@@ -58,6 +58,8 @@ export interface BoxTrade {
   /** Takip eden kâr al devrede (hedefe ulaşıldı); açık işlemde güncel takip stopu `trailStop`. */
   trailing?: boolean;
   trailStop?: number;
+  /** Takip sırasında görülen en iyi fiyat (hedef dahil). */
+  peak?: number;
 }
 
 export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxParams = BOX_PARAMS): BoxTrade[] {
@@ -113,12 +115,16 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
         t.exitI = j;
         t.exitPrice = px;
         t.r = (s * (px - entry)) / risk;
+        t.peak = best;
         break;
       }
       best = dir === 'up' ? Math.max(best, c.h) : Math.min(best, c.l);
       trailStop = dir === 'up' ? Math.max(trailStop, best - gap) : Math.min(trailStop, best + gap);
     }
-    if (t.trailing && t.outcome === 'open') t.trailStop = trailStop;
+    if (t.trailing && t.outcome === 'open') {
+      t.trailStop = trailStop;
+      t.peak = best;
+    }
     trades.push(t);
     busyUntil = t.exitI ?? candles.length;
   }

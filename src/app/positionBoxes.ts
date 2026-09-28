@@ -20,6 +20,10 @@ export interface PositionBox {
   outcome: 'tp' | 'sl' | 'open';
   /** Takip eden kâr alda hedefin ötesindeki çıkış fiyatı. */
   exitPrice?: number;
+  /** Takipte görülen en iyi fiyat: yeşil alan buraya kadar uzar. */
+  peak?: number;
+  /** Takip stopu (açık işlem) ya da takipte çıkış fiyatı: kesikli çizgi. */
+  trailLine?: number;
   /** Kutunun sonuç etiketi (ör. "✓ +3,2R"). */
   label?: string;
 }
@@ -73,9 +77,16 @@ export class PositionBoxes implements ISeriesPrimitive<Time> {
           };
           rect(yE, yT, GREEN);
           // Takip eden kâr al: hedefin ötesinde kapanan kısım daha açık yeşil.
-          const yX = b.exitPrice != null ? series.priceToCoordinate(b.exitPrice) : null;
+          // Takip eden kâr al: hedefin ötesinde görülen en iyi fiyata kadar açık yeşil uzantı, takip stopu kesikli çizgi.
+          const yX = b.peak != null ? series.priceToCoordinate(b.peak) : null;
           const beyond = yX != null && (yT < yE ? yX < yT : yX > yT);
-          if (beyond) rect(yT, yX, 'rgba(34, 197, 94, 0.12)');
+          if (beyond) rect(yT, yX, 'rgba(34, 197, 94, 0.14)');
+          const yL = b.trailLine != null ? series.priceToCoordinate(b.trailLine) : null;
+          if (yL != null) {
+            ctx.fillStyle = '#22c55e';
+            const dash = Math.round(4 * hr);
+            for (let x = left; x < left + width; x += dash * 2) ctx.fillRect(x, Math.round(yL * vr), Math.min(dash, left + width - x), Math.max(1, Math.round(1.5 * vr)));
+          }
           rect(yE, yS, RED);
           ctx.fillStyle = 'rgba(226, 232, 240, 0.8)';
           ctx.fillRect(left, Math.round(yE * vr), width, Math.max(1, Math.round(vr)));
