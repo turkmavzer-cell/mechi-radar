@@ -60,7 +60,9 @@ export function StrategyPanel({ title, rule, trades, candles, rr }: Props) {
           <div>
             <b className="big">%{Math.round((100 * wins) / done.length)}</b>
             <span className="muted small">
-              {wins} hedef · {done.length - wins} stop
+              kazanan işlem
+              <br />
+              {wins} kâr · {done.length - wins} stop
             </span>
           </div>
         </div>
