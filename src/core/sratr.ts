@@ -110,7 +110,7 @@ interface FilterInput {
 /** Mevcut stratejiye tek bir indikatör ekleyen aday filtreler (araştırma ve yeni varyantlar için). */
 export const SR_FILTERS: Record<string, { name: string; make: (x: FilterInput) => SrFilter }> = {
   ema200: {
-    name: 'EMA 200 trend yönü',
+    name: 'fiyat EMA 200 üstündeyse yalnızca LONG, altındaysa yalnızca SHORT',
     make: ({ candles }) => {
       const e = ema(candles.map((c) => c.c), 200);
       return (i, d) => !Number.isNaN(e[i]) && (d === 'up' ? candles[i].c > e[i] : candles[i].c < e[i]);
@@ -131,7 +131,7 @@ export const SR_FILTERS: Record<string, { name: string; make: (x: FilterInput) =
     },
   },
   adxRange: {
-    name: 'ADX < 25 (yatay piyasa)',
+    name: 'ADX(14) 25 altında (güçlü trend yokken)',
     make: ({ candles }) => {
       const a = adx(candles.map((c) => c.h), candles.map((c) => c.l), candles.map((c) => c.c)).adx;
       return (i) => a[i] < 25;
@@ -192,6 +192,14 @@ export const SR_FILTERS: Record<string, { name: string; make: (x: FilterInput) =
     make: ({ candles }) => (i, d) => (d === 'up' ? candles[i].c > candles[i].o : candles[i].c < candles[i].o),
   },
 };
+
+/** Stokastik-RSI-ATR ailesi: mevcut strateji ve testte daha iyi sonuç veren iki ek indikatörlü sürüm. */
+export const SR_VARIANTS = [
+  { id: 'sratr', name: 'Stokastik-RSI-ATR', short: 'SRA', filters: [] as string[] },
+  { id: 'sratrEma', name: 'Stokastik-RSI-ATR + EMA 200', short: 'SRA + EMA 200', filters: ['ema200'] },
+  { id: 'sratrAdx', name: 'Stokastik-RSI-ATR + ADX', short: 'SRA + ADX', filters: ['adxRange'] },
+] as const;
+export type SrVariantId = (typeof SR_VARIANTS)[number]['id'];
 
 export function srTrades(
   candles: Candle[],
