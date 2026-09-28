@@ -54,8 +54,9 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
   const emas = computeEmas(candles);
   const { e5, e8, e13, e20, e50, e200 } = emas;
   const events: SignalEvent[] = [];
-  const push = (i: number, strategy: SignalEvent['strategy'], dir: Direction) => {
+  const push = (i: number, strategy: SignalEvent['strategy'], dir: Direction, kind?: string) => {
     events.push({
+      ...(kind ? { kind } : {}),
       symbol,
       tf,
       strategy,
@@ -155,6 +156,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
   for (const s of bbReversion(candles)) push(s.i, 'bbrev', s.dir);
   for (const s of stochastic(candles)) push(s.i, 'stoch', s.dir);
   for (const s of rsiDivergence(candles)) push(s.i, 'rsidiv', s.dir);
+  for (const s of macdSignals(candles)) push(s.i, 'macd', s.dir, s.kind);
   // Stratejiler ayrı döngülerde çalıştığı için olayları zamana göre sırala.
   events.sort((a, b) => a.time - b.time);
 
@@ -337,6 +339,26 @@ export function signalPerformance(events: SignalEvent[], candles: Candle[]): Map
         ongoing: !next,
       });
     });
+  }
+  return out;
+}
+
+/**
+ * MACD (12, 26, 9):
+ *   ▲ MACD çizgisi (mavi) 0'ı aşağıdan yukarı keser            → kind 'zero'
+ *   ▼ MACD çizgisi 0'ı yukarıdan aşağı keser                   → kind 'zero'
+ *   ▼ İki çizgi de 0'ın altındayken mavi, sinyal çizgisini (kırmızı) yukarıdan aşağı keser → kind 'cont'
+ *   ▲ İki çizgi de 0'ın üstündeyken mavi, kırmızıyı aşağıdan yukarı keser                 → kind 'cont'
+ */
+export function macdSignals(candles: Candle[]): { i: number; dir: Direction; kind: 'zero' | 'cont' }[] {
+  const { line, signal } = macd(candles.map((c) => c.c));
+  const out: { i: number; dir: Direction; kind: 'zero' | 'cont' }[] = [];
+  for (let i = 1; i < candles.length; i++) {
+    if (Number.isNaN(line[i - 1]) || Number.isNaN(signal[i - 1])) continue;
+    if (line[i - 1] <= 0 && line[i] > 0) out.push({ i, dir: 'up', kind: 'zero' });
+    else if (line[i - 1] >= 0 && line[i] < 0) out.push({ i, dir: 'down', kind: 'zero' });
+    else if (line[i] < 0 && signal[i] < 0 && line[i - 1] >= signal[i - 1] && line[i] < signal[i]) out.push({ i, dir: 'down', kind: 'cont' });
+    else if (line[i] > 0 && signal[i] > 0 && line[i - 1] <= signal[i - 1] && line[i] > signal[i]) out.push({ i, dir: 'up', kind: 'cont' });
   }
   return out;
 }

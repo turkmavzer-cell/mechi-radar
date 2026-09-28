@@ -7,7 +7,7 @@ export function horizon(tf: Timeframe): string {
   return 'Orta vade';
 }
 
-export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf'>): string {
+export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'kind'>): string {
   const up = e.dir === 'up';
   const word = up ? 'yükseliş' : 'düşüş';
   switch (e.strategy) {
@@ -23,6 +23,10 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf'>): st
       return up ? 'Altın kesişim (SMA 50/200)' : 'Ölüm kesişimi (SMA 50/200)';
     case 'donchian':
       return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
+    case 'macd':
+      return e.kind === 'cont'
+        ? `MACD ${up ? 'sıfır üstünde yukarı kesişim · al' : 'sıfır altında aşağı kesişim · sat'}`
+        : `MACD sıfırı ${up ? 'yukarı kesti · al' : 'aşağı kesti · sat'}`;
     case 'bbrev':
       return up ? 'Alt banttan içeri dönüş' : 'Üst banttan içeri dönüş';
     case 'stoch':
@@ -52,6 +56,7 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   bbrev: 'Bollinger Dönüşü',
   stoch: 'Stokastik',
   rsidiv: 'RSI Uyumsuzluğu',
+  macd: 'MACD',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {

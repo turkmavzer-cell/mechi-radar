@@ -23,12 +23,14 @@ export type Strategy =
   | 'donchian'
   | 'bbrev'
   | 'stoch'
-  | 'rsidiv';
+  | 'rsidiv'
+  | 'macd';
 
 export const STRATEGIES: Strategy[] = [
   'ema5813',
   'pullback2050',
   'triple',
+  'macd',
   'bbrev',
   'stoch',
   'rsidiv',
@@ -48,6 +50,8 @@ export interface SignalEvent {
   /** Sinyalin oluştuğu (kapanmış) mumun açılış zamanı, unix saniye. */
   time: number;
   close: number;
+  /** Stratejinin alt türü; ör. MACD'de 'zero' (sıfır kesişimi) veya 'cont' (devam kesişimi). */
+  kind?: string;
 }
 
 export type Trend = 'up' | 'down' | 'neutral';

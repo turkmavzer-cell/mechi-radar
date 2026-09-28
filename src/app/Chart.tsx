@@ -2,10 +2,13 @@ import { useEffect, useRef } from 'react';
 import {
   CandlestickSeries,
   ColorType,
+  HistogramSeries,
   createChart,
   createSeriesMarkers,
   LineSeries,
   type IChartApi,
+  type ISeriesApi,
+  type SeriesType,
   type SeriesMarker,
   type Time,
   type UTCTimestamp,
@@ -15,6 +18,13 @@ import type { Candle, SignalEvent, Strategy } from '../core/types';
 export interface ChartLine {
   name: string;
   values: number[];
+}
+
+/** Fiyatın altında ayrı panelde gösterilen gösterge (ör. MACD). */
+export interface ChartPane {
+  lines: (ChartLine & { color: string })[];
+  histogram?: number[];
+  zeroLine?: boolean;
 }
 
 // Doğrulanmış kategorik palet (koyu tema): mavi, turuncu, su yeşili.
@@ -34,9 +44,10 @@ interface Props {
   strategy: Strategy;
   /** Sembol + zaman dilimi; değişince görünüm son mumlara odaklanır, aynı kalırsa korunur. */
   viewId: string;
+  pane?: ChartPane;
 }
 
-export function PriceChart({ candles, lines, events, strategy, viewId }: Props) {
+export function PriceChart({ candles, lines, events, strategy, viewId, pane }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   // Aynı seri yenilenince (dakikalık güncelleme) kullanıcının kaydırdığı görünüm korunur.
@@ -86,6 +97,33 @@ export function PriceChart({ candles, lines, events, strategy, viewId }: Props) 
       return s;
     });
 
+    // Alt panel (MACD vb.)
+    const paneSeries: ISeriesApi<SeriesType>[] = [];
+    if (pane) {
+      const toData = (vals: number[]) =>
+        vals.flatMap((v, i) => (Number.isNaN(v) || !candles[i] ? [] : [{ time: t(candles[i].t), value: v }]));
+      if (pane.histogram) {
+        const h = chart.addSeries(HistogramSeries, { priceLineVisible: false, lastValueVisible: false }, 1);
+        h.setData(
+          pane.histogram.flatMap((v, i) =>
+            Number.isNaN(v) || !candles[i] ? [] : [{ time: t(candles[i].t), value: v, color: v >= 0 ? 'rgba(12,163,12,.45)' : 'rgba(208,59,59,.45)' }],
+          ),
+        );
+        paneSeries.push(h);
+      }
+      pane.lines.forEach((l, idx) => {
+        const ls = chart.addSeries(
+          LineSeries,
+          { color: l.color, lineWidth: 2, priceLineVisible: false, lastValueVisible: true, crosshairMarkerVisible: false },
+          1,
+        );
+        ls.setData(toData(l.values));
+        if (idx === 0 && pane.zeroLine) ls.createPriceLine({ price: 0, color: '#64748b', lineWidth: 1, lineStyle: 2, axisLabelVisible: false });
+        paneSeries.push(ls);
+      });
+      chart.panes()[1]?.setHeight(120);
+    }
+
     const markers: SeriesMarker<Time>[] = events
       .filter((e) => e.strategy === strategy)
       .map((e) => ({
@@ -93,7 +131,7 @@ export function PriceChart({ candles, lines, events, strategy, viewId }: Props) 
         position: e.dir === 'up' ? 'belowBar' : 'aboveBar',
         shape: e.dir === 'up' ? 'arrowUp' : 'arrowDown',
         color: e.dir === 'up' ? UP : DOWN,
-        text: e.strategy === 'pullback2050' ? 'PB' : '',
+        text: e.strategy === 'pullback2050' ? 'PB' : e.strategy === 'macd' ? (e.dir === 'up' ? 'AL' : 'SAT') : '',
         size: 1.2,
       }));
     const markerApi = createSeriesMarkers(candleSeries, markers);
@@ -109,9 +147,10 @@ export function PriceChart({ candles, lines, events, strategy, viewId }: Props) 
       if (chartRef.current !== chart) return;
       markerApi.detach();
       lineSeries.forEach((s) => chart.removeSeries(s));
+      paneSeries.forEach((s) => chart.removeSeries(s));
       chart.removeSeries(candleSeries);
     };
-  }, [candles, lines, events, strategy, viewId]);
+  }, [candles, lines, events, strategy, viewId, pane]);
 
-  return <div className="chart" ref={box} />;
+  return <div className={pane ? 'chart tall' : 'chart'} ref={box} />;
 }
