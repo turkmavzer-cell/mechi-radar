@@ -7,7 +7,7 @@ export function horizon(tf: Timeframe): string {
   return 'Orta vade';
 }
 
-export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'kind'>): string {
+export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf'>): string {
   const up = e.dir === 'up';
   const word = up ? 'yükseliş' : 'düşüş';
   switch (e.strategy) {
@@ -24,9 +24,7 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'ki
     case 'donchian':
       return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
     case 'macd':
-      return e.kind === 'cont'
-        ? `MACD ${up ? 'sıfır üstünde yukarı kesişim · al' : 'sıfır altında aşağı kesişim · sat'}`
-        : `MACD sıfırı ${up ? 'yukarı kesti · al' : 'aşağı kesti · sat'}`;
+      return `MACD sıfırı ${up ? 'yukarı kesti · al' : 'aşağı kesti · sat'}`;
     case 'bbrev':
       return up ? 'Alt banttan içeri dönüş' : 'Üst banttan içeri dönüş';
     case 'stoch':

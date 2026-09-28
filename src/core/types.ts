@@ -50,8 +50,6 @@ export interface SignalEvent {
   /** Sinyalin oluştuğu (kapanmış) mumun açılış zamanı, unix saniye. */
   time: number;
   close: number;
-  /** Stratejinin alt türü; ör. MACD'de 'zero' (sıfır kesişimi) veya 'cont' (devam kesişimi). */
-  kind?: string;
 }
 
 export type Trend = 'up' | 'down' | 'neutral';
