@@ -55,11 +55,13 @@ export function PriceChart({ candles, overlays, panes, viewId, positions }: Prop
   const chartRef = useRef<IChartApi | null>(null);
   // Aynı seri yenilenince (dakikalık güncelleme) kullanıcının kaydırdığı görünüm korunur.
   const viewKey = useRef('');
+  const paneCount = useRef(0);
 
   useEffect(() => {
     if (!box.current) return;
     const chart = createChart(box.current, {
-      autoSize: true,
+      width: box.current.clientWidth,
+      height: box.current.clientHeight,
       layout: {
         background: { type: ColorType.Solid, color: '#0f172a' },
         textColor: '#94a3b8',
@@ -72,7 +74,13 @@ export function PriceChart({ candles, overlays, panes, viewId, positions }: Prop
       crosshair: { mode: 0 },
     });
     chartRef.current = chart;
+    // Boyut elle yönetilir: kutu değişince grafik yeniden boyutlanır ve panel yükseklikleri yeniden atanır
+    // (otomatik boyutlamada yeni yükseklik son panele eklendiği için alt paneller eşit kalmıyordu).
+    const el = box.current;
+    const ro = new ResizeObserver(() => layout(chart, el, paneCount.current));
+    ro.observe(el);
     return () => {
+      ro.disconnect();
       chart.remove();
       chartRef.current = null;
     };
@@ -162,7 +170,8 @@ export function PriceChart({ candles, overlays, panes, viewId, positions }: Prop
     // Kaldırılan alt panellerin boş yerleri silinir, kalanların yüksekliği ayarlanır.
     const ps = chart.panes();
     for (let k = ps.length - 1; k > panes.length; k--) chart.removePane(k);
-    chart.panes().forEach((p, k) => p.setHeight(k === 0 ? MAIN_HEIGHT : PANE_HEIGHT));
+    paneCount.current = panes.length;
+    if (box.current) layout(chart, box.current, panes.length);
 
     if (candles.length && viewId !== viewKey.current) {
       const visible = Math.min(candles.length, 90);
@@ -180,6 +189,17 @@ export function PriceChart({ candles, overlays, panes, viewId, positions }: Prop
   }, [candles, overlays, panes, viewId, positions]);
 
   return <div className="chart" style={{ height: MAIN_HEIGHT + panes.length * PANE_HEIGHT }} ref={box} />;
+}
+
+/** Grafiği kutu boyutuna getirir; alt paneller sabit yükseklikte, kalan alan fiyat panelinde. */
+function layout(chart: IChartApi, el: HTMLElement, n: number) {
+  const width = el.clientWidth;
+  const height = el.clientHeight;
+  if (!width || !height) return;
+  chart.resize(width, height, true);
+  const axis = chart.timeScale().height();
+  const ps = chart.panes();
+  ps.forEach((p, k) => p.setHeight(k === 0 ? Math.max(120, height - axis - n * PANE_HEIGHT) : PANE_HEIGHT));
 }
 
 function level(price: number) {

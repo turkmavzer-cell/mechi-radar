@@ -18,7 +18,14 @@ import {
   supertrendLine,
   williamsR,
 } from '../core/indicators';
-import type { Candle } from '../core/types';
+import { HIGHER_LABEL, HIGHER_TF, higherStoch, rsiWithSma, type HigherSeries } from '../core/sratr';
+import type { Candle, Timeframe } from '../core/types';
+
+/** Çizimde gereken bağlam: zaman dilimi ve Stokastik-RSI-ATR'nin üst zaman dilimi mumları. */
+export interface PlotContext {
+  tf: Timeframe;
+  higher?: HigherSeries;
+}
 
 /** Grafikte bir çizgi. Değer dizisi mum sayısından uzunsa fazlası ileri tarihlere çizilir (Ichimoku bulutu). */
 export interface PlotLine {
@@ -47,7 +54,7 @@ export interface IndicatorDef {
   group: string;
   pane: boolean;
   color: string;
-  build: (c: Candle[]) => Omit<Plot, 'id' | 'label'>;
+  build: (c: Candle[], ctx: PlotContext) => Omit<Plot, 'id' | 'label'>;
 }
 
 const H = (c: Candle[]) => c.map((x) => x.h);
@@ -78,6 +85,41 @@ const ORANGE = '#f59e0b';
 const GREEN = '#22c55e';
 
 const defs: IndicatorDef[] = [
+  {
+    id: 'rsisma',
+    label: 'RSI (14) + SMA 14',
+    group: 'Stokastik-RSI-ATR',
+    pane: true,
+    color: '#a78bfa',
+    build: (c) => {
+      const r = rsiWithSma(C(c));
+      return {
+        lines: [
+          { name: 'RSI', color: '#a78bfa', values: r.rsi },
+          { name: 'SMA 14', color: '#e2b714', values: r.sma },
+        ],
+        levels: [30, 50, 70],
+      };
+    },
+  },
+  {
+    id: 'htfstoch',
+    label: 'Üst zaman dilimi Stokastik',
+    group: 'Stokastik-RSI-ATR',
+    pane: true,
+    color: '#22d3ee',
+    build: (c, ctx) => {
+      const s = higherStoch(c, ctx.tf, ctx.higher);
+      const tag = HIGHER_LABEL[HIGHER_TF[ctx.tf]];
+      return {
+        lines: [
+          { name: `%K ${tag}`, color: '#22d3ee', values: s.k },
+          { name: `%D ${tag}`, color: ORANGE, values: s.d },
+        ],
+        levels: [20, 80],
+      };
+    },
+  },
   ...EMA_PERIODS.map<IndicatorDef>((p) => ({
     id: `ema${p}`,
     label: `EMA ${p}`,
@@ -292,7 +334,7 @@ const defs: IndicatorDef[] = [
   {
     id: 'atr',
     label: 'ATR (14)',
-    group: 'Alt panel',
+    group: 'Stokastik-RSI-ATR',
     pane: true,
     color: '#94a3b8',
     build: (c) => ({ lines: [{ name: 'ATR', color: '#94a3b8', values: atr(H(c), L(c), C(c), 14) }] }),
@@ -317,17 +359,18 @@ const defs: IndicatorDef[] = [
 
 export const INDICATORS: IndicatorDef[] = defs;
 export const INDICATOR_BY_ID = new Map(defs.map((d) => [d.id, d]));
-export const INDICATOR_GROUPS = ['EMA', 'SMA', 'Fiyat üstü', 'Alt panel'];
+export const INDICATOR_GROUPS = ['Stokastik-RSI-ATR', 'EMA', 'SMA', 'Fiyat üstü', 'Alt panel'];
+export const STRATEGY_KIT = ['rsisma', 'htfstoch', 'atr'];
 
 export const DEFAULT_INDICATORS = ['ema21', 'ema55', 'ema200'];
 
-export function buildPlots(ids: string[], candles: Candle[]): { overlays: Plot[]; panes: Plot[] } {
+export function buildPlots(ids: string[], candles: Candle[], ctx: PlotContext): { overlays: Plot[]; panes: Plot[] } {
   const overlays: Plot[] = [];
   const panes: Plot[] = [];
   // Seçim listesindeki sıra korunur (EMA'lar kısa → uzun).
   for (const d of defs) {
     if (!ids.includes(d.id)) continue;
-    const plot = { id: d.id, label: d.label, ...d.build(candles) };
+    const plot = { id: d.id, label: d.label, ...d.build(candles, ctx) };
     (d.pane ? panes : overlays).push(plot);
   }
   return { overlays, panes };

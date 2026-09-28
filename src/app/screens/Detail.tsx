@@ -54,7 +54,10 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
 
   const all = useMemo(() => series?.candles[tf] ?? [], [series, tf]);
   // İndikatörler TradingView'deki gibi oluşmakta olan son mum dahil hesaplanır.
-  const { overlays, panes } = useMemo(() => buildPlots(indicators, all), [indicators, all]);
+  const { overlays, panes } = useMemo(
+    () => buildPlots(indicators, all, { tf, higher: series ? higherSeries(tf, series.candles) : undefined }),
+    [indicators, all, tf, series],
+  );
 
   const updateIndicators = (ids: string[]) => {
     setIndicators(ids);
@@ -180,7 +183,12 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         <PriceChart candles={all} overlays={overlays} panes={panes} viewId={`${target.symbol}|${tf}`} positions={positions} />
       )}
 
-      {picker && <IndicatorPicker selected={indicators} onToggle={toggleIndicator} onClose={() => setPicker(false)} />}
+      {picker && <IndicatorPicker
+          selected={indicators}
+          onToggle={toggleIndicator}
+          onAddAll={(ids) => updateIndicators([...indicators, ...ids.filter((id) => !indicators.includes(id))])}
+          onClose={() => setPicker(false)}
+        />}
 
       {showStrategy && series?.candles[tf] && (
         <>

@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { adx, bollinger, cci, psar, stochOsc, stochRsi, williamsR, sma } from '../src/core/indicators';
 import { buildPlots, INDICATORS } from '../src/app/indicators';
+import { aggregate } from '../src/core/candles';
+import { higherStoch } from '../src/core/sratr';
 import type { Candle } from '../src/core/types';
 
 const candles: Candle[] = Array.from({ length: 300 }, (_, i) => {
@@ -28,7 +30,7 @@ test('indikatörler: sınırlar ve temel özellikler', () => {
 });
 
 test('tüm hazır indikatörler çizilebilir', () => {
-  const { overlays, panes } = buildPlots(INDICATORS.map((d) => d.id), candles);
+  const { overlays, panes } = buildPlots(INDICATORS.map((d) => d.id), candles, { tf: '15m', higher: { tf: '1h', candles: aggregate(candles, 3600, false) } });
   assert.equal(overlays.length + panes.length, INDICATORS.length);
   for (const p of [...overlays, ...panes]) {
     const n = p.lines.reduce((k, l) => k + finite(l.values).length, finite(p.histogram ?? []).length);
@@ -37,4 +39,16 @@ test('tüm hazır indikatörler çizilebilir', () => {
   // Ichimoku öncü açıklıkları mumların ötesine uzanır.
   const ich = overlays.find((p) => p.id === 'ichimoku')!;
   assert.ok(ich.lines.find((l) => l.name === 'Span A')!.values.length > candles.length);
+});
+
+test('üst zaman dilimi Stokastik: yalnızca kapanmış 1s mumunun değeri, basamak şeklinde', () => {
+  const hc = aggregate(candles, 3600, false);
+  const s = higherStoch(candles, '15m', { tf: '1h', candles: hc });
+  // 1s mumu, içindeki son 15dk mumu kapanınca biter; o 15dk mumunda değer o 1s mumuna geçer.
+  for (let i = 0; i < candles.length; i++) {
+    const closeTime = candles[i].t + 900;
+    const done = hc.filter((h) => h.t + 3600 <= closeTime).length - 1;
+    const expected = higherStoch(hc, '1h', { tf: '1h', candles: hc }).k[done] ?? NaN;
+    assert.ok(Object.is(s.k[i], expected) || Math.abs(s.k[i] - expected) < 1e-9, `${i}`);
+  }
 });

@@ -100,8 +100,7 @@ export interface SrTrade {
 export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries | undefined, params: SrParams = SR_PARAMS): SrTrade[] {
   if (!higher || candles.length < 30) return [];
   const close = candles.map((c) => c.c);
-  const r = rsi(close, 14);
-  const rMa = sma_nan(r, 14);
+  const { rsi: r, sma: rMa } = rsiWithSma(close);
   const a = atr(
     candles.map((c) => c.h),
     candles.map((c) => c.l),
@@ -114,15 +113,12 @@ export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries 
     hc.map((c) => c.l),
     hc.map((c) => c.c),
   ).k;
-  const hSec = higher.tf === '1w' ? WEEK : TF_SECONDS[higher.tf];
-  const sec = TF_SECONDS[tf];
+  const hIdx = alignHigher(candles, tf, higher);
 
   const trades: SrTrade[] = [];
-  let h = -1; // kapanmış son üst mumun indeksi
   let busyUntil = -1;
   for (let i = 1; i < candles.length; i++) {
-    const closeTime = candles[i].t + sec;
-    while (h + 1 < hc.length && hc[h + 1].t + hSec <= closeTime) h++;
+    const h = hIdx[i];
     if (i <= busyUntil || h < 0) continue;
     const up = r[i - 1] <= rMa[i - 1] && r[i] > rMa[i];
     const down = r[i - 1] >= rMa[i - 1] && r[i] < rMa[i];
@@ -153,6 +149,40 @@ export function srTrades(candles: Candle[], tf: Timeframe, higher: HigherSeries 
     busyUntil = t.exitI ?? candles.length;
   }
   return trades;
+}
+
+/** Her mumun kapanışında bilinen (kapanmış) son üst zaman dilimi mumunun indeksi; yoksa -1. */
+export function alignHigher(candles: Candle[], tf: Timeframe, higher: HigherSeries): number[] {
+  const hc = higher.candles;
+  const hSec = higher.tf === '1w' ? WEEK : TF_SECONDS[higher.tf];
+  const sec = TF_SECONDS[tf];
+  const out = new Array<number>(candles.length);
+  let h = -1;
+  for (let i = 0; i < candles.length; i++) {
+    const closeTime = candles[i].t + sec;
+    while (h + 1 < hc.length && hc[h + 1].t + hSec <= closeTime) h++;
+    out[i] = h;
+  }
+  return out;
+}
+
+/** Üst zaman dilimi Stokastiği (14,3,3), alt zaman dilimi mumlarına basamak şeklinde yerleştirilmiş. */
+export function higherStoch(candles: Candle[], tf: Timeframe, higher: HigherSeries | undefined): { k: number[]; d: number[] } {
+  if (!higher) return { k: candles.map(() => NaN), d: candles.map(() => NaN) };
+  const hc = higher.candles;
+  const s = stochOsc(
+    hc.map((c) => c.h),
+    hc.map((c) => c.l),
+    hc.map((c) => c.c),
+  );
+  const idx = alignHigher(candles, tf, higher);
+  return { k: idx.map((h) => (h < 0 ? NaN : s.k[h])), d: idx.map((h) => (h < 0 ? NaN : s.d[h])) };
+}
+
+/** RSI(14) ve RSI'ın SMA 14'ü (stratejinin tetik çizgileri). */
+export function rsiWithSma(close: number[]): { rsi: number[]; sma: number[] } {
+  const r = rsi(close, 14);
+  return { rsi: r, sma: sma_nan(r, 14) };
 }
 
 /** Başındaki NaN'ları atlayarak SMA (RSI'ın ortalaması için). */
