@@ -16,8 +16,22 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Tüm sürümler repodaki sabit anahtarla imzalanır; böylece güncelleme eskisinin üzerine kurulur.
+    // (Varsayılan ~/.android/debug.keystore'a güvenilmez: CI'da her derlemede yeni anahtar üretilebiliyor.)
+    signingConfigs {
+        mechi {
+            storeFile rootProject.file('../keystore/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.mechi
+        }
         release {
+            signingConfig signingConfigs.mechi
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

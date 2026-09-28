@@ -56,7 +56,7 @@ Birkaç dakika içinde test maili gelmeli ve `data` dalı oluşmalı. Sonrasınd
 - **Releases** (repo ana sayfası sağ tarafı): telefondan doğrudan `.apk` indirilir.
 - Actions çalışmasının **Artifacts** bölümü (zip içinde).
 
-Tüm sürümler aynı anahtarla (`keystore/debug.keystore`) imzalanır. Güncellemeyi eskisinin üzerine kurabilirsin.
+Tüm sürümler `android/app/build.gradle` içindeki imza ayarıyla repodaki `keystore/debug.keystore` anahtarıyla imzalanır; derleme imzayı doğrular. Güncelleme eskisinin üzerine kurulur.
 
 ### 5. Uygulamada token
 GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token

@@ -37,11 +37,6 @@ jobs:
       - name: Capacitor senkronize et
         run: npx cap sync android
 
-      - name: Sabit imzalama anahtarını yerleştir
-        run: |
-          mkdir -p ~/.android
-          cp keystore/debug.keystore ~/.android/debug.keystore
-
       - name: APK derle
         working-directory: android
         env:
@@ -49,6 +44,16 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
+
+      # İmza repodaki anahtarla aynı değilse derlemeyi durdur (güncelleme kurulamaz olurdu).
+      - name: İmzayı doğrula
+        run: |
+          expected=$(keytool -list -v -keystore keystore/debug.keystore -storepass android -alias androiddebugkey | grep -m1 'SHA256:' | awk '{print $2}')
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          actual=$("$apksigner" verify --print-certs android/app/build/outputs/apk/debug/app-debug.apk | grep -m1 'SHA-256 digest' | awk '{print $NF}')
+          echo "beklenen: $expected"
+          echo "APK:      $actual"
+          [ "$(echo "$expected" | tr -d ':' | tr 'A-F' 'a-f')" = "$actual" ] || { echo "İmza anahtarı farklı!"; exit 1; }
 
       - name: APK'yı adlandır
         run: cp android/app/build/outputs/apk/debug/app-debug.apk mechi-radar-${{ github.run_number }}.apk
