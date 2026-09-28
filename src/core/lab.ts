@@ -405,6 +405,7 @@ export const LAB: LabStrategy[] = [
   { id: 'ema5813', name: 'EMA 5·8·13', family: 'trend', rule: 'EMA5>8>13 dizilimi, sırayla değişen yön', run: fromCore('ema5813') },
   { id: 'pullback2050', name: 'EMA 20·50 pullback', family: 'trend', rule: 'Kesişim → EMA20 geri çekilme → tepe kırılımı', run: fromCore('pullback2050') },
   { id: 'triple', name: 'Üçlü Onay', family: 'momentum', rule: 'MACD 0 + RSI 50 (3 mum) + BB orta üstü kapanış', run: fromCore('triple') },
+  { id: 'macd', name: 'MACD (0 + devam)', family: 'momentum', rule: 'MACD 0 kesişimi; 0 altında/üstünde sinyal kesişimiyle devam', run: fromCore('macd') },
   { id: 'supertrend', name: 'Supertrend 10,3', family: 'trend', rule: 'Yön değişimi', run: fromCore('supertrend') },
   { id: 'goldencross', name: 'Altın/Ölüm kesişimi', family: 'trend', rule: 'SMA50 × SMA200', run: fromCore('goldencross') },
   { id: 'donchian', name: 'Donchian 20', family: 'trend', rule: '20 mumluk zirve/dip kırılımı', run: fromCore('donchian') },

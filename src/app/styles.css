@@ -139,3 +139,4 @@ label { display: flex; flex-direction: column; gap: 4px; }
 .score-head > span:not(.grow), .score-row > :not(.grow) { width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
 .score-row { padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
 .score-row .grow { min-width: 0; }
+.chart.tall { height: 440px; }

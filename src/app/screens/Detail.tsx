@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TF_LABEL } from '../../core/candles';
 import { alignText, ema200Text, formatPrice, pullbackText, STRATEGY_NAME, trendText } from '../../core/labels';
-import { sma } from '../../core/indicators';
+import { macd, sma } from '../../core/indicators';
 import { analyze, signalPerformance, TRIPLE_WINDOW } from '../../core/strategies';
 import { RESEARCH, RESEARCH_SYMBOLS } from '../../core/research';
 import { ScoreCard } from '../ScoreCard';
 import { STRATEGIES, TIMEFRAMES, type Strategy, type Timeframe } from '../../core/types';
 import { loadSeries, type SeriesSet } from '../../core/yahoo';
 import type { OpenTarget } from '../App';
-import { LINE_COLORS, PriceChart, type ChartLine } from '../Chart';
+import { LINE_COLORS, PriceChart, type ChartLine, type ChartPane } from '../Chart';
 import type { RadarApi } from '../lib/data';
 import { SignalRow } from '../ui';
 import { yahooFetch } from '../lib/http';
@@ -23,6 +23,7 @@ const STRATEGY_HINT: Record<Strategy, string> = {
   bbrev: '',
   stoch: 'Stokastik (14,3,3): %K, %D\'yi 20 altında yukarı / 80 üstünde aşağı kesince ok çıkar.',
   rsidiv: 'Fiyat yeni dip yaparken RSI(14) daha yüksek dip yaparsa ▲, tepede tersi ▼.',
+  macd: '',
 };
 
 interface Props {
@@ -73,6 +74,20 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
   const st = analysis.status;
   const perf = useMemo(() => signalPerformance(analysis.events, all), [analysis, all]);
   const history = analysis.events.filter((e) => e.strategy === strategy).reverse().slice(0, 10);
+
+  // MACD seçiliyse fiyatın altında ayrı panel: mavi MACD, kırmızı sinyal, histogram, sıfır çizgisi.
+  const pane = useMemo<ChartPane | undefined>(() => {
+    if (strategy !== 'macd') return undefined;
+    const m = macd(closed.map((x) => x.c));
+    return {
+      lines: [
+        { name: 'MACD', values: m.line, color: '#3987e5' },
+        { name: 'Sinyal', values: m.signal, color: '#e66767' },
+      ],
+      histogram: m.line.map((v, i) => v - m.signal[i]),
+      zeroLine: true,
+    };
+  }, [closed, strategy]);
 
   // Grafikte çizilecek çizgiler; Üçlü Onay, Supertrend ve Donchian yalnızca ok işaretiyle gösterilir.
   const lines = useMemo<ChartLine[]>(() => {
@@ -177,9 +192,19 @@ export function DetailScreen({ target, api, hasToken, onClose, onGoSettings }: P
         <div className="chart placeholder">Yükleniyor…</div>
       ) : (
         <>
-          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} viewId={`${target.symbol}|${tf}`} />
+          <PriceChart candles={all} lines={lines} events={analysis.events} strategy={strategy} viewId={`${target.symbol}|${tf}`} pane={pane} />
           <div className="legend-row small">
-            {lines.length ? (
+            {pane ? (
+              <>
+                {pane.lines.map((l) => (
+                  <span key={l.name}>
+                    <i style={{ background: l.color }} />
+                    {l.name}
+                  </span>
+                ))}
+                <span>Histogram</span>
+              </>
+            ) : lines.length ? (
               lines.map((l, i) => (
                 <span key={l.name}>
                   <i style={{ background: LINE_COLORS[i] }} />

@@ -78,6 +78,7 @@ export function SettingsScreen({ settings, onSave, onSaved }: Props) {
         <li>EMA 5·8·13: üç ortalama sıralı ve aynı yöne eğimliyse yön başlangıcı. Sinyaller sırayla değişir: yükseliş sinyalinden sonra yeni yükseliş için önce düşüş sinyali gelmelidir.</li>
         <li>EMA 20·50: EMA 20, EMA 50'yi yukarı keser (kopuş) → fiyat EMA 20'ye geri çekilir → geri çekilme öncesi tepenin üstünde kapanışla onay (kırılım). EMA 50 altında kapanış senaryoyu iptal eder.</li>
         <li>Üçlü Onay: MACD mavi çizgisi 0'ı keser, en fazla 3 mum öncesinde/sonrasında RSI(14) 50'yi keser ve mum Bollinger orta bandının (SMA 20) üstünde kapanır (düşüşte tersi). Grafikte sadece ok görünür.</li>
+        <li>MACD: mavi çizgi (MACD) 0'ı yukarı keserse AL, aşağı keserse SAT. İki çizgi 0'ın altındayken mavi kırmızıyı (sinyal) yukarıdan aşağı keserse tekrar SAT; 0'ın üstündeyken aşağıdan yukarı keserse tekrar AL. Grafiğin altında MACD paneli görünür.</li>
         <li>Bollinger Dönüşü: kapanış alt bandın dışından içeri döner (▲) / üst banttan içeri (▼). Stokastik: %K, %D'yi 20 altında yukarı / 80 üstünde aşağı keser. RSI Uyumsuzluğu: fiyat yeni dip yaparken RSI daha yüksek dip yapar (▲), tepede tersi (▼).</li>
         <li>Strateji karnesi: her enstrümanın kendi geçmişinde stratejilerin 10 mum sonraki isabeti ve rastgele girişe göre farkı. "Genel" sütunu 18 enstrümanlık araştırmanın sonucudur.</li>
         <li>Supertrend (10, 3): yön değişiminde sinyal.</li>
