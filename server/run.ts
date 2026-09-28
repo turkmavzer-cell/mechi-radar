@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { TF_SECONDS } from '../src/core/candles';
+import { higherSeries, withHigher } from '../src/core/sratr';
 import { analyze } from '../src/core/strategies';
 import { TIMEFRAMES } from '../src/core/types';
 import type { RadarConfig, RadarState, ScanResult, SignalEvent, SymbolState, Timeframe } from '../src/core/types';
@@ -82,7 +83,7 @@ export async function runRadar(opts: RunOptions): Promise<RunResult> {
 
       for (const tf of TIMEFRAMES) {
         const candles = closedCandles(set.candles[tf], set.lastOpen[tf]);
-        const a = analyze(item.symbol, tf, candles);
+        const a = analyze(item.symbol, tf, candles, higherSeries(tf, set.candles));
         if (!a.status) continue;
         sym.tf[tf] = a.status;
         const key = `${item.symbol}|${tf}`;
@@ -120,10 +121,10 @@ export async function runRadar(opts: RunOptions): Promise<RunResult> {
     const tfs: Timeframe[] = config.scanner.timeframes.length ? config.scanner.timeframes : ['4h', '1d'];
     for (const symbol of config.scanner.symbols) {
       try {
-        const set = await loadSeries(fetchFn, symbol, tfs, now);
+        const set = await loadSeries(fetchFn, symbol, withHigher(tfs), now);
         const row: ScanResult['rows'][number] = { symbol, tf: {} };
         for (const tf of tfs) {
-          const a = analyze(symbol, tf, closedCandles(set.candles[tf], set.lastOpen[tf]));
+          const a = analyze(symbol, tf, closedCandles(set.candles[tf], set.lastOpen[tf]), higherSeries(tf, set.candles));
           if (a.status) row.tf[tf] = a.status;
         }
         scan.rows.push(row);

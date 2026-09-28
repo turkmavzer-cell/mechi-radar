@@ -24,9 +24,11 @@ export type Strategy =
   | 'bbrev'
   | 'stoch'
   | 'rsidiv'
-  | 'macd';
+  | 'macd'
+  | 'sratr';
 
 export const STRATEGIES: Strategy[] = [
+  'sratr',
   'ema5813',
   'pullback2050',
   'triple',
@@ -50,6 +52,8 @@ export interface SignalEvent {
   /** Sinyalin oluştuğu (kapanmış) mumun açılış zamanı, unix saniye. */
   time: number;
   close: number;
+  /** Stokastik-RSI-ATR: giriş, stop ve hedef fiyatı. */
+  levels?: { entry: number; stop: number; target: number };
 }
 
 export type Trend = 'up' | 'down' | 'neutral';
