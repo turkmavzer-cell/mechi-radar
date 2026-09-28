@@ -23,6 +23,12 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf'>): st
       return up ? 'Altın kesişim (SMA 50/200)' : 'Ölüm kesişimi (SMA 50/200)';
     case 'donchian':
       return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
+    case 'bbrev':
+      return up ? 'Alt banttan içeri dönüş' : 'Üst banttan içeri dönüş';
+    case 'stoch':
+      return up ? 'Stokastik aşırı satımdan dönüş' : 'Stokastik aşırı alımdan dönüş';
+    case 'rsidiv':
+      return up ? 'Pozitif RSI uyumsuzluğu' : 'Negatif RSI uyumsuzluğu';
   }
 }
 
@@ -43,6 +49,9 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   supertrend: 'Supertrend',
   goldencross: 'Altın Kesişim',
   donchian: 'Donchian 20',
+  bbrev: 'Bollinger Dönüşü',
+  stoch: 'Stokastik',
+  rsidiv: 'RSI Uyumsuzluğu',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {

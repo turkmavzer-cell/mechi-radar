@@ -14,9 +14,28 @@ export interface Candle {
 }
 
 export type Direction = 'up' | 'down';
-export type Strategy = 'ema5813' | 'pullback2050' | 'triple' | 'supertrend' | 'goldencross' | 'donchian';
+export type Strategy =
+  | 'ema5813'
+  | 'pullback2050'
+  | 'triple'
+  | 'supertrend'
+  | 'goldencross'
+  | 'donchian'
+  | 'bbrev'
+  | 'stoch'
+  | 'rsidiv';
 
-export const STRATEGIES: Strategy[] = ['ema5813', 'pullback2050', 'triple', 'supertrend', 'goldencross', 'donchian'];
+export const STRATEGIES: Strategy[] = [
+  'ema5813',
+  'pullback2050',
+  'triple',
+  'bbrev',
+  'stoch',
+  'rsidiv',
+  'supertrend',
+  'goldencross',
+  'donchian',
+];
 /** EMA 200 verisi yetersizse 'unknown'. */
 export type Strength = 'strong' | 'weak' | 'unknown';
 

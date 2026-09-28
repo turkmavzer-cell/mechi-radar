@@ -1,4 +1,5 @@
 import { ema, macd, rsi, sma, supertrend } from './indicators';
+import { bbReversion, rsiDivergence, stochastic } from './extra';
 import type { Candle, Direction, PullbackPhase, SignalEvent, Strength, TfStatus, Timeframe, Trend } from './types';
 
 export interface EmaSet {
@@ -150,6 +151,10 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[]): Analy
   }
 
   const extra = extraStrategies(candles, push);
+  // Ortalamaya dönüş stratejileri (araştırmada 20dk/30dk/4s'te en tutarlı sonuç verenler).
+  for (const s of bbReversion(candles)) push(s.i, 'bbrev', s.dir);
+  for (const s of stochastic(candles)) push(s.i, 'stoch', s.dir);
+  for (const s of rsiDivergence(candles)) push(s.i, 'rsidiv', s.dir);
   // Stratejiler ayrı döngülerde çalıştığı için olayları zamana göre sırala.
   events.sort((a, b) => a.time - b.time);
 
