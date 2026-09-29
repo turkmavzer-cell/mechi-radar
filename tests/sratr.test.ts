@@ -159,3 +159,25 @@ test('takip eden kâr al: alt sınır — kilitte hedef, geriden takipte hedef �
     }
   }
 });
+
+test('simulateRule: stop mum içinde (boşlukta açılıştan), kural çıkışı kapanışta, çevirme ve stop sonrası engel', async () => {
+  const { simulateRule } = await import('../src/core/boxes');
+  const mk = (o: number, h: number, l: number, c: number, i: number): Candle => ({ t: i, o, h, l, c });
+  const cs = [mk(100, 101, 99, 100, 0), mk(100, 103, 99.5, 102, 1), mk(102, 104, 101, 103, 2), mk(95, 96, 94, 95, 3), mk(95, 97, 94, 96, 4)];
+  // Long 0'da, stop 98; 2. mumda kural çıkışı (kapanış 103) ve aynı mumda short'a çevirme.
+  const tr = simulateRule(cs, [{ i: 0, dir: 'up', stopDist: 2 }, { i: 2, dir: 'down', stopDist: 2 }], (j) => j === 2);
+  assert.equal(tr[0].outcome, 'rule');
+  assert.equal(tr[0].exitPrice, 103);
+  assert.equal(tr[0].r, 1.5);
+  // Short 103'te, stop 105; 3. mum 95 açılış: stop yok; kural yok → açık kalır.
+  assert.equal(tr[1].i, 2);
+  assert.equal(tr[1].outcome, 'open');
+  // Boşlukla stop: long 100, stop 97; açılış 95 → çıkış 95 (−1,67R).
+  const g = simulateRule(cs, [{ i: 2, dir: 'up', stopDist: 5 }], () => false);
+  assert.equal(g[0].outcome, 'stop');
+  assert.equal(g[0].exitPrice, 95);
+  assert.ok(Math.abs(g[0].r! - (95 - 103) / 5) < 1e-12);
+  // Stop sonrası aynı mum sinyali engellenir.
+  const b = simulateRule(cs, [{ i: 2, dir: 'up', stopDist: 5 }, { i: 3, dir: 'up', stopDist: 1 }], () => false, { blockAfterStop: true });
+  assert.equal(b.length, 1);
+});

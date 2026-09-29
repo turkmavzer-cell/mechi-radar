@@ -52,3 +52,15 @@ test('üst zaman dilimi Stokastik: yalnızca kapanmış 1s mumunun değeri, basa
     assert.ok(Object.is(s.k[i], expected) || Math.abs(s.k[i] - expected) < 1e-9, `${i}`);
   }
 });
+
+test('donchianPrior: bugünkü mum hariç önceki n mumun en yüksek/en düşük değeri', async () => {
+  const { donchianPrior } = await import('../src/core/indicators');
+  const hi = [5, 7, 6, 9, 8, 10];
+  const lo = [1, 3, 2, 4, 0, 5];
+  const d = donchianPrior(hi, lo, 3);
+  assert.ok(Number.isNaN(d.upper[0]) && Number.isNaN(d.upper[2]));
+  assert.equal(d.upper[3], 7); // mum 0..2
+  assert.equal(d.lower[3], 1);
+  assert.equal(d.upper[5], 9); // mum 2..4
+  assert.equal(d.lower[5], 0);
+});

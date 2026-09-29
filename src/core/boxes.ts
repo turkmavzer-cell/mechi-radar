@@ -323,3 +323,67 @@ export const BOX_CANDIDATES: BoxCandidate[] = [
     },
   },
 ];
+
+// ---- Kural tabanlı çıkış motoru (araştırma; uygulama kullanmaz, `simulate` sonuçlarını değiştirmez) ----
+
+export interface RuleSignal {
+  i: number;
+  dir: Direction;
+  /** İlk stop mesafesi (fiyat birimi, pozitif). */
+  stopDist: number;
+}
+
+export interface RuleTrade {
+  i: number;
+  dir: Direction;
+  entry: number;
+  stop: number;
+  exitI?: number;
+  exitPrice?: number;
+  outcome: 'stop' | 'rule' | 'open';
+  /** Brüt sonuç, R cinsinden (maliyet hariç). */
+  r?: number;
+}
+
+/**
+ * Giriş sinyal mumunun kapanışında; aynı anda tek pozisyon. Her sonraki mumda önce stop (mum içinde; açılış stopun
+ * ötesindeyse açılıştan çıkılır), sonra `exitRule` (mum kapanışında) kontrol edilir. Kural ya da stopla çıkılan mumda
+ * aynı mumun sinyaliyle yeniden girilebilir (ör. TSMOM yön çevirme). `blockAfterStop(j)` true dönerse stop sonrası o
+ * mumdaki sinyal atlanır.
+ */
+export function simulateRule(
+  candles: Candle[],
+  signals: RuleSignal[],
+  exitRule: (j: number, t: RuleTrade) => boolean,
+  opts: { blockAfterStop?: boolean } = {},
+): RuleTrade[] {
+  const byI = new Map<number, RuleSignal>();
+  for (const s of signals) byI.set(s.i, s);
+  const trades: RuleTrade[] = [];
+  let open: RuleTrade | null = null;
+  for (let j = 0; j < candles.length; j++) {
+    const c = candles[j];
+    let stoppedHere = false;
+    if (open && j > open.i) {
+      const s = open.dir === 'up' ? 1 : -1;
+      const risk = Math.abs(open.entry - open.stop);
+      const hitStop = open.dir === 'up' ? c.l <= open.stop : c.h >= open.stop;
+      if (hitStop) {
+        const px = open.dir === 'up' ? Math.min(open.stop, c.o) : Math.max(open.stop, c.o);
+        Object.assign(open, { exitI: j, exitPrice: px, outcome: 'stop', r: (s * (px - open.entry)) / risk });
+        open = null;
+        stoppedHere = true;
+      } else if (exitRule(j, open)) {
+        Object.assign(open, { exitI: j, exitPrice: c.c, outcome: 'rule', r: (s * (c.c - open.entry)) / risk });
+        open = null;
+      }
+    }
+    const sig = byI.get(j);
+    if (!open && sig && !(stoppedHere && opts.blockAfterStop) && sig.stopDist > 0 && Number.isFinite(sig.stopDist)) {
+      const s = sig.dir === 'up' ? 1 : -1;
+      open = { i: j, dir: sig.dir, entry: c.c, stop: c.c - s * sig.stopDist, outcome: 'open' };
+      trades.push(open);
+    }
+  }
+  return trades;
+}

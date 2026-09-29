@@ -397,3 +397,10 @@ export function squeezeMomentum(high: number[], low: number[], close: number[], 
     sqz: close.map((_, i) => bb.upper[i] < kc.upper[i] && bb.lower[i] > kc.lower[i]),
   };
 }
+
+/** Önceki `period` mumun en yüksek high'ı ve en düşük low'u (bugünkü mum hariç; Turtle kırılımı). */
+export function donchianPrior(high: number[], low: number[], period: number): { upper: number[]; lower: number[] } {
+  const h = highest(high, period);
+  const l = lowest(low, period);
+  return { upper: high.map((_, i) => (i === 0 ? NaN : h[i - 1])), lower: low.map((_, i) => (i === 0 ? NaN : l[i - 1])) };
+}
