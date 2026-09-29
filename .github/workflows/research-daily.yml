@@ -1,0 +1,43 @@
+name: Günlük strateji karşılaştırması
+
+# Dal: arastirma/gunluk-karsilastirma. Push ile ya da elle (Run workflow) çalışır.
+# Veriyi indirir (research/data/), analizi çalıştırır, sonuçları aynı dala işler ([skip ci] ile döngü olmaz).
+on:
+  push:
+    branches: [arastirma/gunluk-karsilastirma]
+    paths: ['research/daily/**', 'src/core/**', '.github/workflows/research-daily.yml']
+  workflow_dispatch:
+    inputs:
+      download:
+        description: Veriyi yeniden indir (1) ya da depodakini kullan (0)
+        default: '1'
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Veri indir
+        if: ${{ github.event_name == 'push' || inputs.download != '0' }}
+        run: npx tsx research/daily/download.ts
+      - name: Analiz
+        run: |
+          if [ -f research/daily/run.ts ]; then npx tsx research/daily/run.ts; else echo "run.ts yok, yalnız veri indirildi"; fi
+      - name: Sonuçları işle
+        run: |
+          git config user.name "mechi-radar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/data research/STRATEJI-KARSILASTIRMA*.md 2>/dev/null || true
+          git diff --cached --quiet && echo "değişiklik yok" && exit 0
+          git commit -qm "Günlük karşılaştırma: veri ve sonuçlar $(date -u +%F) [skip ci]"
+          git pull -q --rebase origin ${GITHUB_REF_NAME}
+          git push -q origin HEAD:${GITHUB_REF_NAME}
