@@ -25,7 +25,7 @@ const sra = (id: Strategy, name: string, short: string, filters: string[], extra
 
 const fromCandidate = (id: Strategy, candidate: string, short: string, rule: string): BoxStrategy => {
   const b = BOX_CANDIDATES.find((x) => x.id === candidate)!;
-  return { id, name: b.name, short, rule: () => `${rule} · ${exits}`, run: (c, _tf, _h, exit) => simulate(c, b.signals(c), { ...BOX_PARAMS, ...exit }) };
+  return { id, name: b.name, short, rule: () => `${rule} · ${exits}`, run: (c, _tf, _h, exit) => simulate(c, b.signals(c), { ...BOX_PARAMS, ...exit }, b.exit?.(c)) };
 };
 
 export const BOX_STRATEGIES: BoxStrategy[] = [
@@ -34,4 +34,8 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   sra('sratrAdx', 'SRA + ADX', 'SRA + ADX', ['adxRange'], ' · ADX 25 altı'),
   fromCandidate('sarmacd', 'sarmacd', 'SAR + MACD', 'SAR fiyatın altına geçer + fiyat EMA 200 üstünde + MACD sinyalin üstünde (short tersi)'),
   fromCandidate('squeeze', 'squeeze', 'Squeeze', 'Sıkışma biter (Bollinger, Keltner dışına çıkar) + momentum ve SMA 50 aynı yönde'),
+  // 4s/15dk testinde (research/ODAK-4S-15DK.md) maliyet dahil geçenler; kanıt yetersiz (t < 2).
+  fromCandidate('st200', 'st200', 'Supertrend + EMA 200', 'Supertrend (10, 3) yükselişe döner + fiyat EMA 200 üstünde (short tersi) · testte 4s, takip eden TP ile'),
+  fromCandidate('utbot', 'utbot', 'UT Bot', 'UT Bot (1, 10) al sinyali + fiyat EMA 200 üstünde (short tersi) · testte 4s ve 15dk'),
+  fromCandidate('rsi2', 'rsi2', 'RSI(2)', 'Fiyat SMA 200 üstünde + RSI(2) 5 altına iner → LONG; altında + 95 üstü → SHORT · testte 15dk, takip eden TP ile'),
 ];
