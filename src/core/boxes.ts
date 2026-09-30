@@ -170,7 +170,8 @@ export function simulate(
       t.peak = best;
     }
     trades.push(t);
-    busyUntil = t.exitI ?? candles.length;
+    // Kural çıkışı mum kapanışında olur: aynı mumdaki ters sinyal (ör. renk dönüşü) o kapanışta yeni işlem açar.
+    busyUntil = t.exitI == null ? candles.length : t.ruleExit ? t.exitI - 1 : t.exitI;
   }
   return trades;
 }

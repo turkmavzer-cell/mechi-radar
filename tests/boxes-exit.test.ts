@@ -42,3 +42,16 @@ test('yeni adaylar geleceğe bakmaz (kısaltılmış veride aynı girişler)', (
     assert.ok(full.length > 0, `${id} sinyal üretmeli`);
   }
 });
+
+test('kural çıkışı mumunda ters sinyal yeni işlem açar (stop/hedef çıkışında açmaz)', () => {
+  const cs = Array.from({ length: 40 }, (_, i) => bar(i, 100));
+  const tr = simulate(cs, [{ i: 20, dir: 'down' }, { i: 25, dir: 'up' }], { stopAtr: 1.5, rr: Number.POSITIVE_INFINITY }, (j, d) => d === 'down' && j === 25);
+  assert.equal(tr.length, 2);
+  assert.equal(tr[0].exitI, 25);
+  assert.equal(tr[1].i, 25);
+  assert.equal(tr[1].dir, 'up');
+  const cs2 = Array.from({ length: 40 }, (_, i) => bar(i, 100));
+  cs2[25] = { t: 25 * 3600, o: 100, h: 110, l: 99, c: 100 };
+  const tr2 = simulate(cs2, [{ i: 20, dir: 'down' }, { i: 25, dir: 'up' }], { stopAtr: 1.5, rr: 2 });
+  assert.equal(tr2.length, 1);
+});
