@@ -1,7 +1,7 @@
 // Kullanıcının tarif ettiği stratejiler (video ekran görüntülerinden): EMA 21/55 geri çekilmesi, Bollinger + Stokastik,
 // Heikin Ashi Smoothed, üçgen formasyonları, EMA 20/50 + hacim + Heikin Ashi. Çıkış ayarları research/yeni-stratejiler.ts ile seçildi.
 import type { BoxSignal, ExitRule, TargetLine } from './boxes';
-import { atr, bollinger, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc } from './indicators';
+import { adx, atr, bollinger, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc } from './indicators';
 import type { Candle, Direction } from './types';
 
 const O = (c: Candle[]) => c.map((x) => x.o);
@@ -67,12 +67,17 @@ export function bbTarget(c: Candle[]): TargetLine {
   return (j, d) => (d === 'up' ? bb.upper[j] : bb.lower[j]);
 }
 
-/** Heikin Ashi Smoothed (10, 10) renk değişimi: yeşile döner → LONG, kırmızıya → SHORT. */
-export function haSmoothedSignals(c: Candle[]): BoxSignal[] {
+/**
+ * Heikin Ashi Smoothed (10, 10) renk değişimi: yeşile döner → LONG, kırmızıya → SHORT.
+ * `minAdx`: yalnızca ADX(14) bu değerin üstündeyken (trend varken) giriş; yatay piyasada renk dönüşü yalnızca işlemi kapatır.
+ */
+export function haSmoothedSignals(c: Candle[], minAdx?: number): BoxSignal[] {
   const { dir } = haSmoothed(O(c), H(c), L(c), C(c));
+  const a = minAdx != null ? adx(H(c), L(c), C(c), 14).adx : null;
   const out: BoxSignal[] = [];
   for (let i = 1; i < c.length; i++) {
     if (Number.isNaN(dir[i - 1]) || dir[i] === dir[i - 1]) continue;
+    if (a && !(a[i] >= minAdx!)) continue;
     out.push({ i, dir: dir[i] === 1 ? 'up' : 'down' });
   }
   return out;

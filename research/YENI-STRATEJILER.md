@@ -52,6 +52,14 @@ TradingView "Smoothed Heiken Ashi" (10, 10): renk yeşile dönünce AL, kırmız
   +0,014R) bırakıldı; ikinci yarıda ikisi aynı (+0,008R).
 - Sonuç: işlem başına ≈ +0,01R, yani maliyet sonrası başa baş.
 
+### Heikin Ashi Smoothed + ADX (ayrı strateji)
+Yatay piyasayı elemek için: renk dönüşünde yalnızca ADX(14) eşiğin üstündeyse yeni işlem açılır; eşiğin altında renk dönüşü
+yalnızca açık işlemi kapatır. Eşik 20 / 25 / 30, stop 1,5 / 2 ATR, çıkış renk dönüşü ya da 1:2 + takip denendi.
+- İlk yarıda en iyi: ADX ≥ 30 · 1:2 + takip (+0,092R) → **ikinci yarıda −0,061R**; tutmadı.
+- Renk dönüşü çıkışlı en iyi: **ADX ≥ 20 · stop 2 ATR** → ilk yarı +0,023R, ikinci yarı −0,004R (filtresiz HA: +0,014 / +0,007R).
+- **Sonuç: ADX filtresi testte sonucu iyileştirmedi.** İşlem sayısı yarıya iniyor (maliyet ve ekran başında geçen süre azalır)
+  ama işlem başına kazanç artmıyor. Kullanıcı isteğiyle uygulamaya ayrı strateji olarak eklendi (ADX ≥ 20, stop 2 ATR, renk dönüşü çıkışı).
+
 ### Üçgen formasyonları
 Tepe/dip noktalarıyla (iki yanda 5 mum) son iki tepe ve son iki dipten direnç/destek çizgisi. Yatay = 20 mumda 0,5 ATR'den az değişim.
 Yükselen üçgen (yatay direnç + yükselen destek) yukarı kırılımda AL; alçalan üçgen (düşen direnç + yatay destek) aşağı kırılımda SAT;
