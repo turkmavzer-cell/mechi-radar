@@ -10,16 +10,16 @@
 
 | Strateji | Seçilen ayar | İlk yarı (seçim) | İkinci yarı (doğrulama) | Maliyetsiz (tüm veri) |
 |---|---|---|---|---|
-| EMA 21/55 geri çekilmesi | her geri çekilme · stop 2 ATR · **1:3** | +0,030R (920) | −0,002R (950) | +0,091R |
-| Bollinger + Stokastik | dar bant filtresi (< ortalama) · stop 2 ATR · hedef karşı bant | −0,040R (1258) | −0,027R (1267) | +0,026R |
-| Heikin Ashi Smoothed | acil stop 3 ATR · ters renkte çıkış | +0,009R (1189) | +0,049R (1163), t 1,4 | +0,078R |
-| Üçgen formasyonları | stop 1,5 ATR · 1:3 | +0,015R (383) | −0,102R (379) | +0,045R |
-| EMA 20/50 + hacim + HA | RSI 50 filtresi · EMA 20 altı kapanışta çıkış · acil stop 1,5 ATR | +0,014R (1433) | −0,040R (1507) | +0,072R |
+| EMA 21/55 geri çekilmesi | her geri çekilme · stop 2 ATR · **1:3** | +0,033R (921) | −0,005R (949) | +0,091R |
+| Bollinger + Stokastik | dar bant filtresi (< ortalama) · stop 2 ATR · hedef karşı bant | −0,040R (1258) | −0,028R (1268) | +0,026R |
+| Heikin Ashi Smoothed | ters renkte çıkış **ve ters yönde giriş** · acil stop 2 ATR | +0,008R (2061) | +0,005R (2041), t 0,1 | +0,077R |
+| Üçgen formasyonları | stop 1,5 ATR · 1:3 | +0,015R (383) | −0,104R (380) | +0,045R |
+| EMA 20/50 + hacim + HA | RSI 50 filtresi · EMA 20 altı kapanışta çıkış · acil stop 1,5 ATR | +0,014R (1435) | −0,040R (1510) | +0,072R |
 
 (parantez içi: işlem sayısı; R işlem başına net ortalama)
 
 **Değerlendirme:** Maliyetler hariç beşi de hafif pozitif (+0,03 ile +0,09R), maliyet dahil hepsi sıfır civarında.
-Hiçbirinde doğrulama yarısında anlamlı kâr yok (en iyisi HA Smoothed +0,049R, t 1,4 → kanıt yetersiz). Kullanıcı isteğiyle
+Hiçbirinde doğrulama yarısında anlamlı kâr yok (en iyisi HA Smoothed +0,005R, t 0,1). Kullanıcı isteğiyle
 uygulamaya eklendi; gerçek parayla kullanım için dayanak yok.
 
 ## Strateji başına notlar
@@ -41,8 +41,11 @@ Stokastik 14, 1, 3 (görseldeki ayar). Bant genişliği son 100 mumun ortalamas�
 
 ### Heikin Ashi Smoothed
 TradingView "Smoothed Heiken Ashi" (10, 10): renk yeşile dönünce AL, kırmızıya dönünce SAT.
-- En iyi çıkış: **ters renge dönünce kapat** (görseldeki gibi) + geniş acil stop (3 ATR). Sabit hedefler (1:1–1:3) daha kötü.
-- USDJPY ve altında pozitif, Japan 225 ve Nasdaq'ta (1s/4s) negatif.
+- En iyi çıkış: **ters renge dönünce kapat ve aynı kapanışta ters yönde gir** (görseldeki AL/SAT sırası) + acil stop 2 ATR.
+  Sabit hedefler (1:1–1:3) daha kötü.
+- **Düzeltme:** ilk sürümde renk dönüşü yalnızca açık işlemi kapatıyor, aynı mumdaki ters sinyal atlanıyordu (LONG'ların çoğu
+  kaçıyordu). Düzeltmeden sonra işlem sayısı ~2.350'den ~4.100'e çıktı; net sonuç +0,029R'den +0,006R'ye düştü.
+- USDJPY ve altında pozitif (1s: +0,11 / +0,09R), Japan 225'te tüm zaman dilimlerinde, Nasdaq'ta 1s/4s'te negatif.
 
 ### Üçgen formasyonları
 Tepe/dip noktalarıyla (iki yanda 5 mum) son iki tepe ve son iki dipten direnç/destek çizgisi. Yatay = 20 mumda 0,5 ATR'den az değişim.
