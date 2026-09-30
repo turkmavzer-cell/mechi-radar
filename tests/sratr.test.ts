@@ -66,10 +66,11 @@ test('Stokastik-RSI-ATR: geleceğe bakmaz (kısaltılmış veride aynı girişle
 
 test('Stokastik-RSI-ATR: analyze olayları, başlık ve üst zaman dilimi eşlemesi', () => {
   const cs = walk(3000, 900, 5);
+  // Kutulu stratejiler uygulamadan kaldırıldı: analyze artık bu olayları üretmez.
   const ev = analyze('X', '15m', cs, higherSeries('15m', { '1h': aggregate(cs, 3600, false) })).events.filter((e) => e.strategy === 'sratr');
-  assert.ok(ev.length > 0 && ev.every((e) => e.levels));
-  assert.match(signalTitle(ev[0]), /^(LONG|SHORT) GİRİŞ .* · Stop .* · Hedef /);
-  assert.equal(analyze('X', '15m', cs).events.filter((e) => e.strategy === 'sratr').length, 0);
+  assert.equal(ev.length, 0);
+  const title = signalTitle({ strategy: 'sratr', dir: 'up', tf: '15m', levels: { entry: 100, stop: 99, target: 102 } });
+  assert.match(title, /^LONG GİRİŞ .* · Stop .* · Hedef /);
   assert.deepEqual(withHigher(['15m', '1d']), ['15m', '1h', '1d']);
   const days: Candle[] = Array.from({ length: 14 }, (_, i) => ({ t: 1_767_571_200 + i * 86400, o: i, h: i + 1, l: i - 1, c: i + 0.5 })); // 2026-01-05 Pazartesi
   const w = weeklyFromDaily(days);
