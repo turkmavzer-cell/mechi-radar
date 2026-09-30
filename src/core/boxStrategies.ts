@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfExit, trfStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -95,4 +95,8 @@ export const STRATEGY_ARCHIVE: BoxStrategy[] = [
 ];
 
 /** Uygulamada (grafik düğmeleri, Radar ve bildirimler) kullanılan kutulu stratejiler. Şu an boş: hepsi kaldırıldı. */
-export const BOX_STRATEGIES: BoxStrategy[] = [];
+export const BOX_STRATEGIES: BoxStrategy[] = [
+  custom('trfst', 'TRF + Supertrend', 'TRF + Supertrend', 'Supertrend (10, 4, hl2) yeşilken her Twin Range Filter (12/1, 4/2) "Long" → AL; Supertrend yeşile döndüğünde TRF zaten "Long"daysa o mumda AL · Kâr al: TRF "Short" · Stop: Supertrend çizgisi (takip eder, değince çıkış) · Kırmızıda tersi', (c, _tf, _h, exit) =>
+    simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfExit(c), undefined, stKvExitLine(c)),
+  ),
+];

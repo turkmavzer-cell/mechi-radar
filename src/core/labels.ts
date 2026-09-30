@@ -39,6 +39,7 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'ema5813macd':
     case 'twinst':
     case 'twinst3':
+    case 'trfst':
     case 'bbstoch':
     case 'hasmooth':
     case 'hasmoothAdx':
@@ -96,6 +97,7 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   ema5813macd: 'EMA 5/8/13 + MACD',
   twinst: 'Twin Range + Supertrend',
   twinst3: 'Twin Range + Supertrend (1:3)',
+  trfst: 'TRF + Supertrend',
   bbstoch: 'Bollinger + Stokastik',
   hasmooth: 'Heikin Ashi Smoothed',
   hasmoothAdx: 'HA Smoothed + ADX',
