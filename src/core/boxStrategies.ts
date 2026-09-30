@@ -33,7 +33,7 @@ const fromCandidate = (id: Strategy, candidate: string, short: string, rule: str
 const custom = (id: Strategy, name: string, short: string, rule: string, run: BoxStrategy['run']): BoxStrategy => ({ id, name, short, rule: () => rule, run });
 const NO_TARGET = Number.POSITIVE_INFINITY;
 /** EMA 21/55: kesişim başına tek işlem, kopuş ve ortalama arası mesafe şartı (research/YENI-STRATEJILER.md). */
-const EMA2155_OPTS = { firstOnly: true, breakAtr: 0.5, gapAtr: 0.5 };
+const EMA2155_OPTS = { firstOnly: true, breakAtr: 1, gapAtr: 1 };
 const EMA2155_EXIT: BoxParams = { stopAtr: 2, rr: 3 };
 
 export const BOX_STRATEGIES: BoxStrategy[] = [
