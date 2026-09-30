@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -53,6 +53,9 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   ),
   custom('ema2155bt', 'EMA 21/55 kırılım + takip', 'EMA 21/55 kırılım + takip', 'Giriş ve stop EMA 21/55 kırılımla aynı · 1R kâra ulaştıktan sonra EMA 21 altında kapanışta çıkış (öncesinde yalnızca stop)', (c, _tf, _h, exit) =>
     simulate(c, ema2155BreakSignals(c, { firstOnly: true, minStopAtr: 0.5 }), { stopAtr: 2, rr: NO_TARGET, ...exit }, ema21CloseExit(c, 1)),
+  ),
+  custom('ema2155b55', 'EMA 21/55 kırılım · EMA 55 çıkışı', 'EMA 21/55 kırılım · 55 çıkış', 'Giriş ve stop EMA 21/55 kırılımla aynı · Çıkış fiyat EMA 55\'e değince (EMA 55 seviyesinden)', (c, _tf, _h, exit) =>
+    simulate(c, ema2155BreakSignals(c, { firstOnly: true, minStopAtr: 1 }), { stopAtr: 2, rr: NO_TARGET, ...exit }, undefined, undefined, ema55Line(c)),
   ),
   custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
     simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),

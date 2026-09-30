@@ -10,6 +10,7 @@ import {
   ema2155BreakSignals,
   ema2155Signals,
   ema21CloseExit,
+  ema55Line,
   ema20Exit,
   emaVolHaSignals,
   haSmoothedExit,
@@ -30,7 +31,7 @@ interface Variant {
   label: string;
   /** Uygulamaya seçilebilir mi (ör. Bollinger'de dar bant filtresi zorunlu). */
   eligible?: boolean;
-  run: (c: Candle[]) => { signals: BoxSignal[]; params: BoxParams; exit?: ExitRule; target?: TargetLine };
+  run: (c: Candle[]) => { signals: BoxSignal[]; params: BoxParams; exit?: ExitRule; target?: TargetLine; line?: TargetLine };
 }
 
 const INF = Number.POSITIVE_INFINITY;
@@ -102,6 +103,12 @@ function grid(strategy: string): Variant[] {
           for (const minR of [0.5, 1, 1.5, 2])
             v.push({ id: `${first}|${ms}|${minR}`, label: `${tag} · ${minR}R kârdan sonra EMA 21 altı kapanışta çıkış`, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: INF }, exit: ema21CloseExit(c, minR) }) });
       }
+  if (strategy === 'ema2155b55')
+    for (const first of [true, false])
+      for (const ms of [0.5, 1]) {
+        const o = { firstOnly: first, minStopAtr: ms };
+        v.push({ id: `${first}|${ms}`, label: `${first ? 'kesişim başına 1' : 'her geri çekilme'} · stop dibin altı (en az ${ms} ATR) · EMA 55'e değince çıkış`, eligible: first, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: INF }, line: ema55Line(c) }) });
+      }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -125,6 +132,7 @@ const ALL_STRATS = [
   { id: 'rsimacd', name: 'RSI + MACD' },
   { id: 'ema2155bo', name: 'EMA 21/55 kırılım · EMA 21 çıkışı' },
   { id: 'ema2155bt', name: 'EMA 21/55 kırılım · kârdan sonra EMA 21 çıkışı' },
+  { id: 'ema2155b55', name: 'EMA 21/55 kırılım · EMA 55 çıkışı' },
   { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
@@ -179,8 +187,8 @@ async function main() {
       dataInfo.push(`| ${ins.name} | ${tf} | ${day(cs[0].t)} – ${day(cs[cs.length - 1].t)} | ${cs.length} | ${vol ? 'var' : 'yok'} |`);
       for (const s of STRATS)
         for (const v of grid(s.id)) {
-          const { signals, params, exit, target } = v.run(cs);
-          const trades: BoxTrade[] = simulate(cs, signals, params, exit, target);
+          const { signals, params, exit, target, line } = v.run(cs);
+          const trades: BoxTrade[] = simulate(cs, signals, params, exit, target, line);
           const key = `${s.id}|${v.id}`;
           if (!res.has(key)) res.set(key, []);
           for (const t of trades) {

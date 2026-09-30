@@ -331,3 +331,9 @@ export function ema21CloseExit(c: Candle[], minR = 0): ExitRule {
   const f = ema(C(c), 21);
   return (j, d, ctx) => ctx.bestR >= minR && (d === 'up' ? c[j].c < f[j] : c[j].c > f[j]);
 }
+
+/** EMA 55 çizgisi (çıkış çizgisi olarak). */
+export function ema55Line(c: Candle[]): TargetLine {
+  const e = ema(C(c), 55);
+  return (j) => e[j];
+}

@@ -100,6 +100,8 @@ export function simulate(
   params: BoxParams = BOX_PARAMS,
   exitRule?: ExitRule,
   targetLine?: TargetLine,
+  /** Çıkış çizgisi (ör. EMA 55): fiyat bir önceki mumdaki seviyeye değince o seviyeden (boşlukta açılıştan) çıkılır. */
+  exitLine?: TargetLine,
 ): BoxTrade[] {
   const a = atr(
     candles.map((c) => c.h),
@@ -134,6 +136,13 @@ export function simulate(
         // Değişen hedefte bir önceki mumun kapanışındaki seviye kullanılır (mum içinde geleceğe bakmamak için).
         const tgt = targetLine ? targetLine(j - 1, dir) : t.target;
         const hitTarget = dir === 'up' ? c.h >= tgt : c.l <= tgt;
+        const lvl = exitLine ? exitLine(j - 1, dir) : NaN;
+        const hitLine = !Number.isNaN(lvl) && (dir === 'up' ? c.l <= lvl : c.h >= lvl);
+        // Çizgi stoptan önce gelir (fiyat stopa inmeden çizgiyi geçer); aynı mumda ikisi de varsa çizgi seviyesi daha yakındaysa o.
+        if (hitLine && !(hitStop && s * (lvl - stopLvl) < 0)) {
+          closeByRule(t, j, dir === 'up' ? Math.min(lvl, c.o) : Math.max(lvl, c.o), entry, s, risk);
+          break;
+        }
         if (hitStop) {
           t.outcome = 'sl';
           t.exitI = j;

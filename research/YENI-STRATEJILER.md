@@ -66,6 +66,12 @@ Tümü: `ema2155-kirilim-sonuclar.md`.
 - A'da işlemler kısa (ort. 12 mum): EMA 21 altı kapanış çoğu zaman giriş yakınında geliyor, kazanan oranı %27.
 - Kopuşlu mevcut EMA 21/55 bu iki sürümden iyi. Uygulamaya kullanıcı isteğiyle ayrı stratejiler olarak eklendi.
 
+### EMA 21/55 kırılım · EMA 55 çıkışı
+Giriş ve stop kırılım stratejisiyle aynı; çıkış fiyat EMA 55'e değince (bir önceki mumun EMA 55 seviyesinden). Tümü: `ema2155-b55-sonuclar.md`.
+- Kesişim başına 1 işlem, stop en az 1 ATR: 1.040 işlem · ilk yarı −0,074R · **ikinci yarı −0,043R** · kazanan %24 · maliyetsiz +0,015R.
+- 4s'te USDJPY +0,14R, altın +0,20R, Nasdaq +0,06R, Japan 225 −0,30R (enstrüman başına 42–45 işlem).
+- EMA 21 çıkışlı sürümden (−0,050R) belirgin farkı yok; mevcut kopuşlu EMA 21/55 (+0,030R) hâlâ en iyisi.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).
