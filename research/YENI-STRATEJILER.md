@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | EMA 21/55 geri çekilmesi | her geri çekilme · stop 2 ATR · **1:3** | +0,033R (921) | −0,005R (949) | +0,091R |
 | Bollinger + Stokastik | dar bant filtresi (< ortalama) · stop 2 ATR · hedef karşı bant | −0,040R (1258) | −0,028R (1268) | +0,026R |
-| Heikin Ashi Smoothed | ters renkte çıkış **ve ters yönde giriş** · acil stop 2 ATR | +0,008R (2061) | +0,005R (2041), t 0,1 | +0,077R |
+| Heikin Ashi Smoothed | ters renkte çıkış **ve ters yönde giriş** · acil stop 2 ATR | +0,014R (2273) | +0,008R (2247), t 0,2 | +0,081R |
 | Üçgen formasyonları | stop 1,5 ATR · 1:3 | +0,015R (383) | −0,104R (380) | +0,045R |
 | EMA 20/50 + hacim + HA | RSI 50 filtresi · EMA 20 altı kapanışta çıkış · acil stop 1,5 ATR | +0,014R (1435) | −0,040R (1510) | +0,072R |
 
@@ -45,7 +45,12 @@ TradingView "Smoothed Heiken Ashi" (10, 10): renk yeşile dönünce AL, kırmız
   Sabit hedefler (1:1–1:3) daha kötü.
 - **Düzeltme:** ilk sürümde renk dönüşü yalnızca açık işlemi kapatıyor, aynı mumdaki ters sinyal atlanıyordu (LONG'ların çoğu
   kaçıyordu). Düzeltmeden sonra işlem sayısı ~2.350'den ~4.100'e çıktı; net sonuç +0,029R'den +0,006R'ye düştü.
-- USDJPY ve altında pozitif (1s: +0,11 / +0,09R), Japan 225'te tüm zaman dilimlerinde, Nasdaq'ta 1s/4s'te negatif.
+- **İkinci düzeltme:** acil stopla kapanan mumda renk aynı kapanışta dönerse de ters yönde işlem açılır (ör. USDJPY 4s
+  14/09 11:00: SHORT mum içinde stop oldu, kapanışta renk yeşile döndü → LONG). Bu kural yalnızca bu stratejide geçerli.
+- İkinci düzeltmeden sonraki testte ilk yarıda en iyi seçenek "stop 2 ATR · 1:2 + takip" çıktı (+0,023R), ama bu sabit çıkışlı
+  bir sürüm ve renk dönüşünde işlemi kapatmıyor. Uygulamada kullanıcının tarif ettiği renk dönüşü çıkışı (stop 2 ATR; ilk yarı
+  +0,014R) bırakıldı; ikinci yarıda ikisi aynı (+0,008R).
+- Sonuç: işlem başına ≈ +0,01R, yani maliyet sonrası başa baş.
 
 ### Üçgen formasyonları
 Tepe/dip noktalarıyla (iki yanda 5 mum) son iki tepe ve son iki dipten direnç/destek çizgisi. Yatay = 20 mumda 0,5 ATR'den az değişim.
@@ -61,6 +66,12 @@ ortalamasının 1,2 katını aştı, sonra Heikin Ashi yeşile döndü → AL. S
   Giriş EMA 20 yakınında olduğu için çoğu işlem bir iki mumda küçük kâr/zararla kapanıyor.
 - "EMA 20 altında kapanınca çık" biraz daha iyi ve RSI(14) > 50 filtresi ekleyince ilk yarıda en iyi (+0,014R); doğrulamada −0,04R.
 - USDJPY'de Yahoo hacim vermediği için hacim şartı aranmadı; vadeli verilerin hacmi FxPro CFD hacmiyle aynı değildir.
+
+## Seçimin kararsızlığı
+
+Aynı test bir gün sonraki veriyle yeniden çalıştırıldığında Bollinger (stop 2 → 1,5 ATR) ve üçgen (1:3 → formasyon yüksekliği)
+için seçilen ayar değişti; farklar işlem başına 0,01–0,03R. Bu, ayarlar arasında gerçek bir fark olmadığını, sonuçların
+gürültü düzeyinde olduğunu gösterir. Uygulamadaki ayarlar değiştirilmedi.
 
 ## Sınırlamalar
 - 15dk verisi ~2,5 ay; vekil vadeli fiyatlar CFD ile aynı değil; maliyet varsayımları doğrulanmadı.

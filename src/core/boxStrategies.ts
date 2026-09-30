@@ -49,7 +49,7 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
     simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),
   ),
   custom('hasmooth', 'Heikin Ashi Smoothed', 'HA Smoothed', 'Heikin Ashi Smoothed (10, 10) yeşile döner → LONG, kırmızıya → SHORT · renk dönünce işlem kapanır ve ters yönde yenisi açılır · acil stop 2 ATR', (c, _tf, _h, exit) =>
-    simulate(c, haSmoothedSignals(c), { stopAtr: 2, rr: NO_TARGET, ...exit }, haSmoothedExit(c)),
+    simulate(c, haSmoothedSignals(c), { stopAtr: 2, rr: NO_TARGET, sameBarEntry: true, ...exit }, haSmoothedExit(c)),
   ),
   custom('triangle', 'Üçgen formasyonları', 'Üçgen', 'Yükselen üçgen yukarı, alçalan aşağı, simetrik iki yöne kırılımda (kapanış çizginin ötesinde) · Stop 1,5 ATR · hedef 3R', (c, _tf, _h, exit) =>
     simulate(c, triangleSignals(c), { stopAtr: 1.5, rr: 3, ...exit }),
