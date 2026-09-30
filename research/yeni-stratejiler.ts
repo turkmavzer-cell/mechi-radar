@@ -15,6 +15,9 @@ import {
   ema5x13Exit,
   supertrendExitLine,
   twinStSignals,
+  stKvExitLine,
+  trfExit,
+  trfStSignals,
   ema20Exit,
   emaVolHaSignals,
   haSmoothedExit,
@@ -139,6 +142,8 @@ function grid(strategy: string): Variant[] {
             for (const rr of [2, 3])
               v.push({ id: `${win}|${mpl}|${sl}|${lb}|${rr}`, label: `${tag} · sabit 1:${rr} (karşılaştırma)`, eligible: false, run: (c) => ({ signals: twinStSignals(c, o), params: { stopAtr: 2, rr } }) });
           }
+  if (strategy === 'trfst')
+    v.push({ id: 'user', label: 'Kullanıcı kuralı: TRF Long/Short ile giriş, TRF ters sinyalde kâr al, Supertrend çizgisi stop', run: (c) => ({ signals: trfStSignals(c), params: { stopAtr: 2, rr: INF, sameBarEntry: true }, exit: trfExit(c), line: stKvExitLine(c) }) });
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -166,6 +171,7 @@ const ALL_STRATS = [
   { id: 'ema5813macd', name: 'EMA 5/8/13 + MACD' },
   { id: 'ema2155v2', name: 'EMA 21/55 (2. anlatım)' },
   { id: 'twinst', name: 'Twin Range Filter + Supertrend' },
+  { id: 'trfst', name: 'TRF + Supertrend (kullanıcı kuralı)' },
   { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
@@ -254,7 +260,7 @@ async function main() {
       return { v, first: summary(ts.filter((x) => x.half === 1)), second: summary(ts.filter((x) => x.half === 2)), all: summary(ts), ts };
     });
     const pick = rows
-      .filter((r) => r.v.eligible !== false && r.first.n >= 60)
+      .filter((r) => r.v.eligible !== false && r.first.n >= (ONLY === 'trfst' ? 1 : 60))
       .sort((a, b) => b.first.avg - a.first.avg)[0];
     md.push(`## ${s.name}`, '');
     if (!pick) {

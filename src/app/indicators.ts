@@ -17,6 +17,7 @@ import {
   sma,
   stochOsc,
   stochRsi,
+  supertrendKv,
   supertrendLine,
   twinRangeFilter,
   williamsR,
@@ -236,6 +237,22 @@ const defs: IndicatorDef[] = [
     color: GREEN,
     build: (c) => {
       const s = supertrendLine(H(c), L(c), C(c), 10, 4);
+      return {
+        lines: [
+          { name: 'Yükseliş', color: GREEN, values: s.line.map((v, i) => (s.dir[i] === 1 ? v : NaN)) },
+          { name: 'Düşüş', color: RED, values: s.line.map((v, i) => (s.dir[i] === -1 ? v : NaN)) },
+        ],
+      };
+    },
+  },
+  {
+    id: 'supertrendKv',
+    label: 'Supertrend 10/4 (Kıvanç)',
+    group: 'Fiyat üstü',
+    pane: false,
+    color: GREEN,
+    build: (c) => {
+      const s = supertrendKv(H(c), L(c), C(c), 10, 4);
       return {
         lines: [
           { name: 'Yükseliş', color: GREEN, values: s.line.map((v, i) => (s.dir[i] === 1 ? v : NaN)) },

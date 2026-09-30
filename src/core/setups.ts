@@ -1,7 +1,7 @@
 // Kullanıcının tarif ettiği stratejiler (video ekran görüntülerinden): EMA 21/55 geri çekilmesi, Bollinger + Stokastik,
 // Heikin Ashi Smoothed, üçgen formasyonları, EMA 20/50 + hacim + Heikin Ashi. Çıkış ayarları research/yeni-stratejiler.ts ile seçildi.
 import type { BoxSignal, ExitRule, TargetLine } from './boxes';
-import { adx, atr, bollinger, highest, lowest, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc, stochRsi, supertrendLine, twinRangeFilter } from './indicators';
+import { adx, atr, bollinger, highest, lowest, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc, stochRsi, supertrendKv, supertrendLine, twinRangeFilter } from './indicators';
 import type { Candle, Direction } from './types';
 
 const O = (c: Candle[]) => c.map((x) => x.o);
@@ -462,5 +462,43 @@ export function twinStSignals(c: Candle[], opts: TwinStOpts = {}): BoxSignal[] {
 /** Supertrend (10, 4) çizgisi: çıkış çizgisi olarak (fiyat çizgiye değince çıkış). */
 export function supertrendExitLine(c: Candle[]): TargetLine {
   const s = supertrendLine(H(c), L(c), C(c), 10, 4);
+  return (j, d) => (s.dir[j] === (d === 'up' ? 1 : -1) ? s.line[j] : d === 'up' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
+}
+
+/**
+ * Twin Range Filter (12/1, 4/2) + Supertrend (Kıvanç, 10, 4, hl2) — kullanıcı tarifi.
+ * Supertrend yeşilken her TRF "Long" → LONG; Supertrend yeşile döndüğü mumda TRF'nin son sinyali "Long" ise o mumda da LONG.
+ * Stop: Supertrend çizgisi (girişteki seviye; sonra `stExitLine` ile her mum takip). Kırmızıda tersi (SHORT).
+ * Kâr al: TRF ters sinyali (`trfExit`).
+ */
+export function trfStSignals(c: Candle[]): BoxSignal[] {
+  const cl = C(c);
+  const trf = twinRangeFilter(cl, 12, 1, 4, 2).signal;
+  const st = supertrendKv(H(c), L(c), cl, 10, 4);
+  const out: BoxSignal[] = [];
+  let state = 0; // TRF'nin son sinyali
+  for (let i = 1; i < c.length; i++) {
+    if (trf[i] !== 0) state = trf[i];
+    const d = st.dir[i];
+    if (Number.isNaN(st.dir[i - 1]) || Number.isNaN(d)) continue;
+    const flip = d !== st.dir[i - 1];
+    if (trf[i] === d || (flip && state === d)) {
+      const up = d === 1;
+      // Stop girişin doğru tarafında olmalı.
+      if (up ? st.line[i] < cl[i] : st.line[i] > cl[i]) out.push({ i, dir: up ? 'up' : 'down', stop: st.line[i] });
+    }
+  }
+  return out;
+}
+
+/** TRF ters sinyali (LONG'da "Short", SHORT'ta "Long") gelince mum kapanışında kâr al. */
+export function trfExit(c: Candle[]): ExitRule {
+  const trf = twinRangeFilter(C(c), 12, 1, 4, 2).signal;
+  return (j, d) => trf[j] === (d === 'up' ? -1 : 1);
+}
+
+/** Supertrend (Kıvanç, 10, 4) çizgisi takip stopu: fiyat bir önceki mumdaki çizgiye değince çıkış; yön dönmüşse açılışta. */
+export function stKvExitLine(c: Candle[]): TargetLine {
+  const s = supertrendKv(H(c), L(c), C(c), 10, 4);
   return (j, d) => (s.dir[j] === (d === 'up' ? 1 : -1) ? s.line[j] : d === 'up' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
 }

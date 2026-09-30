@@ -498,3 +498,32 @@ export function twinRangeFilter(close: number[], per1 = 27, mult1 = 1.6, per2 = 
   }
   return { filt, signal };
 }
+
+/**
+ * Supertrend, KivancOzbilgic sürümü (TradingView "SuperTrend", "Change ATR Calculation Method" işaretli = Wilder ATR).
+ * Yerleşik sürümden farkı: yön değişimi bir önceki mumun bandına göre kontrol edilir. Kaynak hl2.
+ */
+export function supertrendKv(high: number[], low: number[], close: number[], period = 10, mult = 3) {
+  const a = atr(high, low, close, period);
+  const n = close.length;
+  const line = new Array<number>(n).fill(NaN);
+  const dir = new Array<number>(n).fill(NaN);
+  let up = NaN;
+  let dn = NaN;
+  let trend = 1;
+  for (let i = 0; i < n; i++) {
+    if (Number.isNaN(a[i])) continue;
+    const src = (high[i] + low[i]) / 2;
+    const up1 = Number.isNaN(up) ? src - mult * a[i] : up;
+    const dn1 = Number.isNaN(dn) ? src + mult * a[i] : dn;
+    const prevClose = i > 0 ? close[i - 1] : close[i];
+    const u = src - mult * a[i];
+    const d = src + mult * a[i];
+    up = prevClose > up1 ? Math.max(u, up1) : u;
+    dn = prevClose < dn1 ? Math.min(d, dn1) : d;
+    trend = trend === -1 && close[i] > dn1 ? 1 : trend === 1 && close[i] < up1 ? -1 : trend;
+    dir[i] = trend;
+    line[i] = trend === 1 ? up : dn;
+  }
+  return { line, dir };
+}

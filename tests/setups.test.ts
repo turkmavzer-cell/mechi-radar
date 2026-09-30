@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
 import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
-import { bbStochSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
+import { bbStochSignals, trfStSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
 function series(n = 1500): Candle[] {
@@ -28,6 +28,7 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
     ['ema2155v2', (c) => ema2155BreakSignals(c, { refBars: 10, no55After: 3 })],
     ['ema5813macd', (c) => ema5813MacdSignals(c)],
     ['twinst', (c) => twinStSignals(c)],
+    ['trfst', trfStSignals],
     ['triangle', (c) => triangleSignals(c)],
     ['emavolha', (c) => emaVolHaSignals(c)],
   ];
@@ -92,7 +93,8 @@ test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () =>
   const res = analyze('TEST', '1h', cs);
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
-  assert.ok(!res.events.some((e) => e.levels)); // kutulu stratejiler uygulamada kapalı
+  // Uygulamada yalnızca TRF + Supertrend açık.
+  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy === 'trfst'));
 });
 
 test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {
@@ -112,4 +114,14 @@ test('Twin Range Filter: Long ve Short etiketleri sırayla gelir', async () => {
   const sig = twinRangeFilter(series(1500).map((x) => x.c), 12, 1, 4, 2).signal.filter((x) => x !== 0);
   assert.ok(sig.length > 4);
   for (let k = 1; k < sig.length; k++) assert.notEqual(sig[k], sig[k - 1]);
+});
+
+test('Supertrend (Kıvanç): yükselişte çizgi altta, düşüşte üstte; TRF + ST stopu çizgide', async () => {
+  const { supertrendKv } = await import('../src/core/indicators');
+  const cs = series(1500);
+  const st = supertrendKv(cs.map((x) => x.h), cs.map((x) => x.l), cs.map((x) => x.c), 10, 4);
+  for (let i = 50; i < cs.length; i++) {
+    if (st.dir[i] === st.dir[i - 1]) assert.ok(st.dir[i] === 1 ? st.line[i] <= cs[i].c : st.line[i] >= cs[i].c, `mum ${i}`);
+  }
+  for (const x of trfStSignals(cs)) assert.equal(x.stop, st.line[x.i]);
 });
