@@ -1,0 +1,21 @@
+//@version=6
+// Mechi · Kapsamlı araştırma aday 2: MACD sıfır kesişimi + EMA 200 filtresi (walk-forward'un son seçimi: 8 saatlik, stop yok).
+// Kural: MACD (12, 26) çizgisi 0'ı yukarı keser ve kapanış EMA 200 üstünde → LONG; aşağı keser ve EMA 200 altında → SHORT.
+// Çıkış: MACD çizgisi ters tarafa geçince (koşul sağlanırsa aynı anda ters yöne döner).
+// UYARI: walk-forward testinde 10x'te −%45; araştırma amaçlıdır, tavsiye değildir.
+strategy("Mechi · MACD sıfır + EMA 200", overlay=true, initial_capital=1000, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=8)
+
+useFilter = input.bool(true, "EMA 200 filtresi")
+[m, s, hist] = ta.macd(close, 12, 26, 9)
+e200 = ta.ema(close, 200)
+up = ta.crossover(m, 0)
+dn = ta.crossunder(m, 0)
+if strategy.position_size > 0 and m < 0
+    strategy.close("LONG")
+if strategy.position_size < 0 and m > 0
+    strategy.close("SHORT")
+if up and (not useFilter or close > e200)
+    strategy.entry("LONG", strategy.long)
+if dn and (not useFilter or close < e200)
+    strategy.entry("SHORT", strategy.short)
+plot(e200, "EMA 200", color.gray)
