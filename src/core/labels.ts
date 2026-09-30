@@ -23,6 +23,9 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
       return up ? 'Altın kesişim (SMA 50/200)' : 'Ölüm kesişimi (SMA 50/200)';
     case 'donchian':
       return `20 mumun ${up ? 'zirvesi' : 'dibi'} kırıldı`;
+    case 'ema2155x':
+      return `${up ? "LONG'a dön" : "SHORT'a dön"}${e.levels ? ` ${formatPrice(e.levels.entry)}` : ''} · EMA 21/55 kesişimi`;
+    case 'trfst2':
     case 'sratr':
     case 'sratrEma':
     case 'sratrAdx':
@@ -41,7 +44,6 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'twinst3':
     case 'trfst':
     case 'trfst1':
-    case 'trfst2':
     case 'bbstoch':
     case 'hasmooth':
     case 'hasmoothAdx':
@@ -102,6 +104,7 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   trfst: 'TRF + Supertrend',
   trfst1: 'TRF + Supertrend · ATR kâr al',
   trfst2: 'TRF + Supertrend · 1R sonrası kâr al',
+  ema2155x: 'EMA 21/55 kesişim',
   bbstoch: 'Bollinger + Stokastik',
   hasmooth: 'Heikin Ashi Smoothed',
   hasmoothAdx: 'HA Smoothed + ADX',

@@ -536,3 +536,23 @@ export function stKvExitLine(c: Candle[]): TargetLine {
   const s = supertrendKv(H(c), L(c), C(c), 10, 4);
   return (j, d) => (s.dir[j] === (d === 'up' ? 1 : -1) ? s.line[j] : d === 'up' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
 }
+
+/** EMA kesişimi (sürekli pozisyon): hızlı EMA yavaşı yukarı keserse LONG, aşağı keserse SHORT; kapanışta. */
+export function emaCrossSignals(c: Candle[], fast = 21, slow = 55): BoxSignal[] {
+  const cl = C(c);
+  const f = ema(cl, fast), s = ema(cl, slow);
+  const out: BoxSignal[] = [];
+  for (let i = 1; i < c.length; i++) {
+    if (Number.isNaN(s[i - 1])) continue;
+    if (f[i - 1] <= s[i - 1] && f[i] > s[i]) out.push({ i, dir: 'up' });
+    else if (f[i - 1] >= s[i - 1] && f[i] < s[i]) out.push({ i, dir: 'down' });
+  }
+  return out;
+}
+
+/** Ters kesişimde çıkış (aynı kapanışta ters yönde yeni işlem açılır). */
+export function emaCrossExit(c: Candle[], fast = 21, slow = 55): ExitRule {
+  const cl = C(c);
+  const f = ema(cl, fast), s = ema(cl, slow);
+  return (j, d) => (d === 'up' ? f[j] < s[j] : f[j] > s[j]);
+}

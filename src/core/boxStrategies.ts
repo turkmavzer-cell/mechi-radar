@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfAtrExit, trfExit, trfStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfAtrExit, trfExit, trfStSignals, emaCrossExit, emaCrossSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -13,6 +13,8 @@ export interface BoxStrategy {
   rule: (tf: Timeframe) => string;
   /** `exit` ile çıkış kuralı değiştirilebilir (ör. `{ trail: 1 }` takip eden kâr al). */
   run: (closed: Candle[], tf: Timeframe, higher: HigherSeries | undefined, exit?: Partial<BoxParams>) => BoxTrade[];
+  /** Tanımlıysa Radar/bildirim olayları yalnızca bu zaman diliminde üretilir (grafikte her zaman diliminde hesaplanır). */
+  notifyTf?: Timeframe;
 }
 
 const exits = `Stop ${SR_PARAMS.stopAtr.toLocaleString('tr-TR')} ATR · hedef ${SR_PARAMS.rr}R`;
@@ -96,6 +98,12 @@ export const STRATEGY_ARCHIVE: BoxStrategy[] = [
 
 /** Uygulamada (grafik düğmeleri, Radar ve bildirimler) kullanılan kutulu stratejiler. Şu an boş: hepsi kaldırıldı. */
 export const BOX_STRATEGIES: BoxStrategy[] = [
+  {
+    ...custom('ema2155x', 'EMA 21/55 kesişim', 'EMA 21/55', '4s için · EMA 21, EMA 55\'i yukarı keserse LONG\'a, aşağı keserse SHORT\'a dön (mum kapanışında); sürekli pozisyon, stop ve hedef yok · R ölçüsü girişteki 2 × ATR(14) · bildirim yalnızca 4s', (c, _tf, _h, exit) =>
+      simulate(c, emaCrossSignals(c, 21, 55), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, noStop: true, sameBarEntry: true, ...exit, trail: undefined }, emaCrossExit(c, 21, 55)),
+    ),
+    notifyTf: '4h',
+  },
   custom('trfst', 'TRF + Supertrend', 'TRF + Supertrend', 'Supertrend (10, 4, hl2) yeşilken her Twin Range Filter (12/1, 4/2) "Long" → AL; Supertrend yeşile döndüğünde TRF zaten "Long"daysa o mumda AL · Kâr al: TRF "Short" · Stop: Supertrend çizgisi (takip eder, değince çıkış) · Kırmızıda tersi', (c, _tf, _h, exit) =>
     simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfExit(c), undefined, stKvExitLine(c)),
   ),

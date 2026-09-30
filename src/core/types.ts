@@ -46,6 +46,7 @@ export type Strategy =
   | 'trfst'
   | 'trfst1'
   | 'trfst2'
+  | 'ema2155x'
   | 'bbstoch'
   | 'hasmooth'
   | 'hasmoothAdx'
@@ -73,6 +74,7 @@ export const STRATEGIES: Strategy[] = [
   'trfst',
   'trfst1',
   'trfst2',
+  'ema2155x',
   'bbstoch',
   'hasmooth',
   'hasmoothAdx',

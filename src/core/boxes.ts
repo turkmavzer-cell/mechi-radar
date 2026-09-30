@@ -44,6 +44,8 @@ export interface BoxParams {
   sameBarEntry?: boolean;
   /** Fiyat girişten bu kadar R kâra geçince stop giriş fiyatına çekilir (başa baş; bir sonraki mumdan itibaren). */
   breakeven?: number;
+  /** true: stop yok; `stopAtr` × ATR yalnızca R ölçüsü için referans risk (ör. sürekli pozisyonda kalan kesişim stratejisi). */
+  noStop?: boolean;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -80,6 +82,8 @@ export interface BoxTrade {
   peak?: number;
   /** Stop/hedef yerine kural çıkışıyla (mum kapanışında) kapandı. */
   ruleExit?: boolean;
+  /** R hesabında kullanılan risk (fiyat birimi). Stopsuz stratejide stop = giriş, risk referanstır. */
+  risk?: number;
   lines?: [number, number, number, number][];
 }
 
@@ -125,10 +129,10 @@ export function simulate(
     const target = sig.target ?? (targetLine ? targetLine(i, dir) : entry + s * params.rr * risk);
     // Hedef girişin yanlış tarafındaysa (ör. bant zaten geçilmiş) işlem açılmaz.
     if (!(s * (target - entry) > 0)) continue;
-    const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target, outcome: 'open' };
+    const t: BoxTrade = { i, dir, entry, stop: params.noStop ? entry : entry - s * risk, target, outcome: 'open', risk };
     if (sig.lines) t.lines = sig.lines;
     const gap = params.trail != null ? params.trail * a[i] : NaN;
-    let stopLvl = t.stop; // geçerli stop (başa başta girişe çekilir; kutuda ilk stop kalır)
+    let stopLvl = params.noStop ? NaN : t.stop; // geçerli stop (başa başta girişe çekilir; kutuda ilk stop kalır)
     let best = NaN; // takipte görülen en iyi fiyat
     let trailStop = NaN;
     let bestR = -Infinity; // görülen en iyi kâr (R)

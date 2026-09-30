@@ -161,7 +161,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[], higher
   // Stokastik-RSI-ATR yalnızca üst zaman dilimi verisi verildiyse hesaplanır.
   // Kutulu stratejiler (Stokastik-RSI-ATR sürümleri üst zaman dilimi verisi olmadan sinyal vermez).
   for (const b of BOX_STRATEGIES)
-    for (const s of b.run(candles, tf, higher)) {
+    for (const s of b.notifyTf && b.notifyTf !== tf ? [] : b.run(candles, tf, higher)) {
       push(s.i, b.id, s.dir);
       events[events.length - 1].levels = { entry: s.entry, stop: s.stop, ...(Number.isFinite(s.target) ? { target: s.target } : {}) };
     }

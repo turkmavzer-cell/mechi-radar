@@ -125,3 +125,18 @@ test('Supertrend (Kıvanç): yükselişte çizgi altta, düşüşte üstte; TRF 
   }
   for (const x of trfStSignals(cs)) assert.equal(x.stop, st.line[x.i]);
 });
+
+test('EMA 21/55 kesişim: sürekli pozisyon, ters kesişimde aynı kapanışta dönüş, stop yok', async () => {
+  const { emaCrossSignals, emaCrossExit } = await import('../src/core/setups');
+  const cs = series(1500);
+  const tr = simulate(cs, emaCrossSignals(cs), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, noStop: true, sameBarEntry: true }, emaCrossExit(cs));
+  assert.ok(tr.length > 3);
+  for (let k = 1; k < tr.length; k++) {
+    assert.equal(tr[k].i, tr[k - 1].exitI);
+    assert.notEqual(tr[k].dir, tr[k - 1].dir);
+  }
+  for (const t of tr) {
+    assert.equal(t.stop, t.entry);
+    if (t.outcome !== 'open') assert.ok(t.ruleExit);
+  }
+});
