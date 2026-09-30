@@ -42,6 +42,8 @@ export interface BoxParams {
    * Dur-ve-dön stratejileri için (ör. Heikin Ashi Smoothed renk dönüşü). Varsayılan: yalnızca kural çıkışında.
    */
   sameBarEntry?: boolean;
+  /** Fiyat girişten bu kadar R kâra geçince stop giriş fiyatına çekilir (başa baş; bir sonraki mumdan itibaren). */
+  breakeven?: number;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -113,20 +115,21 @@ export function simulate(
     const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target, outcome: 'open' };
     if (sig.lines) t.lines = sig.lines;
     const gap = params.trail != null ? params.trail * a[i] : NaN;
+    let stopLvl = t.stop; // geçerli stop (başa başta girişe çekilir; kutuda ilk stop kalır)
     let best = NaN; // takipte görülen en iyi fiyat
     let trailStop = NaN;
     for (let j = i + 1; j < candles.length; j++) {
       const c = candles[j];
       if (!t.trailing) {
-        const hitStop = dir === 'up' ? c.l <= t.stop : c.h >= t.stop;
+        const hitStop = dir === 'up' ? c.l <= stopLvl : c.h >= stopLvl;
         // Değişen hedefte bir önceki mumun kapanışındaki seviye kullanılır (mum içinde geleceğe bakmamak için).
         const tgt = targetLine ? targetLine(j - 1, dir) : t.target;
         const hitTarget = dir === 'up' ? c.h >= tgt : c.l <= tgt;
         if (hitStop) {
           t.outcome = 'sl';
           t.exitI = j;
-          t.exitPrice = t.stop;
-          t.r = -1;
+          t.exitPrice = stopLvl;
+          t.r = stopLvl === entry ? 0 : -1; // başa başa çekilmiş stop 0R, değilse −1R
           break;
         }
         if (!hitTarget) {
@@ -134,6 +137,8 @@ export function simulate(
             closeByRule(t, j, c.c, entry, s, risk);
             break;
           }
+          // Başa baş: bu mumda yeterli kâr görüldüyse stop bir sonraki mumdan itibaren girişte.
+          if (params.breakeven != null && s * ((dir === 'up' ? c.h : c.l) - entry) >= params.breakeven * risk) stopLvl = entry;
           continue;
         }
         // Değişen hedefte mum hedefin ötesinde açıldıysa açılış fiyatından çıkılır.

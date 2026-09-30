@@ -9,27 +9,45 @@ const H = (c: Candle[]) => c.map((x) => x.h);
 const L = (c: Candle[]) => c.map((x) => x.l);
 const C = (c: Candle[]) => c.map((x) => x.c);
 
+export interface Ema2155Opts {
+  /** Kesişimden sonra yalnızca ilk geri çekilme (aynı yönde ikinci sinyal yok; ters kesişim sıfırlar). */
+  firstOnly?: boolean;
+  /** Kopuş: kesişimden sonra, geri çekilmeden önce bir mumun dibi EMA 21'in en az bu kadar ATR üstünde olmalı (short tersi). */
+  breakAtr?: number;
+  /** Girişte EMA 21 ile EMA 55 arası en az bu kadar ATR olmalı. */
+  gapAtr?: number;
+}
+
 /**
  * EMA 21/55 geri çekilmesi: EMA 21, EMA 55'i yukarı kestikten sonra (EMA 21 > EMA 55 sürerken) mumun dibi EMA 21'e değer,
- * kapanış EMA 21 üstünde ve mum yeşil → LONG. Short tersi. `firstOnly`: kesişimden sonra yalnızca ilk geri çekilme.
+ * kapanış EMA 21 üstünde ve mum yeşil → LONG. Short tersi. Kopuş ve ortalama arası mesafe şartları `opts` ile.
  */
-export function ema2155Signals(c: Candle[], firstOnly = false): BoxSignal[] {
+export function ema2155Signals(c: Candle[], opts: Ema2155Opts = {}): BoxSignal[] {
+  const { firstOnly = false, breakAtr = 0, gapAtr = 0 } = opts;
   const cl = C(c);
   const f = ema(cl, 21);
   const s = ema(cl, 55);
+  const a = atr(H(c), L(c), cl, 14);
   const out: BoxSignal[] = [];
   let used = false;
+  let broke = false; // kesişimden sonra kopuş oldu mu
   for (let i = 1; i < c.length; i++) {
-    if (Number.isNaN(s[i - 1])) continue;
-    if (Math.sign(f[i] - s[i]) !== Math.sign(f[i - 1] - s[i - 1])) used = false; // yeni kesişim
-    if (firstOnly && used) continue;
+    if (Number.isNaN(s[i - 1]) || Number.isNaN(a[i])) continue;
+    if (Math.sign(f[i] - s[i]) !== Math.sign(f[i - 1] - s[i - 1])) {
+      used = false; // yeni kesişim
+      broke = false;
+    }
     const x = c[i];
-    const up = f[i] > s[i] && x.l <= f[i] && x.c > f[i] && x.c > x.o && x.c > s[i];
-    const dn = f[i] < s[i] && x.h >= f[i] && x.c < f[i] && x.c < x.o && x.c < s[i];
-    if (up || dn) {
+    const upTrend = f[i] > s[i];
+    const up = upTrend && x.l <= f[i] && x.c > f[i] && x.c > x.o && x.c > s[i];
+    const dn = !upTrend && x.h >= f[i] && x.c < f[i] && x.c < x.o && x.c < s[i];
+    const ok = (up || dn) && !(firstOnly && used) && (breakAtr <= 0 || broke) && Math.abs(f[i] - s[i]) >= gapAtr * a[i];
+    if (ok) {
       out.push({ i, dir: up ? 'up' : 'down' });
       used = true;
     }
+    // Kopuş bu mumdan sonra geçerli olur (aynı mumda hem kopuş hem geri çekilme olmaz).
+    if (upTrend ? x.l - f[i] >= breakAtr * a[i] : f[i] - x.h >= breakAtr * a[i]) broke = true;
   }
   return out;
 }

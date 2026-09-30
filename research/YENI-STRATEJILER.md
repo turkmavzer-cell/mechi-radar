@@ -31,6 +31,24 @@ Kural: EMA 21 > EMA 55 (yukarı kesişimden sonra) iken mumun dibi EMA 21'e değ
 - "Yalnızca kesişimden sonraki ilk geri çekilme" seçeneği işlem sayısını yarıya indiriyor, sonucu iyileştirmiyor.
 - En iyi zaman dilimi 4s (altında +0,32R, Nasdaq +0,08R, USDJPY +0,08R; Japan 225 −0,12R). 15dk'da negatif.
 
+### EMA 21/55 — güncelleme (kullanıcı isteği: tekrar sinyal yok, kopuş ve mesafe şartı)
+Yeni kural: EMA 21, EMA 55'i kestikten sonra **(1)** kesişim başına tek işlem (ters kesişime kadar aynı yönde yeni sinyal yok),
+**(2)** geri çekilmeden önce fiyat EMA 21'den kopmuş olmalı (bir mumun dibi EMA 21'in en az X ATR üstünde; short tersi),
+**(3)** girişte EMA 21 ile EMA 55 arası en az Y ATR. X ve Y 0 / 0,25 / 0,5 / 1 ve 0 / 0,5 / 1 ATR denendi.
+
+| Kural | İşlem | İlk yarı | İkinci yarı | Maliyetsiz |
+|---|---|---|---|---|
+| Eski (her geri çekilme, filtre yok, 1:3) | 1.870 | +0,032R | −0,004R | +0,091R |
+| **Yeni (kopuş 1 ATR, EMA arası 1 ATR, 1:3)** | 644 | +0,054R | +0,030R | +0,118R |
+| Yeni, 1:2 + takip | 651 | +0,048R | +0,075R | +0,134R |
+| Yeni, 1:3 + 1R'de başa baş | 652 | −0,007R | +0,014R | +0,072R |
+
+- Filtreler yatay piyasadaki sinyallerin yaklaşık üçte ikisini eliyor; kalan işlemler ortalamada daha iyi. Komşu eşiklerin hepsi
+  iki yarıda da pozitif (sonuç tek bir eşiğe bağlı değil). Yine de t < 1: kanıt zayıf.
+- En iyi zaman dilimi 4s: USDJPY +0,43R, Nasdaq +0,40R, altın +0,22R (enstrüman başına 23–27 işlem, az).
+- **Başa baş stop** (1R kârda stopu girişe çekmek) sonucu kötüleştirdi: kâra geçip geri dönen işlemlerin bir kısmı sonra hedefe
+  gidiyordu, başa baş bunları erken kapatıyor.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).

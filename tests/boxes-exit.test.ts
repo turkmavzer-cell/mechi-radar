@@ -64,3 +64,13 @@ test('sameBarEntry: stop mumunda gelen ters sinyal yeni işlem açar', () => {
   assert.equal(tr[0].outcome, 'sl');
   assert.equal(tr[1].i, 25);
 });
+
+test('başa baş: 1R kârdan sonra stop girişe çekilir, dönüşte 0R', () => {
+  const cs = Array.from({ length: 40 }, (_, i) => bar(i, 100));
+  // ATR ≈ 2 → risk 3; 22. mumda +1R (103) görülür, sonra fiyat girişe döner.
+  cs[22] = { t: 22 * 3600, o: 100, h: 103.5, l: 99.5, c: 103 };
+  const tr = simulate(cs, [{ i: 20, dir: 'up' }], { stopAtr: 1.5, rr: 3, breakeven: 1 });
+  assert.equal(tr[0].exitI, 23); // 23. mumun dibi (99) girişin altında
+  assert.equal(tr[0].exitPrice, 100);
+  assert.equal(tr[0].r, 0);
+});

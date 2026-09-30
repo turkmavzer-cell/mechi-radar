@@ -34,13 +34,21 @@ const STOPS = [1, 1.5, 2];
 
 function grid(strategy: string): Variant[] {
   const v: Variant[] = [];
-  if (strategy === 'ema2155')
-    for (const first of [false, true])
-      for (const st of STOPS) {
-        const tag = first ? 'ilk geri çekilme' : 'her geri çekilme';
-        for (const rr of RRS) v.push({ id: `${first}|${st}|${rr}`, label: `${tag} · stop ${st} ATR · 1:${rr}`, run: (c) => ({ signals: ema2155Signals(c, first), params: { stopAtr: st, rr } }) });
-        v.push({ id: `${first}|${st}|trail`, label: `${tag} · stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: ema2155Signals(c, first), params: { stopAtr: st, rr: 2, trail: 1.5 } }) });
-      }
+  if (strategy === 'ema2155') {
+    v.push({ id: 'eski', label: 'ESKİ KURAL: her geri çekilme · filtre yok · stop 2 ATR · 1:3', eligible: false, run: (c) => ({ signals: ema2155Signals(c), params: { stopAtr: 2, rr: 3 } }) });
+    const exits: [string, string, BoxParams][] = [
+      ['2', '1:2', { stopAtr: 2, rr: 2 }],
+      ['3', '1:3', { stopAtr: 2, rr: 3 }],
+      ['3be', '1:3 + 1R\'de başa baş', { stopAtr: 2, rr: 3, breakeven: 1 }],
+      ['trail', '1:2 + takip', { stopAtr: 2, rr: 2, trail: 1.5 }],
+    ];
+    for (const br of [0, 0.25, 0.5, 1])
+      for (const gap of [0, 0.5, 1])
+        for (const [eid, elabel, p] of exits) {
+          const o = { firstOnly: true, breakAtr: br, gapAtr: gap };
+          v.push({ id: `${br}|${gap}|${eid}`, label: `kesişim başına 1 · kopuş ${br} ATR · EMA arası ${gap} ATR · stop 2 ATR · ${elabel}`, run: (c) => ({ signals: ema2155Signals(c, o), params: p }) });
+        }
+  }
   if (strategy === 'bbstoch')
     for (const w of [0, 0.8, 1])
       for (const st of STOPS) {
