@@ -243,3 +243,13 @@ export function rsiMacdExit(c: Candle[]): ExitRule {
   const r = rsi(C(c), 14);
   return (j, d) => (d === 'up' ? r[j] < 50 : r[j] > 50);
 }
+
+/**
+ * RSI üst/alt çizgide çıkış: LONG'da RSI(14) `upper` (ör. 70) üstüne çıkınca, SHORT'ta 100 − `upper` (ör. 30) altına inince.
+ * `mid`: ayrıca RSI 50'nin ters tarafına geçerse de çık.
+ */
+export function rsiLevelExit(c: Candle[], upper = 70, mid = false): ExitRule {
+  const r = rsi(C(c), 14);
+  const lower = 100 - upper;
+  return (j, d) => (d === 'up' ? r[j] >= upper || (mid && r[j] < 50) : r[j] <= lower || (mid && r[j] > 50));
+}
