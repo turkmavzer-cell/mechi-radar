@@ -72,6 +72,22 @@ Giriş ve stop kırılım stratejisiyle aynı; çıkış fiyat EMA 55'e değince
 - 4s'te USDJPY +0,14R, altın +0,20R, Nasdaq +0,06R, Japan 225 −0,30R (enstrüman başına 42–45 işlem).
 - EMA 21 çıkışlı sürümden (−0,050R) belirgin farkı yok; mevcut kopuşlu EMA 21/55 (+0,030R) hâlâ en iyisi.
 
+### EMA 5/8/13 + MACD
+LONG: MACD çizgisi 0'ı yukarı keser ve en fazla 5 mum içinde (önce ya da sonra) EMA 5 > 8 > 13 sıralanıp üçü de yükselir; sinyal
+ikisinin birlikte sağlandığı mumda. Stop önceki dibin (tepe/dip noktası) 0,1 ATR altı, en az 0,5 ATR. Çıkış EMA 5, 13'ü aşağı kesince.
+Short tersi. Tümü: `yeni2-sonuclar.md`.
+- Seçilen (dip noktası iki yanda 5 mum): 2.824 işlem · ilk yarı +0,019R · **ikinci yarı −0,019R** · kazanan %31 · maliyetsiz +0,046R.
+- 1s'te USDJPY +0,06R, altın +0,14R; Japan 225 ve Nasdaq negatif. Karşılaştırma için 1:2 ve 1:2 + takip de ikinci yarıda negatif.
+
+### EMA 21/55 (2. anlatım)
+SHORT: EMA 21, 55'i aşağı keserken fiyat EMA'lara değer (kesişim mumu da sayılır); kırılacak seviye kesişimden önceki 10 mumun dibi;
+fiyat bu seviyenin altında (ve EMA 21 altında) kapanınca SHORT. Kesişimden 6 mum sonra fiyat EMA 55'e değerse o kesişimde işlem yok.
+Stop geri çekilmenin tepesinin üstünde (en az 1 ATR). Çıkış: EMA 21 içinde (üstünde) kapanış. LONG tersi.
+- Seçilen: 536 işlem · ilk yarı −0,027R · **ikinci yarı −0,055R** · kazanan %34.
+- **Aynı giriş sabit 1:2 hedefle iki yarıda da pozitif** (+0,150 / +0,035R, maliyetsiz +0,156R): giriş kuralı işe yarıyor olabilir, EMA 21 çıkışı
+  kazancı erken kesiyor. Kanıt zayıf (yarı başına ~230 işlem).
+- "EMA 55'e değerse iptal" süresi kısaldıkça (6 → 0 mum) sonuç kötüleşiyor: kesişimden hemen sonra EMA'lar iç içe olduğu için çok sinyal eleniyor.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).
