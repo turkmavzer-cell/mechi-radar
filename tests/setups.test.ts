@@ -93,8 +93,8 @@ test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () =>
   const res = analyze('TEST', '1h', cs);
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
-  // Uygulamada yalnızca TRF + Supertrend açık.
-  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy === 'trfst'));
+  // Uygulamada yalnızca TRF + Supertrend sürümleri açık.
+  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy.startsWith('trfst')));
 });
 
 test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {

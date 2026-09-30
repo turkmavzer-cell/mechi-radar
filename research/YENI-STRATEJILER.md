@@ -114,6 +114,14 @@ Supertrend (Kıvanç sürümü, 10, 4, hl2, Wilder ATR) yeşilken her Twin Range
 - En iyi zaman dilimi 4s (+0,025 / +0,028R); altın tüm zaman dilimlerinde hafif pozitif, USDJPY 1s/4s +0,04/+0,05R.
 - İşlemler kısa (ort. 13 mum): TRF ters sinyali sık geliyor, kâr erken alınıyor. Önceki "Twin Range + ST 1:3" sürümü (+0,24R) bundan belirgin iyi.
 
+### TRF + Supertrend · ATR kâr al ve ek yöntem (kullanıcı isteği: yatay/düşen piyasada çok gir-çık)
+Tümü: `trfst12-sonuclar.md` (15dk/1s/4s/günlük × 4 enstrüman, 4.900 işlem civarı).
+- **ATR kâr al** (fiyat X ATR kâra geçtikten sonra ilk ters mumda çık; TRF ters sinyali de çıkarır): X = 1 / 1,5 / 2 → ikinci yarı −0,003 / −0,008 /
+  −0,006R. Seçilen 2 ATR (ilk yarıya göre). Kazanan oranı %35 → %42'ye çıkıyor ama kazançlar küçülüyor; toplam değişmiyor.
+- **Ek yöntem adayları:** ADX ≥ 20 / 25 girişi, tekrar girişte yeni dip/tepe şartı, "TRF kâr alı ancak 1R kârdan sonra" ve birleşimleri. İlk yarıya göre
+  seçilen: **1R sonrası kâr al** → işlem sayısı yarıya iniyor (2.887), ikinci yarı −0,002R, kazanan %41. Yeni dip/tepe şartı sonucu kötüleştirdi.
+- Hiçbiri kullanıcı kuralından (−0,001R) belirgin iyi değil: maliyet dahil üçü de başa baş. Gir-çık sayısını azaltan tek sürüm 1R sonrası kâr al.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).
