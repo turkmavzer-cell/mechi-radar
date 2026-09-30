@@ -140,6 +140,7 @@ export function triangleSignals(c: Candle[], measured = false, span = 5, window 
       upper: [start, up(start), i, up(i)],
       lower: [start, lo(start), i, lo(i)],
     };
+    sig.lines = [sig.upper, sig.lower];
     if (measured) sig.target = c[i].c + (dir === 'up' ? height : -height);
     out.push(sig);
   }

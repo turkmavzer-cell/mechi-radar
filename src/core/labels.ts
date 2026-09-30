@@ -31,8 +31,13 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'st200':
     case 'utbot':
     case 'rsi2':
+    case 'ema2155':
+    case 'bbstoch':
+    case 'hasmooth':
+    case 'triangle':
+    case 'emavolha':
       return e.levels
-        ? `${up ? 'LONG' : 'SHORT'} GİRİŞ ${formatPrice(e.levels.entry)} · Stop ${formatPrice(e.levels.stop)} · Hedef ${formatPrice(e.levels.target)}`
+        ? `${up ? 'LONG' : 'SHORT'} GİRİŞ ${formatPrice(e.levels.entry)} · Stop ${formatPrice(e.levels.stop)}${e.levels.target != null ? ` · Hedef ${formatPrice(e.levels.target)}` : ''}`
         : `${up ? 'LONG' : 'SHORT'} GİRİŞ`;
     case 'macd':
       return `MACD sıfırı ${up ? 'yukarı kesti · al' : 'aşağı kesti · sat'}`;
@@ -74,6 +79,11 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   st200: 'Supertrend + EMA 200',
   utbot: 'UT Bot + EMA 200',
   rsi2: 'Connors RSI(2)',
+  ema2155: 'EMA 21/55 geri çekilmesi',
+  bbstoch: 'Bollinger + Stokastik',
+  hasmooth: 'Heikin Ashi Smoothed',
+  triangle: 'Üçgen formasyonları',
+  emavolha: 'EMA 20/50 + hacim + HA',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {

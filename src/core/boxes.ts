@@ -45,6 +45,8 @@ export interface BoxSignal {
   dir: Direction;
   /** Sinyale özel sabit hedef fiyatı (ör. formasyon yüksekliği); yoksa `rr` × risk. */
   target?: number;
+  /** Grafikte çizilecek çizgiler (ör. formasyon kenarları): [mum1, fiyat1, mum2, fiyat2]. */
+  lines?: [number, number, number, number][];
 }
 
 /** Her mumda değişen hedef seviyesi (ör. Bollinger karşı bandı); `j` mumunun kapanışındaki değer. */
@@ -69,6 +71,7 @@ export interface BoxTrade {
   peak?: number;
   /** Stop/hedef yerine kural çıkışıyla (mum kapanışında) kapandı. */
   ruleExit?: boolean;
+  lines?: [number, number, number, number][];
 }
 
 /** Kural çıkışı: `j` mumunun kapanışında pozisyon kapatılsın mı. */
@@ -103,6 +106,7 @@ export function simulate(
     // Hedef girişin yanlış tarafındaysa (ör. bant zaten geçilmiş) işlem açılmaz.
     if (!(s * (target - entry) > 0)) continue;
     const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target, outcome: 'open' };
+    if (sig.lines) t.lines = sig.lines;
     const gap = params.trail != null ? params.trail * a[i] : NaN;
     let best = NaN; // takipte görülen en iyi fiyat
     let trailStop = NaN;

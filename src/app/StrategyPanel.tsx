@@ -80,11 +80,11 @@ export function StrategyPanel({ title, rule, trades, candles, rr }: Props) {
                     {x.dir === 'up' ? 'LONG' : 'SHORT'} {formatPrice(x.entry)}
                   </span>
                   <span className="sub">
-                    Stop {formatPrice(x.stop)} · Hedef {formatPrice(x.target)}
+                    Stop {formatPrice(x.stop)} · {Number.isFinite(x.target) ? `Hedef ${formatPrice(x.target)}` : 'Çıkış kurala göre'}
                   </span>
                   <span className="perf">
                     <b className={x.outcome === 'tp' ? 'pos' : x.outcome === 'sl' ? 'neg' : 'muted'}>
-                      {x.outcome === 'tp' ? `✓ ${fmtR(rOf(x))}` : x.outcome === 'sl' ? '✕ −1R' : x.trailing ? `Takipte · stop ${formatPrice(x.trailStop)}` : 'Açık'}
+                      {x.outcome === 'tp' ? `✓ ${fmtR(rOf(x))}` : x.outcome === 'sl' ? `✕ ${fmtR(rOf(x))}` : x.trailing ? `Takipte · stop ${formatPrice(x.trailStop)}` : 'Açık'}
                     </b>
                     {took && <span className="muted"> · {took}</span>}
                   </span>

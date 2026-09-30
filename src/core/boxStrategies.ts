@@ -1,5 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
+import { bbStochSignals, bbTarget, ema2155Signals, ema20Exit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -28,6 +29,10 @@ const fromCandidate = (id: Strategy, candidate: string, short: string, rule: str
   return { id, name: b.name, short, rule: () => `${rule} · ${exits}`, run: (c, _tf, _h, exit) => simulate(c, b.signals(c), { ...BOX_PARAMS, ...exit }, b.exit?.(c)) };
 };
 
+/** Stop/hedef ayarları research/yeni-stratejiler.ts ile verinin ilk yarısında seçildi (research/YENI-STRATEJILER.md). */
+const custom = (id: Strategy, name: string, short: string, rule: string, run: BoxStrategy['run']): BoxStrategy => ({ id, name, short, rule: () => rule, run });
+const NO_TARGET = Number.POSITIVE_INFINITY;
+
 export const BOX_STRATEGIES: BoxStrategy[] = [
   sra('sratr', 'Stokastik-RSI-ATR', 'SRA', [], ''),
   sra('sratrEma', 'SRA + EMA 200', 'SRA + EMA 200', ['ema200'], ' · EMA 200 yönünde'),
@@ -37,5 +42,20 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   // 4s/15dk testinde (research/ODAK-4S-15DK.md) maliyet dahil geçenler; kanıt yetersiz (t < 2).
   fromCandidate('st200', 'st200', 'Supertrend + EMA 200', 'Supertrend (10, 3) yükselişe döner + fiyat EMA 200 üstünde (short tersi) · testte 4s, takip eden TP ile'),
   fromCandidate('utbot', 'utbot', 'UT Bot', 'UT Bot (1, 10) al sinyali + fiyat EMA 200 üstünde (short tersi) · testte 4s ve 15dk'),
+  custom('ema2155', 'EMA 21/55 geri çekilmesi', 'EMA 21/55', 'EMA 21, EMA 55 üstündeyken mum EMA 21\'e değip üstünde yeşil kapanır → LONG (short tersi) · Stop 2 ATR · hedef 3R', (c, _tf, _h, exit) =>
+    simulate(c, ema2155Signals(c), { stopAtr: 2, rr: 3, ...exit }),
+  ),
+  custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
+    simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),
+  ),
+  custom('hasmooth', 'Heikin Ashi Smoothed', 'HA Smoothed', 'Heikin Ashi Smoothed (10, 10) yeşile döner → LONG, kırmızıya → SHORT · Çıkış ters renkte · acil stop 3 ATR', (c, _tf, _h, exit) =>
+    simulate(c, haSmoothedSignals(c), { stopAtr: 3, rr: NO_TARGET, ...exit }, haSmoothedExit(c)),
+  ),
+  custom('triangle', 'Üçgen formasyonları', 'Üçgen', 'Yükselen üçgen yukarı, alçalan aşağı, simetrik iki yöne kırılımda (kapanış çizginin ötesinde) · Stop 1,5 ATR · hedef 3R', (c, _tf, _h, exit) =>
+    simulate(c, triangleSignals(c), { stopAtr: 1.5, rr: 3, ...exit }),
+  ),
+  custom('emavolha', 'EMA 20/50 + hacim + HA', 'EMA + hacim + HA', 'EMA 20 > 50 iken EMA 20\'ye geri çekilme (hacim artışıyla), Heikin Ashi yeşile döner + RSI 50 üstü → LONG (short tersi) · Çıkış EMA 20 altı kapanış · acil stop 1,5 ATR', (c, _tf, _h, exit) =>
+    simulate(c, emaVolHaSignals(c, 1.2, true), { stopAtr: 1.5, rr: NO_TARGET, ...exit }, ema20Exit(c, 'close')),
+  ),
   fromCandidate('rsi2', 'rsi2', 'RSI(2)', 'Fiyat SMA 200 üstünde + RSI(2) 5 altına iner → LONG; altında + 95 üstü → SHORT · testte 15dk, takip eden TP ile'),
 ];

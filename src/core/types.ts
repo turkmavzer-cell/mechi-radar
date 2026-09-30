@@ -34,7 +34,12 @@ export type Strategy =
   | 'squeeze'
   | 'st200'
   | 'utbot'
-  | 'rsi2';
+  | 'rsi2'
+  | 'ema2155'
+  | 'bbstoch'
+  | 'hasmooth'
+  | 'triangle'
+  | 'emavolha';
 
 export const STRATEGIES: Strategy[] = [
   'sratr',
@@ -45,6 +50,11 @@ export const STRATEGIES: Strategy[] = [
   'st200',
   'utbot',
   'rsi2',
+  'ema2155',
+  'bbstoch',
+  'hasmooth',
+  'triangle',
+  'emavolha',
   'ema5813',
   'pullback2050',
   'triple',
@@ -69,7 +79,8 @@ export interface SignalEvent {
   time: number;
   close: number;
   /** Stokastik-RSI-ATR: giriş, stop ve hedef fiyatı. */
-  levels?: { entry: number; stop: number; target: number };
+  /** Hedef yoksa (kural çıkışlı stratejiler) `target` tanımsız. */
+  levels?: { entry: number; stop: number; target?: number };
 }
 
 export type Trend = 'up' | 'down' | 'neutral';

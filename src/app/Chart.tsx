@@ -31,6 +31,7 @@ export interface ChartPosition {
   peak?: number;
   trailLine?: number;
   label?: string;
+  lines?: { from: number; to: number; p1: number; p2: number }[];
 }
 
 const UP = '#0ca30c';
@@ -113,7 +114,9 @@ export function PriceChart({ candles, overlays, panes, viewId, positions }: Prop
     all.push(candleSeries);
 
     const boxes = positions?.length
-      ? new PositionBoxes(positions.map((p) => ({ ...p, from: t(p.from), to: t(p.to) })))
+      ? new PositionBoxes(
+          positions.map((p) => ({ ...p, from: t(p.from), to: t(p.to), lines: p.lines?.map((l) => ({ ...l, from: t(l.from), to: t(l.to) })) })),
+        )
       : null;
     if (boxes) candleSeries.attachPrimitive(boxes);
     const markers: SeriesMarker<Time>[] = (positions ?? []).map((p) => ({
