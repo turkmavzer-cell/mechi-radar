@@ -45,7 +45,7 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   // 4s/15dk testinde (research/ODAK-4S-15DK.md) maliyet dahil geçenler; kanıt yetersiz (t < 2).
   fromCandidate('st200', 'st200', 'Supertrend + EMA 200', 'Supertrend (10, 3) yükselişe döner + fiyat EMA 200 üstünde (short tersi) · testte 4s, takip eden TP ile'),
   fromCandidate('utbot', 'utbot', 'UT Bot', 'UT Bot (1, 10) al sinyali + fiyat EMA 200 üstünde (short tersi) · testte 4s ve 15dk'),
-  custom('ema2155', 'EMA 21/55 geri çekilmesi', 'EMA 21/55', 'EMA 21, EMA 55 üstündeyken mum EMA 21\'e değip üstünde yeşil kapanır → LONG (short tersi) · Stop 2 ATR · hedef 3R', (c, _tf, _h, exit) =>
+  custom('ema2155', 'EMA 21/55 geri çekilmesi', 'EMA 21/55', 'EMA 21, EMA 55\'i keser; fiyat EMA 21\'den en az 1 ATR kopar, sonra mum EMA 21\'e değip üstünde yeşil kapanır ve iki EMA arası en az 1 ATR → LONG (short tersi) · kesişim başına tek işlem · Stop 2 ATR · hedef 3R', (c, _tf, _h, exit) =>
     simulate(c, ema2155Signals(c, EMA2155_OPTS), { ...EMA2155_EXIT, ...exit }),
   ),
   custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
