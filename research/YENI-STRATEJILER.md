@@ -107,6 +107,13 @@ Videoda net olmayanlar (W, N, stop derinliği, "100'e yapışık") seçeneklerle
 - **Videodaki "6 yılda 1 hatalı sinyal" iddiası tutmuyor:** kazanan oranı %37; işlemlerin yaklaşık üçte ikisi zararla kapanıyor. Kâr,
   kazanan işlemlerin büyük olmasından geliyor.
 
+### TRF + Supertrend (kullanıcı kuralı; uygulamada açık tek strateji)
+Supertrend (Kıvanç sürümü, 10, 4, hl2, Wilder ATR) yeşilken her Twin Range Filter (12/1, 4/2) "Long" → AL; Supertrend yeşile döndüğünde TRF zaten
+"Long"daysa o mumda AL. Kâr al: TRF "Short". Stop: Supertrend çizgisi (her mum taşınır, değince çıkış). Kırmızıda tersi. Tümü: `trfst-sonuclar.md`.
+- 4.885 işlem (15dk/1s/4s/günlük × 4 enstrüman): ilk yarı −0,005R, ikinci yarı −0,001R, kazanan %35 → maliyet dahil başa baş (maliyetsiz +0,036R).
+- En iyi zaman dilimi 4s (+0,025 / +0,028R); altın tüm zaman dilimlerinde hafif pozitif, USDJPY 1s/4s +0,04/+0,05R.
+- İşlemler kısa (ort. 13 mum): TRF ters sinyali sık geliyor, kâr erken alınıyor. Önceki "Twin Range + ST 1:3" sürümü (+0,24R) bundan belirgin iyi.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).
