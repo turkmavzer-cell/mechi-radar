@@ -1,7 +1,7 @@
 // Kullanıcının tarif ettiği stratejiler (video ekran görüntülerinden): EMA 21/55 geri çekilmesi, Bollinger + Stokastik,
 // Heikin Ashi Smoothed, üçgen formasyonları, EMA 20/50 + hacim + Heikin Ashi. Çıkış ayarları research/yeni-stratejiler.ts ile seçildi.
 import type { BoxSignal, ExitRule, TargetLine } from './boxes';
-import { adx, atr, bollinger, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc } from './indicators';
+import { adx, atr, bollinger, highest, lowest, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc, stochRsi, supertrendLine, twinRangeFilter } from './indicators';
 import type { Candle, Direction } from './types';
 
 const O = (c: Candle[]) => c.map((x) => x.o);
@@ -400,4 +400,67 @@ export function ema5x13Exit(c: Candle[]): ExitRule {
   const cl = C(c);
   const e5 = ema(cl, 5), e13 = ema(cl, 13);
   return (j, d) => (d === 'up' ? e5[j] < e13[j] : e5[j] > e13[j]);
+}
+
+export interface TwinStOpts {
+  /** "Long" etiketinden sonra Supertrend "Buy" en geç kaç mum içinde gelmeli. */
+  win?: number;
+  /** Bir Supertrend yükseliş bacağında en fazla kaç LONG (ilk dönüş dahil). */
+  maxPerLeg?: number;
+  /** LONG'da da Stokastik RSI doygunluğu (son 10 mumda en az 3 mum 98 üstü) aransın mı (SHORT'ta her zaman aranır). */
+  stochLong?: boolean;
+  /** Stop: son bu kadar mumun dibi (short'ta tepesi). */
+  lookback?: number;
+}
+
+/**
+ * Twin Range Filter (12/1, 4/2) + Supertrend (10, 4, hl2) + Stokastik RSI (3, 3, 8, 10) — YouTube'dan (Gemini özeti).
+ * LONG: (a) Supertrend kırmızıyken Twin Range "Long" verir, en geç `win` mum içinde Supertrend "Buy"a (yeşile) döner → dönüş mumunda;
+ * (b) Supertrend yeşilken düzeltme sonrası yeni Twin Range "Long" → o mumda (bacak başına en fazla `maxPerLeg`).
+ * SHORT: Supertrend kırmızıyken Twin Range "Short" ve son 10 mumda Stokastik RSI en az 3 mum 98 üstünde (sert yükseliş sonrası).
+ * Stop: son `lookback` mumun dibi/tepesi (0,1 ATR payla, en az 0,5 ATR).
+ */
+export function twinStSignals(c: Candle[], opts: TwinStOpts = {}): BoxSignal[] {
+  const { win = 10, maxPerLeg = 2, stochLong = false, lookback = 20 } = opts;
+  const cl = C(c), h = H(c), l = L(c);
+  const trf = twinRangeFilter(cl, 12, 1, 4, 2).signal;
+  const st = supertrendLine(h, l, cl, 10, 4).dir;
+  const sk = stochRsi(cl, 8, 10, 3, 3).k;
+  const a = atr(h, l, cl, 14);
+  const lo = lowest(l, lookback), hi = highest(h, lookback);
+  const hot = (i: number) => {
+    let k = 0;
+    for (let j = Math.max(0, i - 9); j <= i; j++) if (sk[j] >= 98) k++;
+    return k >= 3;
+  };
+  const out: BoxSignal[] = [];
+  let lastLong = -1e9;
+  let legLongs = 0;
+  for (let i = 1; i < c.length; i++) {
+    if (Number.isNaN(st[i - 1]) || Number.isNaN(a[i]) || Number.isNaN(lo[i])) continue;
+    if (trf[i] === 1) lastLong = i;
+    const flipUp = st[i - 1] === -1 && st[i] === 1;
+    if (flipUp) legLongs = 0;
+    const push = (dir: Direction) => {
+      const ext = dir === 'up' ? lo[i] - 0.1 * a[i] : hi[i] + 0.1 * a[i];
+      const dist = Math.max(dir === 'up' ? cl[i] - ext : ext - cl[i], 0.5 * a[i]);
+      out.push({ i, dir, stop: dir === 'up' ? cl[i] - dist : cl[i] + dist });
+    };
+    if (st[i] === 1 && legLongs < maxPerLeg && (!stochLong || hot(i))) {
+      const dip = flipUp && i - lastLong <= win;
+      const inTrend = !flipUp && trf[i] === 1;
+      if (dip || inTrend) {
+        push('up');
+        legLongs++;
+      }
+    }
+    if (st[i] === -1 && trf[i] === -1 && hot(i)) push('down');
+  }
+  return out;
+}
+
+/** Supertrend (10, 4) çizgisi: çıkış çizgisi olarak (fiyat çizgiye değince çıkış). */
+export function supertrendExitLine(c: Candle[]): TargetLine {
+  const s = supertrendLine(H(c), L(c), C(c), 10, 4);
+  return (j, d) => (s.dir[j] === (d === 'up' ? 1 : -1) ? s.line[j] : d === 'up' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
 }

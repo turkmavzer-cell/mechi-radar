@@ -13,6 +13,8 @@ import {
   ema55Line,
   ema5813MacdSignals,
   ema5x13Exit,
+  supertrendExitLine,
+  twinStSignals,
   ema20Exit,
   emaVolHaSignals,
   haSmoothedExit,
@@ -26,7 +28,7 @@ import type { Candle, Timeframe } from '../src/core/types';
 import { costR, f, INS, sg } from './focus';
 import { loadAll } from './load';
 
-const TFS: Timeframe[] = ['15m', '1h', '4h'];
+const TFS = (process.argv[3]?.split(',') ?? ['15m', '1h', '4h']) as Timeframe[];
 
 interface Variant {
   id: string;
@@ -126,6 +128,17 @@ function grid(strategy: string): Variant[] {
         v.push({ id: `${rb}|${g}|e21`, label: `${tag} · EMA 21 içinde kapanışta çıkış`, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: INF }, exit: ema21CloseExit(c, 0) }) });
         v.push({ id: `${rb}|${g}|2`, label: `${tag} · sabit 1:2 (karşılaştırma)`, eligible: false, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: 2 } }) });
       }
+  if (strategy === 'twinst')
+    for (const win of [5, 10, 20])
+      for (const mpl of [1, 2])
+        for (const sl of [false, true])
+          for (const lb of [10, 20]) {
+            const o = { win, maxPerLeg: mpl, stochLong: sl, lookback: lb };
+            const tag = `Long→Buy en fazla ${win} mum · bacak başına ${mpl} LONG${sl ? ' · LONG\'da Stok. RSI şartı' : ''} · stop son ${lb} mumun dibi`;
+            v.push({ id: `${win}|${mpl}|${sl}|${lb}|st`, label: `${tag} · Supertrend çizgisinde çıkış`, run: (c) => ({ signals: twinStSignals(c, o), params: { stopAtr: 2, rr: INF }, line: supertrendExitLine(c) }) });
+            for (const rr of [2, 3])
+              v.push({ id: `${win}|${mpl}|${sl}|${lb}|${rr}`, label: `${tag} · sabit 1:${rr} (karşılaştırma)`, eligible: false, run: (c) => ({ signals: twinStSignals(c, o), params: { stopAtr: 2, rr } }) });
+          }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -152,6 +165,7 @@ const ALL_STRATS = [
   { id: 'ema2155b55', name: 'EMA 21/55 kırılım · EMA 55 çıkışı' },
   { id: 'ema5813macd', name: 'EMA 5/8/13 + MACD' },
   { id: 'ema2155v2', name: 'EMA 21/55 (2. anlatım)' },
+  { id: 'twinst', name: 'Twin Range Filter + Supertrend' },
   { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
