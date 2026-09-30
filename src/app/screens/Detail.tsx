@@ -125,8 +125,23 @@ export function DetailScreen({ target, api, role, onClose }: Props) {
             outcome: x.outcome,
             exitPrice: x.exitPrice,
             peak: x.peak,
-            trailLine: x.trailing ? (x.outcome === 'open' ? x.trailStop : x.exitPrice) : undefined,
-            label: x.outcome === 'tp' && x.r != null ? `✓ ${fmtR(x.r)}` : x.trailing ? 'Takipte' : undefined,
+            // Takip stopu ya da stop/hedef dışında bir fiyattan çıkış (kural çıkışı, değişen hedef): kesikli çizgi.
+            trailLine: x.trailing
+              ? x.outcome === 'open'
+                ? x.trailStop
+                : x.exitPrice
+              : x.exitPrice != null && x.exitPrice !== x.target && x.exitPrice !== x.stop
+                ? x.exitPrice
+                : undefined,
+            label:
+              x.outcome !== 'open' && x.r != null
+                ? x.r === -1
+                  ? undefined
+                  : `${x.r > 0 ? '✓' : '✕'} ${fmtR(x.r)}`
+                : x.trailing
+                  ? 'Takipte'
+                  : undefined,
+            lines: x.lines?.map(([i1, p1, i2, p2]) => ({ from: closed[i1].t, to: closed[Math.min(i2, closed.length - 1)].t, p1, p2 })),
           }))
         : undefined,
     [showStrategy, trades, closed, all],

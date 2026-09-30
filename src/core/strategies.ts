@@ -163,7 +163,7 @@ export function analyze(symbol: string, tf: Timeframe, candles: Candle[], higher
   for (const b of BOX_STRATEGIES)
     for (const s of b.run(candles, tf, higher)) {
       push(s.i, b.id, s.dir);
-      events[events.length - 1].levels = { entry: s.entry, stop: s.stop, target: s.target };
+      events[events.length - 1].levels = { entry: s.entry, stop: s.stop, ...(Number.isFinite(s.target) ? { target: s.target } : {}) };
     }
   // Stratejiler ayrı döngülerde çalıştığı için olayları zamana göre sırala.
   events.sort((a, b) => a.time - b.time);

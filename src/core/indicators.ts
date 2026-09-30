@@ -397,3 +397,64 @@ export function squeezeMomentum(high: number[], low: number[], close: number[], 
     sqz: close.map((_, i) => bb.upper[i] < kc.upper[i] && bb.lower[i] > kc.lower[i]),
   };
 }
+
+/** Başındaki NaN'ları atlayarak EMA. */
+export function emaNaN(values: number[], period: number): number[] {
+  const start = values.findIndex((v) => !Number.isNaN(v));
+  const out = new Array<number>(values.length).fill(NaN);
+  if (start < 0) return out;
+  ema(values.slice(start), period).forEach((v, j) => (out[start + j] = v));
+  return out;
+}
+
+/** Heikin Ashi mumları. */
+export function heikinAshi(open: number[], high: number[], low: number[], close: number[]) {
+  const n = close.length;
+  const o = new Array<number>(n).fill(NaN);
+  const c = new Array<number>(n).fill(NaN);
+  const h = new Array<number>(n).fill(NaN);
+  const l = new Array<number>(n).fill(NaN);
+  for (let i = 0; i < n; i++) {
+    if ([open[i], high[i], low[i], close[i]].some(Number.isNaN)) continue;
+    c[i] = (open[i] + high[i] + low[i] + close[i]) / 4;
+    o[i] = i > 0 && !Number.isNaN(o[i - 1]) ? (o[i - 1] + c[i - 1]) / 2 : (open[i] + close[i]) / 2;
+    h[i] = Math.max(high[i], o[i], c[i]);
+    l[i] = Math.min(low[i], o[i], c[i]);
+  }
+  return { o, h, l, c };
+}
+
+/**
+ * Heikin Ashi Smoothed (TradingView "Smoothed Heiken Ashi"): OHLC önce EMA(len1) ile yumuşatılır, Heikin Ashi hesaplanır,
+ * açılış ve kapanış tekrar EMA(len2) ile yumuşatılır. Yön: kapanış > açılış → 1 (yeşil), değilse −1 (kırmızı).
+ */
+export function haSmoothed(open: number[], high: number[], low: number[], close: number[], len1 = 10, len2 = 10) {
+  const ha = heikinAshi(ema(open, len1), ema(high, len1), ema(low, len1), ema(close, len1));
+  const o = emaNaN(ha.o, len2);
+  const c = emaNaN(ha.c, len2);
+  const h = emaNaN(ha.h, len2);
+  const l = emaNaN(ha.l, len2);
+  const dir = o.map((v, i) => (Number.isNaN(v) || Number.isNaN(c[i]) ? NaN : c[i] > v ? 1 : -1));
+  return { o, h, l, c, dir };
+}
+
+/**
+ * Tepe/dip noktaları: `k` mumu, iki yanındaki `span` mumun en yükseği (en düşüğü) ise tepe (dip).
+ * Nokta ancak `k + span` mumu kapanınca bilinir (`at`).
+ */
+export function pivots(high: number[], low: number[], span = 5) {
+  const hi: { k: number; v: number; at: number }[] = [];
+  const lo: { k: number; v: number; at: number }[] = [];
+  for (let k = span; k + span < high.length; k++) {
+    let isH = true;
+    let isL = true;
+    for (let j = k - span; j <= k + span && (isH || isL); j++) {
+      if (j === k) continue;
+      if (high[j] >= high[k] && (j > k || high[j] > high[k])) isH = false;
+      if (low[j] <= low[k] && (j > k || low[j] < low[k])) isL = false;
+    }
+    if (isH) hi.push({ k, v: high[k], at: k + span });
+    if (isL) lo.push({ k, v: low[k], at: k + span });
+  }
+  return { hi, lo };
+}

@@ -43,7 +43,14 @@ export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 export interface BoxSignal {
   i: number;
   dir: Direction;
+  /** Sinyale özel sabit hedef fiyatı (ör. formasyon yüksekliği); yoksa `rr` × risk. */
+  target?: number;
+  /** Grafikte çizilecek çizgiler (ör. formasyon kenarları): [mum1, fiyat1, mum2, fiyat2]. */
+  lines?: [number, number, number, number][];
 }
+
+/** Her mumda değişen hedef seviyesi (ör. Bollinger karşı bandı); `j` mumunun kapanışındaki değer. */
+export type TargetLine = (j: number, dir: Direction) => number;
 
 export interface BoxTrade {
   i: number;
@@ -64,6 +71,7 @@ export interface BoxTrade {
   peak?: number;
   /** Stop/hedef yerine kural çıkışıyla (mum kapanışında) kapandı. */
   ruleExit?: boolean;
+  lines?: [number, number, number, number][];
 }
 
 /** Kural çıkışı: `j` mumunun kapanışında pozisyon kapatılsın mı. */
@@ -73,7 +81,13 @@ export type ExitRule = (j: number, dir: Direction) => boolean;
  * `exitRule` verilirse stop ve hedefe ek olarak mum kapanışında kural çıkışı da uygulanır (hangisi önce gelirse).
  * Kural çıkışında sonuç kâr ise 'tp', zarar ise 'sl' sayılır; `ruleExit` işaretlenir.
  */
-export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxParams = BOX_PARAMS, exitRule?: ExitRule): BoxTrade[] {
+export function simulate(
+  candles: Candle[],
+  signals: BoxSignal[],
+  params: BoxParams = BOX_PARAMS,
+  exitRule?: ExitRule,
+  targetLine?: TargetLine,
+): BoxTrade[] {
   const a = atr(
     candles.map((c) => c.h),
     candles.map((c) => c.l),
@@ -88,7 +102,11 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
     const entry = candles[i].c;
     const risk = params.stopAtr * a[i];
     const s = dir === 'up' ? 1 : -1;
-    const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target: entry + s * params.rr * risk, outcome: 'open' };
+    const target = sig.target ?? (targetLine ? targetLine(i, dir) : entry + s * params.rr * risk);
+    // Hedef girişin yanlış tarafındaysa (ör. bant zaten geçilmiş) işlem açılmaz.
+    if (!(s * (target - entry) > 0)) continue;
+    const t: BoxTrade = { i, dir, entry, stop: entry - s * risk, target, outcome: 'open' };
+    if (sig.lines) t.lines = sig.lines;
     const gap = params.trail != null ? params.trail * a[i] : NaN;
     let best = NaN; // takipte görülen en iyi fiyat
     let trailStop = NaN;
@@ -96,7 +114,9 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
       const c = candles[j];
       if (!t.trailing) {
         const hitStop = dir === 'up' ? c.l <= t.stop : c.h >= t.stop;
-        const hitTarget = dir === 'up' ? c.h >= t.target : c.l <= t.target;
+        // Değişen hedefte bir önceki mumun kapanışındaki seviye kullanılır (mum içinde geleceğe bakmamak için).
+        const tgt = targetLine ? targetLine(j - 1, dir) : t.target;
+        const hitTarget = dir === 'up' ? c.h >= tgt : c.l <= tgt;
         if (hitStop) {
           t.outcome = 'sl';
           t.exitI = j;
@@ -111,17 +131,19 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
           }
           continue;
         }
+        // Değişen hedefte mum hedefin ötesinde açıldıysa açılış fiyatından çıkılır.
+        const px = targetLine ? (dir === 'up' ? Math.max(tgt, c.o) : Math.min(tgt, c.o)) : t.target;
         if (Number.isNaN(gap)) {
-          t.outcome = 'tp';
           t.exitI = j;
-          t.exitPrice = t.target;
-          t.r = params.rr;
+          t.exitPrice = px;
+          t.r = (s * (px - entry)) / risk;
+          t.outcome = t.r > 0 ? 'tp' : 'sl';
           break;
         }
         // Hedefe değildi: bu mumdaki hedef sonrası hareket bilinmediği için takip bir sonraki mumdan başlar (temkinli).
         t.trailing = true;
-        best = t.target;
-        trailStop = params.trailLock ? t.target : t.target - s * gap;
+        best = px;
+        trailStop = params.trailLock ? px : px - s * gap;
         continue;
       }
       // Takipte: önce mevcut stopa dokunuldu mu (boşlukla açılışta stop aşıldıysa açılış fiyatından çıkılır).

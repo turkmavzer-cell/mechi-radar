@@ -29,6 +29,7 @@ interface ChartResponse {
           high: (number | null)[];
           low: (number | null)[];
           close: (number | null)[];
+          volume?: (number | null)[];
         }>;
       };
     }>;
@@ -71,7 +72,8 @@ export async function fetchChart(
   for (let i = 0; i < ts.length; i++) {
     const o = q.open[i], h = q.high[i], l = q.low[i], c = q.close[i];
     if (o == null || h == null || l == null || c == null) continue;
-    candles.push({ t: ts[i], o, h, l, c });
+    const v = q.volume?.[i];
+    candles.push(v ? { t: ts[i], o, h, l, c, v } : { t: ts[i], o, h, l, c });
   }
   return { meta: r.meta, candles };
 }

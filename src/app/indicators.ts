@@ -6,6 +6,7 @@ import {
   cci,
   donchian,
   ema,
+  haSmoothed,
   ichimoku,
   keltner,
   macd,
@@ -68,8 +69,10 @@ const EMA_COLORS: Record<number, string> = {
   5: '#3987e5',
   8: '#d95926',
   13: '#199e70',
+  20: '#38bdf8',
   21: '#e2b714',
   34: '#a78bfa',
+  50: '#f97316',
   55: '#22d3ee',
   100: '#fb923c',
   150: '#94a3b8',
@@ -77,7 +80,7 @@ const EMA_COLORS: Record<number, string> = {
 };
 const SMA_COLORS: Record<number, string> = { 20: '#60a5fa', 50: '#f59e0b', 100: '#34d399', 200: '#e879f9' };
 
-export const EMA_PERIODS = [3, 5, 8, 13, 21, 34, 55, 100, 150, 200];
+export const EMA_PERIODS = [3, 5, 8, 13, 20, 21, 34, 50, 55, 100, 150, 200];
 export const SMA_PERIODS = [20, 50, 100, 200];
 
 const BLUE = '#3987e5';
@@ -208,6 +211,23 @@ const defs: IndicatorDef[] = [
     },
   },
   {
+    id: 'hasmooth',
+    label: 'Heikin Ashi Smoothed (10, 10)',
+    group: 'Fiyat üstü',
+    pane: false,
+    color: GREEN,
+    build: (c) => {
+      const s = haSmoothed(c.map((x) => x.o), H(c), L(c), C(c));
+      const mid = s.o.map((o, i) => (o + s.c[i]) / 2);
+      return {
+        lines: [
+          { name: 'Yeşil', color: GREEN, values: mid.map((v, i) => (s.dir[i] === 1 ? v : NaN)), style: 'dots' },
+          { name: 'Kırmızı', color: RED, values: mid.map((v, i) => (s.dir[i] === -1 ? v : NaN)), style: 'dots' },
+        ],
+      };
+    },
+  },
+  {
     id: 'psar',
     label: 'Parabolic SAR',
     group: 'Fiyat üstü',
@@ -280,6 +300,34 @@ const defs: IndicatorDef[] = [
         levels: [20, 80],
       };
     },
+  },
+  {
+    id: 'stoch1',
+    label: 'Stokastik (14, 1, 3)',
+    group: 'Alt panel',
+    pane: true,
+    color: BLUE,
+    build: (c) => {
+      const s = stochOsc(H(c), L(c), C(c), 14, 1, 3);
+      return {
+        lines: [
+          { name: '%K', color: BLUE, values: s.k },
+          { name: '%D', color: ORANGE, values: s.d },
+        ],
+        levels: [20, 80],
+      };
+    },
+  },
+  {
+    id: 'volume',
+    label: 'Hacim',
+    group: 'Alt panel',
+    pane: true,
+    color: '#94a3b8',
+    build: (c) => ({
+      lines: [{ name: 'Ort. 20', color: ORANGE, values: sma(c.map((x) => x.v ?? 0), 20) }],
+      histogram: c.map((x) => x.v ?? NaN),
+    }),
   },
   {
     id: 'stochrsi',

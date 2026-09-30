@@ -59,8 +59,10 @@ export function aggregate(
       cur.h = Math.max(cur.h, c.h);
       cur.l = Math.min(cur.l, c.l);
       cur.c = c.c;
+      if (c.v) cur.v = (cur.v ?? 0) + c.v;
     } else {
       cur = { t: start, o: c.o, h: c.h, l: c.l, c: c.c };
+      if (c.v) cur.v = c.v;
       out.push(cur);
     }
   }
