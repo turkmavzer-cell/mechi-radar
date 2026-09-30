@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155Signals, ema20Exit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -47,6 +47,12 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   fromCandidate('utbot', 'utbot', 'UT Bot', 'UT Bot (1, 10) al sinyali + fiyat EMA 200 üstünde (short tersi) · testte 4s ve 15dk'),
   custom('ema2155', 'EMA 21/55 geri çekilmesi', 'EMA 21/55', 'EMA 21, EMA 55\'i keser; fiyat EMA 21\'den en az 1 ATR kopar, sonra mum EMA 21\'e değip üstünde yeşil kapanır ve iki EMA arası en az 1 ATR → LONG (short tersi) · kesişim başına tek işlem · Stop 2 ATR · hedef 3R', (c, _tf, _h, exit) =>
     simulate(c, ema2155Signals(c, EMA2155_OPTS), { ...EMA2155_EXIT, ...exit }),
+  ),
+  custom('ema2155bo', 'EMA 21/55 kırılım', 'EMA 21/55 kırılım', 'EMA 21 > 55 iken geri çekilme EMA 21\'e değer, sonra mum geri çekilme öncesindeki tepenin üstünde kapanır → LONG (short tersi) · kesişim başına tek işlem · Stop geri çekilmenin dibinin altında (en az 1 ATR) · Çıkış EMA 21 altında kapanışta', (c, _tf, _h, exit) =>
+    simulate(c, ema2155BreakSignals(c, { firstOnly: true, minStopAtr: 1 }), { stopAtr: 2, rr: NO_TARGET, ...exit }, ema21CloseExit(c, 0)),
+  ),
+  custom('ema2155bt', 'EMA 21/55 kırılım + takip', 'EMA 21/55 kırılım + takip', 'Giriş ve stop EMA 21/55 kırılımla aynı · 1R kâra ulaştıktan sonra EMA 21 altında kapanışta çıkış (öncesinde yalnızca stop)', (c, _tf, _h, exit) =>
+    simulate(c, ema2155BreakSignals(c, { firstOnly: true, minStopAtr: 0.5 }), { stopAtr: 2, rr: NO_TARGET, ...exit }, ema21CloseExit(c, 1)),
   ),
   custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
     simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),

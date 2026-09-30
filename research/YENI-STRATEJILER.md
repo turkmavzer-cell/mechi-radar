@@ -49,6 +49,23 @@ Yeni kural: EMA 21, EMA 55'i kestikten sonra **(1)** kesişim başına tek işle
 - **Başa baş stop** (1R kârda stopu girişe çekmek) sonucu kötüleştirdi: kâra geçip geri dönen işlemlerin bir kısmı sonra hedefe
   gidiyordu, başa baş bunları erken kapatıyor.
 
+### EMA 21/55 kırılım (kullanıcı tarifi, iki ayrı strateji)
+Giriş: EMA 21 > 55 iken fiyat bir tepe yapar, geri çekilip EMA 21'e değer; bir mum o tepenin üstünde (ve EMA 21 üstünde) kapanınca
+LONG. Stop geri çekilmenin dibinin 0,1 ATR altı (en az 0,5 / 1 ATR). EMA 55 altı kapanış geri çekilmeyi iptal eder. Short tersi.
+Çıkış A: EMA 21 altında kapanış. Çıkış B: işlem en az X R kâr gördükten sonra EMA 21 altında kapanış (X = 0,5 / 1 / 1,5 / 2).
+Tümü: `ema2155-kirilim-sonuclar.md`.
+
+| Sürüm (kesişim başına 1 işlem) | İşlem | İlk yarı | İkinci yarı | Maliyetsiz |
+|---|---|---|---|---|
+| A · EMA 21 çıkışı (stop en az 1 ATR) | 1.038 | −0,032R | −0,050R | +0,028R |
+| B · 1R kârdan sonra EMA 21 çıkışı (stop en az 0,5 ATR) | 971 | +0,081R | −0,096R | +0,070R |
+| Karşılaştırma: aynı giriş, sabit 1:2 | 879 | +0,015R | −0,085R | +0,044R |
+| Karşılaştırma: kopuşlu EMA 21/55 (mevcut) | 644 | +0,054R | +0,030R | +0,118R |
+
+- İkisi de maliyet dahil doğrulama yarısında zararda. B'nin ilk yarıdaki +0,08R'si tutmadı.
+- A'da işlemler kısa (ort. 12 mum): EMA 21 altı kapanış çoğu zaman giriş yakınında geliyor, kazanan oranı %27.
+- Kopuşlu mevcut EMA 21/55 bu iki sürümden iyi. Uygulamaya kullanıcı isteğiyle ayrı stratejiler olarak eklendi.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).

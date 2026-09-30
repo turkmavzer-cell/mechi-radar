@@ -36,6 +36,8 @@ export type Strategy =
   | 'utbot'
   | 'rsi2'
   | 'ema2155'
+  | 'ema2155bo'
+  | 'ema2155bt'
   | 'bbstoch'
   | 'hasmooth'
   | 'hasmoothAdx'
@@ -53,6 +55,8 @@ export const STRATEGIES: Strategy[] = [
   'utbot',
   'rsi2',
   'ema2155',
+  'ema2155bo',
+  'ema2155bt',
   'bbstoch',
   'hasmooth',
   'hasmoothAdx',

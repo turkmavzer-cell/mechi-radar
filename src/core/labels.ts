@@ -32,6 +32,8 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'utbot':
     case 'rsi2':
     case 'ema2155':
+    case 'ema2155bo':
+    case 'ema2155bt':
     case 'bbstoch':
     case 'hasmooth':
     case 'hasmoothAdx':
@@ -82,6 +84,8 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   utbot: 'UT Bot + EMA 200',
   rsi2: 'Connors RSI(2)',
   ema2155: 'EMA 21/55 geri çekilmesi',
+  ema2155bo: 'EMA 21/55 kırılım',
+  ema2155bt: 'EMA 21/55 kırılım + takip',
   bbstoch: 'Bollinger + Stokastik',
   hasmooth: 'Heikin Ashi Smoothed',
   hasmoothAdx: 'HA Smoothed + ADX',
