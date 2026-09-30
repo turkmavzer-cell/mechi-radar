@@ -253,3 +253,81 @@ export function rsiLevelExit(c: Candle[], upper = 70, mid = false): ExitRule {
   const lower = 100 - upper;
   return (j, d) => (d === 'up' ? r[j] >= upper || (mid && r[j] < 50) : r[j] <= lower || (mid && r[j] > 50));
 }
+
+export interface Ema2155BreakOpts {
+  /** Kesişim başına tek işlem. */
+  firstOnly?: boolean;
+  /** Stop dibin bu kadar ATR altında. */
+  bufferAtr?: number;
+  /** Stop mesafesi en az bu kadar ATR (çok yakın stoplarda maliyet R'yi yer). */
+  minStopAtr?: number;
+}
+
+/**
+ * EMA 21/55 kırılım: EMA 21 > EMA 55 iken fiyat yükselip bir tepe yapar, sonra geri çekilip EMA 21'e değer; ardından bir mum
+ * geri çekilme öncesindeki tepenin üstünde (ve EMA 21 üstünde) kapanırsa → LONG. Stop geri çekilmenin dibinin altında.
+ * Kapanış EMA 55 altına inerse geri çekilme iptal (yeni bacak aranır). Short tersi.
+ */
+export function ema2155BreakSignals(c: Candle[], opts: Ema2155BreakOpts = {}): BoxSignal[] {
+  const { firstOnly = true, bufferAtr = 0.1, minStopAtr = 0.5 } = opts;
+  const cl = C(c);
+  const f = ema(cl, 21);
+  const s = ema(cl, 55);
+  const a = atr(H(c), L(c), cl, 14);
+  const out: BoxSignal[] = [];
+  let used = false;
+  let phase: 'rise' | 'pullback' = 'rise';
+  let peak = NaN; // bu bacağın tepesi (short'ta dibi)
+  let ref = NaN; // geri çekilme öncesi tepe
+  let pb = NaN; // geri çekilmenin dibi (short'ta tepesi)
+  for (let i = 1; i < c.length; i++) {
+    if (Number.isNaN(s[i - 1]) || Number.isNaN(a[i])) continue;
+    const x = c[i];
+    const up = f[i] > s[i];
+    const sg = up ? 1 : -1;
+    const hi = up ? x.h : -x.l; // yön bağımsız: "yukarı" = sinyal yönü
+    const lo = up ? x.l : -x.h;
+    const close = sg * x.c;
+    const ema21 = sg * f[i];
+    const ema55 = sg * s[i];
+    if (Math.sign(f[i] - s[i]) !== Math.sign(f[i - 1] - s[i - 1])) {
+      used = false; // yeni kesişim
+      phase = 'rise';
+      peak = hi;
+      continue;
+    }
+    if (Number.isNaN(peak)) peak = hi;
+    if (phase === 'rise') {
+      if (lo <= ema21) {
+        phase = 'pullback';
+        ref = peak;
+        pb = lo;
+      } else {
+        peak = Math.max(peak, hi);
+        continue;
+      }
+    } else pb = Math.min(pb, lo);
+    // Geri çekilmede: EMA 55'in altında kapanış iptal eder.
+    if (close < ema55) {
+      phase = 'rise';
+      peak = hi;
+      continue;
+    }
+    if (close > ref && close > ema21) {
+      if (!(firstOnly && used)) {
+        const stopDist = Math.max(close - (pb - bufferAtr * a[i]), minStopAtr * a[i]);
+        out.push({ i, dir: up ? 'up' : 'down', stop: x.c - sg * stopDist });
+        used = true;
+      }
+      phase = 'rise';
+      peak = hi;
+    }
+  }
+  return out;
+}
+
+/** EMA 21 kapanış çıkışı: kapanış EMA 21'in ters tarafında; `minR` > 0 ise ancak işlem en az o kadar R kâr görmüşse. */
+export function ema21CloseExit(c: Candle[], minR = 0): ExitRule {
+  const f = ema(C(c), 21);
+  return (j, d, ctx) => ctx.bestR >= minR && (d === 'up' ? c[j].c < f[j] : c[j].c > f[j]);
+}
