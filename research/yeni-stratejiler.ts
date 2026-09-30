@@ -7,7 +7,9 @@ import { simulate, type BoxParams, type BoxSignal, type BoxTrade, type ExitRule,
 import {
   bbStochSignals,
   bbTarget,
+  ema2155BreakSignals,
   ema2155Signals,
+  ema21CloseExit,
   ema20Exit,
   emaVolHaSignals,
   haSmoothedExit,
@@ -88,6 +90,18 @@ function grid(strategy: string): Variant[] {
           const tag = `RSI ${lvl}/${100 - lvl} çizgisinde çıkış${mid ? ' (veya RSI 50 ters tarafa geçince)' : ''}`;
           v.push({ id: `${lvl}|${mid}|${st}`, label: `${tag} · acil stop ${st} ATR`, eligible: lvl === 70, run: (c) => ({ signals: rsiMacdSignals(c), params: { stopAtr: st, rr: INF }, exit: rsiLevelExit(c, lvl, mid) }) });
         }
+  if (strategy === 'ema2155bo' || strategy === 'ema2155bt')
+    for (const first of [true, false])
+      for (const ms of [0.5, 1]) {
+        const o = { firstOnly: first, minStopAtr: ms };
+        const tag = `${first ? 'kesişim başına 1' : 'her geri çekilme'} · stop dibin altı (en az ${ms} ATR)`;
+        if (strategy === 'ema2155bo') {
+          v.push({ id: `${first}|${ms}|e21`, label: `${tag} · EMA 21 altı kapanışta çıkış`, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: INF }, exit: ema21CloseExit(c, 0) }) });
+          for (const rr of [2, 3]) v.push({ id: `${first}|${ms}|${rr}`, label: `${tag} · sabit 1:${rr} (karşılaştırma)`, eligible: false, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr } }) });
+        } else
+          for (const minR of [0.5, 1, 1.5, 2])
+            v.push({ id: `${first}|${ms}|${minR}`, label: `${tag} · ${minR}R kârdan sonra EMA 21 altı kapanışta çıkış`, run: (c) => ({ signals: ema2155BreakSignals(c, o), params: { stopAtr: 2, rr: INF }, exit: ema21CloseExit(c, minR) }) });
+      }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -109,13 +123,15 @@ const ALL_STRATS = [
   { id: 'bbstoch', name: 'Bollinger + Stokastik' },
   { id: 'hasmooth', name: 'Heikin Ashi Smoothed' },
   { id: 'rsimacd', name: 'RSI + MACD' },
+  { id: 'ema2155bo', name: 'EMA 21/55 kırılım · EMA 21 çıkışı' },
+  { id: 'ema2155bt', name: 'EMA 21/55 kırılım · kârdan sonra EMA 21 çıkışı' },
   { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
   { id: 'emavolha', name: 'EMA 20/50 + hacim + Heikin Ashi' },
 ];
 const ONLY = process.argv[2];
-const STRATS = ONLY ? ALL_STRATS.filter((x) => x.id === ONLY) : ALL_STRATS;
+const STRATS = ONLY ? ALL_STRATS.filter((x) => ONLY.split(',').includes(x.id)) : ALL_STRATS;
 
 interface T { ins: string; tf: Timeframe; half: 1 | 2; t: number; gross: number; net: number; bars: number }
 
@@ -242,7 +258,7 @@ async function main() {
     md.push('');
   }
   mkdirSync('research/out', { recursive: true });
-  writeFileSync(`research/out/sratr-yeni${ONLY ? '-' + ONLY : ''}.md`, md.join('\n'));
+  writeFileSync(`research/out/sratr-yeni${ONLY ? '-' + ONLY.replace(/,/g, '-') : ''}.md`, md.join('\n'));
   writeFileSync('research/out/sratr-yeni.json', JSON.stringify(chosen, null, 1));
   console.log(JSON.stringify(chosen, null, 1));
 }

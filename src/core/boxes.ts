@@ -52,6 +52,8 @@ export interface BoxSignal {
   dir: Direction;
   /** Sinyale özel sabit hedef fiyatı (ör. formasyon yüksekliği); yoksa `rr` × risk. */
   target?: number;
+  /** Sinyale özel stop fiyatı (ör. önceki dibin altı); yoksa `stopAtr` × ATR. */
+  stop?: number;
   /** Grafikte çizilecek çizgiler (ör. formasyon kenarları): [mum1, fiyat1, mum2, fiyat2]. */
   lines?: [number, number, number, number][];
 }
@@ -82,7 +84,11 @@ export interface BoxTrade {
 }
 
 /** Kural çıkışı: `j` mumunun kapanışında pozisyon kapatılsın mı. */
-export type ExitRule = (j: number, dir: Direction) => boolean;
+export type ExitRule = (j: number, dir: Direction, ctx: ExitContext) => boolean;
+/** Kural çıkışına verilen işlem bilgisi: şimdiye kadar görülen en iyi kâr (R, bu mum dahil). */
+export interface ExitContext {
+  bestR: number;
+}
 
 /**
  * `exitRule` verilirse stop ve hedefe ek olarak mum kapanışında kural çıkışı da uygulanır (hangisi önce gelirse).
@@ -107,8 +113,9 @@ export function simulate(
     const { i, dir } = sig;
     if (i <= busyUntil || Number.isNaN(a[i])) continue;
     const entry = candles[i].c;
-    const risk = params.stopAtr * a[i];
     const s = dir === 'up' ? 1 : -1;
+    const risk = sig.stop != null ? s * (entry - sig.stop) : params.stopAtr * a[i];
+    if (!(risk > 0)) continue;
     const target = sig.target ?? (targetLine ? targetLine(i, dir) : entry + s * params.rr * risk);
     // Hedef girişin yanlış tarafındaysa (ör. bant zaten geçilmiş) işlem açılmaz.
     if (!(s * (target - entry) > 0)) continue;
@@ -118,8 +125,10 @@ export function simulate(
     let stopLvl = t.stop; // geçerli stop (başa başta girişe çekilir; kutuda ilk stop kalır)
     let best = NaN; // takipte görülen en iyi fiyat
     let trailStop = NaN;
+    let bestR = -Infinity; // görülen en iyi kâr (R)
     for (let j = i + 1; j < candles.length; j++) {
       const c = candles[j];
+      bestR = Math.max(bestR, (s * ((dir === 'up' ? c.h : c.l) - entry)) / risk);
       if (!t.trailing) {
         const hitStop = dir === 'up' ? c.l <= stopLvl : c.h >= stopLvl;
         // Değişen hedefte bir önceki mumun kapanışındaki seviye kullanılır (mum içinde geleceğe bakmamak için).
@@ -133,7 +142,7 @@ export function simulate(
           break;
         }
         if (!hitTarget) {
-          if (exitRule?.(j, dir)) {
+          if (exitRule?.(j, dir, { bestR })) {
             closeByRule(t, j, c.c, entry, s, risk);
             break;
           }
@@ -168,7 +177,7 @@ export function simulate(
         break;
       }
       best = dir === 'up' ? Math.max(best, c.h) : Math.min(best, c.l);
-      if (exitRule?.(j, dir)) {
+      if (exitRule?.(j, dir, { bestR })) {
         closeByRule(t, j, c.c, entry, s, risk);
         t.peak = best;
         break;

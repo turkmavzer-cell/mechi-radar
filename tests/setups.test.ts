@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
 import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
-import { bbStochSignals, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
+import { bbStochSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
 function series(n = 1500): Candle[] {
@@ -24,6 +24,7 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
     ['ema2155 kopuş', (c) => ema2155Signals(c, { firstOnly: true, breakAtr: 0.25, gapAtr: 0.5 })],
     ['bbstoch', (c) => bbStochSignals(c, 0.8)],
     ['hasmooth', haSmoothedSignals],
+    ['ema2155break', (c) => ema2155BreakSignals(c)],
     ['triangle', (c) => triangleSignals(c)],
     ['emavolha', (c) => emaVolHaSignals(c)],
   ];
@@ -89,4 +90,16 @@ test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () =>
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
   assert.ok(res.events.some((e) => e.strategy === 'hasmooth'));
+});
+
+test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {
+  const cs = series(1500);
+  const sig = ema2155BreakSignals(cs, { firstOnly: false });
+  assert.ok(sig.length > 5);
+  for (const x of sig) {
+    const e = cs[x.i].c;
+    assert.ok(x.dir === 'up' ? x.stop! < e : x.stop! > e, 'stop yanlış tarafta');
+  }
+  const tr = simulate(cs, sig, { stopAtr: 2, rr: Number.POSITIVE_INFINITY }, ema21CloseExit(cs, 1));
+  for (const t of tr) if (t.outcome === 'sl' && !t.ruleExit) assert.equal(t.r, -1);
 });
