@@ -18,6 +18,7 @@ import {
   stochOsc,
   stochRsi,
   supertrendLine,
+  twinRangeFilter,
   williamsR,
 } from '../core/indicators';
 import { HIGHER_LABEL, HIGHER_TF, higherStoch, rsiWithSma, type HigherSeries } from '../core/sratr';
@@ -228,6 +229,30 @@ const defs: IndicatorDef[] = [
     },
   },
   {
+    id: 'supertrend4',
+    label: 'Supertrend (10, 4)',
+    group: 'Fiyat üstü',
+    pane: false,
+    color: GREEN,
+    build: (c) => {
+      const s = supertrendLine(H(c), L(c), C(c), 10, 4);
+      return {
+        lines: [
+          { name: 'Yükseliş', color: GREEN, values: s.line.map((v, i) => (s.dir[i] === 1 ? v : NaN)) },
+          { name: 'Düşüş', color: RED, values: s.line.map((v, i) => (s.dir[i] === -1 ? v : NaN)) },
+        ],
+      };
+    },
+  },
+  {
+    id: 'twinrange',
+    label: 'Twin Range Filter (12/1, 4/2)',
+    group: 'Fiyat üstü',
+    pane: false,
+    color: '#a78bfa',
+    build: (c) => ({ lines: [{ name: 'Filtre', color: '#a78bfa', values: twinRangeFilter(C(c), 12, 1, 4, 2).filt }] }),
+  },
+  {
     id: 'psar',
     label: 'Parabolic SAR',
     group: 'Fiyat üstü',
@@ -328,6 +353,23 @@ const defs: IndicatorDef[] = [
       lines: [{ name: 'Ort. 20', color: ORANGE, values: sma(c.map((x) => x.v ?? 0), 20) }],
       histogram: c.map((x) => x.v ?? NaN),
     }),
+  },
+  {
+    id: 'stochrsi8',
+    label: 'Stokastik RSI (3, 3, 8, 10)',
+    group: 'Alt panel',
+    pane: true,
+    color: '#22d3ee',
+    build: (c) => {
+      const s = stochRsi(C(c), 8, 10, 3, 3);
+      return {
+        lines: [
+          { name: '%K', color: '#22d3ee', values: s.k },
+          { name: '%D', color: ORANGE, values: s.d },
+        ],
+        levels: [0, 100],
+      };
+    },
   },
   {
     id: 'stochrsi',

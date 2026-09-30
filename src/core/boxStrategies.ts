@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -62,6 +62,12 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   ),
   custom('ema5813macd', 'EMA 5/8/13 + MACD', 'EMA 5/8/13 + MACD', 'MACD mavi çizgisi 0\'ı yukarı keser ve en fazla 5 mum içinde EMA 5 > 8 > 13 sıralanıp yükselir → LONG (short tersi) · Stop önceki dibin altında (en az 0,5 ATR) · Çıkış EMA 5, EMA 13\'ü aşağı kesince', (c, _tf, _h, exit) =>
     simulate(c, ema5813MacdSignals(c, 5, 5), { stopAtr: 2, rr: NO_TARGET, ...exit }, ema5x13Exit(c)),
+  ),
+  custom('twinst', 'Twin Range + Supertrend', 'Twin Range + ST', 'LONG: Supertrend (10, 4) kırmızıyken Twin Range Filter (12/1, 4/2) "Long" verir, en geç 5 mum içinde Supertrend yeşile döner; ya da Supertrend yeşilken yeni "Long" (bacak başına 2) · SHORT: Supertrend kırmızı + Twin Range "Short" + Stokastik RSI (3, 3, 8, 10) son 10 mumda 3 kez 98 üstü · Stop son 10 mumun dibi · Çıkış Supertrend çizgisinde', (c, _tf, _h, exit) =>
+    simulate(c, twinStSignals(c, { win: 5, maxPerLeg: 2, lookback: 10 }), { stopAtr: 2, rr: NO_TARGET, ...exit }, undefined, undefined, supertrendExitLine(c)),
+  ),
+  custom('twinst3', 'Twin Range + Supertrend (1:3)', 'Twin Range + ST 1:3', 'Giriş Twin Range + Supertrend ile aynı (Long→Buy en fazla 20 mum, bacak başına 1 LONG) · Stop son 10 mumun dibi · hedef 3R', (c, _tf, _h, exit) =>
+    simulate(c, twinStSignals(c, { win: 20, maxPerLeg: 1, lookback: 10 }), { stopAtr: 2, rr: 3, ...exit }),
   ),
   custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
     simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),
