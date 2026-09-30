@@ -1,0 +1,26 @@
+{
+ "ema2155": {
+  "id": "1|1|3",
+  "label": "kesişim başına 1 · kopuş 1 ATR · EMA arası 1 ATR · stop 2 ATR · 1:3"
+ },
+ "bbstoch": {
+  "id": "1|2|band",
+  "label": "dar bant < 1 × ort. · stop 2 ATR · hedef karşı bant"
+ },
+ "hasmooth": {
+  "id": "2|flip",
+  "label": "stop 2 ATR · renk dönünce çıkış"
+ },
+ "hasmoothAdx": {
+  "id": "30|2|trail",
+  "label": "ADX ≥ 30 · stop 2 ATR · 1:2 + takip"
+ },
+ "triangle": {
+  "id": "1.5|3",
+  "label": "stop 1.5 ATR · 1:3"
+ },
+ "emavolha": {
+  "id": "true|close|1.5",
+  "label": "RSI 50 filtresi · çıkış EMA 20 altı kapanış · acil stop 1.5 ATR"
+ }
+}
