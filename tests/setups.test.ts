@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
 import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
-import { bbStochSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
+import { bbStochSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
 function series(n = 1500): Candle[] {
@@ -25,6 +25,8 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
     ['bbstoch', (c) => bbStochSignals(c, 0.8)],
     ['hasmooth', haSmoothedSignals],
     ['ema2155break', (c) => ema2155BreakSignals(c)],
+    ['ema2155v2', (c) => ema2155BreakSignals(c, { refBars: 10, no55After: 3 })],
+    ['ema5813macd', (c) => ema5813MacdSignals(c)],
     ['triangle', (c) => triangleSignals(c)],
     ['emavolha', (c) => emaVolHaSignals(c)],
   ];

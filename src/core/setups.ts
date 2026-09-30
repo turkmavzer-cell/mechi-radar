@@ -261,6 +261,13 @@ export interface Ema2155BreakOpts {
   bufferAtr?: number;
   /** Stop mesafesi en az bu kadar ATR (çok yakın stoplarda maliyet R'yi yer). */
   minStopAtr?: number;
+  /**
+   * Tanımlıysa kesişim mumu da sayılır ve kırılacak seviye kesişimden önceki bu kadar mumun tepesinden (short'ta dibinden)
+   * başlar: kesişim sırasında EMA'lara değen fiyat, kesişim öncesi dibin altında kapanınca SHORT (kullanıcı tarifi, 2. anlatım).
+   */
+  refBars?: number;
+  /** Tanımlıysa kesişimden bu kadar mum sonra fiyat EMA 55'e değerse o kesişimde işlem açılmaz. */
+  no55After?: number;
 }
 
 /**
@@ -269,7 +276,7 @@ export interface Ema2155BreakOpts {
  * Kapanış EMA 55 altına inerse geri çekilme iptal (yeni bacak aranır). Short tersi.
  */
 export function ema2155BreakSignals(c: Candle[], opts: Ema2155BreakOpts = {}): BoxSignal[] {
-  const { firstOnly = true, bufferAtr = 0.1, minStopAtr = 0.5 } = opts;
+  const { firstOnly = true, bufferAtr = 0.1, minStopAtr = 0.5, refBars, no55After } = opts;
   const cl = C(c);
   const f = ema(cl, 21);
   const s = ema(cl, 55);
@@ -280,6 +287,8 @@ export function ema2155BreakSignals(c: Candle[], opts: Ema2155BreakOpts = {}): B
   let peak = NaN; // bu bacağın tepesi (short'ta dibi)
   let ref = NaN; // geri çekilme öncesi tepe
   let pb = NaN; // geri çekilmenin dibi (short'ta tepesi)
+  let crossI = -1;
+  let dead = false; // EMA 55'e değildi: bu kesişimde işlem yok
   for (let i = 1; i < c.length; i++) {
     if (Number.isNaN(s[i - 1]) || Number.isNaN(a[i])) continue;
     const x = c[i];
@@ -292,10 +301,15 @@ export function ema2155BreakSignals(c: Candle[], opts: Ema2155BreakOpts = {}): B
     const ema55 = sg * s[i];
     if (Math.sign(f[i] - s[i]) !== Math.sign(f[i - 1] - s[i - 1])) {
       used = false; // yeni kesişim
+      dead = false;
+      crossI = i;
       phase = 'rise';
       peak = hi;
-      continue;
+      if (refBars == null) continue;
+      for (let j = Math.max(0, i - refBars); j < i; j++) peak = Math.max(peak, up ? c[j].h : -c[j].l);
     }
+    if (no55After != null && crossI >= 0 && i - crossI > no55After && lo <= ema55) dead = true;
+    if (dead) continue;
     if (Number.isNaN(peak)) peak = hi;
     if (phase === 'rise') {
       if (lo <= ema21) {
@@ -336,4 +350,54 @@ export function ema21CloseExit(c: Candle[], minR = 0): ExitRule {
 export function ema55Line(c: Candle[]): TargetLine {
   const e = ema(C(c), 55);
   return (j) => e[j];
+}
+
+/**
+ * EMA 5/8/13 + MACD: MACD çizgisi 0'ı yukarı keser ve en fazla `win` mum içinde (önce ya da sonra) EMA 5 > 8 > 13 sıralanıp üçü de
+ * yükselir → ikisi birlikte sağlandığı mumda LONG (MACD hâlâ 0 üstünde, sıralama sürüyor). Stop: önceki dip (tepe/dip noktası,
+ * iki yanda `span` mum) altında, en az `minStopAtr` ATR. Short tersi. MACD kesişimi başına tek sinyal.
+ */
+export function ema5813MacdSignals(c: Candle[], win = 5, span = 3, minStopAtr = 0.5, bufferAtr = 0.1): BoxSignal[] {
+  const cl = C(c);
+  const e5 = ema(cl, 5), e8 = ema(cl, 8), e13 = ema(cl, 13);
+  const m = macd(cl).line;
+  const a = atr(H(c), L(c), cl, 14);
+  const pv = pivots(H(c), L(c), span);
+  const aligned = (i: number, up: boolean) =>
+    i > 0 &&
+    (up
+      ? e5[i] > e8[i] && e8[i] > e13[i] && e5[i] > e5[i - 1] && e8[i] > e8[i - 1] && e13[i] > e13[i - 1]
+      : e5[i] < e8[i] && e8[i] < e13[i] && e5[i] < e5[i - 1] && e8[i] < e8[i - 1] && e13[i] < e13[i - 1]);
+  const out: BoxSignal[] = [];
+  let crossUp = -1e9, crossDn = -1e9, alignUp = -1e9, alignDn = -1e9, usedUp = -1, usedDn = -1;
+  let loN = 0, hiN = 0;
+  for (let i = 2; i < c.length; i++) {
+    while (loN < pv.lo.length && pv.lo[loN].at <= i) loN++;
+    while (hiN < pv.hi.length && pv.hi[hiN].at <= i) hiN++;
+    if (Number.isNaN(m[i - 1]) || Number.isNaN(e13[i - 1]) || Number.isNaN(a[i])) continue;
+    if (m[i - 1] <= 0 && m[i] > 0) crossUp = i;
+    if (m[i - 1] >= 0 && m[i] < 0) crossDn = i;
+    if (aligned(i, true) && !aligned(i - 1, true)) alignUp = i;
+    if (aligned(i, false) && !aligned(i - 1, false)) alignDn = i;
+    for (const up of [true, false]) {
+      const cross = up ? crossUp : crossDn;
+      const al = up ? alignUp : alignDn;
+      if ((up ? usedUp : usedDn) === cross || Math.abs(cross - al) > win || Math.max(cross, al) !== i) continue;
+      if (up ? !(m[i] > 0 && aligned(i, true)) : !(m[i] < 0 && aligned(i, false))) continue;
+      const piv = up ? pv.lo.slice(0, loN).at(-1) : pv.hi.slice(0, hiN).at(-1);
+      const ext = piv ? piv.v : up ? Math.min(...c.slice(Math.max(0, i - 10), i + 1).map((x) => x.l)) : Math.max(...c.slice(Math.max(0, i - 10), i + 1).map((x) => x.h));
+      const dist = Math.max(up ? c[i].c - (ext - bufferAtr * a[i]) : ext + bufferAtr * a[i] - c[i].c, minStopAtr * a[i]);
+      out.push({ i, dir: up ? 'up' : 'down', stop: up ? c[i].c - dist : c[i].c + dist });
+      if (up) usedUp = cross;
+      else usedDn = cross;
+    }
+  }
+  return out;
+}
+
+/** EMA 5, EMA 13'ü ters yöne kesince çıkış. */
+export function ema5x13Exit(c: Candle[]): ExitRule {
+  const cl = C(c);
+  const e5 = ema(cl, 5), e13 = ema(cl, 13);
+  return (j, d) => (d === 'up' ? e5[j] < e13[j] : e5[j] > e13[j]);
 }
