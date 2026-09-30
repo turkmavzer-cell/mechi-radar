@@ -12,6 +12,8 @@ import {
   emaVolHaSignals,
   haSmoothedExit,
   haSmoothedSignals,
+  rsiMacdExit,
+  rsiMacdSignals,
   triangleSignals,
 } from '../src/core/setups';
 import type { Candle, Timeframe } from '../src/core/types';
@@ -69,6 +71,15 @@ function grid(strategy: string): Variant[] {
         v.push({ id: `${thr}|${st}|flip`, label: `ADX ≥ ${thr} · stop ${st} ATR · renk dönünce çıkış`, run: (c) => ({ signals: haSmoothedSignals(c, thr), params: { stopAtr: st, rr: INF, sameBarEntry: true }, exit: haSmoothedExit(c) }) });
         v.push({ id: `${thr}|${st}|trail`, label: `ADX ≥ ${thr} · stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: haSmoothedSignals(c, thr), params: { stopAtr: st, rr: 2, trail: 1.5, sameBarEntry: true } }) });
       }
+  if (strategy === 'rsimacd')
+    for (const either of [false, true]) {
+      const tag = either ? 'hangisi son keserse' : 'RSI keser, MACD 0 üstünde';
+      for (const st of [1, 1.5, 2]) {
+        for (const rr of [1, 1.5, 2, 3]) v.push({ id: `${either}|${st}|${rr}`, label: `${tag} · stop ${st} ATR · 1:${rr}`, run: (c) => ({ signals: rsiMacdSignals(c, either), params: { stopAtr: st, rr } }) });
+        v.push({ id: `${either}|${st}|trail`, label: `${tag} · stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: rsiMacdSignals(c, either), params: { stopAtr: st, rr: 2, trail: 1.5 } }) });
+        v.push({ id: `${either}|${st}|exit`, label: `${tag} · stop ${st} ATR · RSI 50'nin ters tarafına geçince çıkış`, run: (c) => ({ signals: rsiMacdSignals(c, either), params: { stopAtr: st, rr: INF }, exit: rsiMacdExit(c) }) });
+      }
+    }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -85,14 +96,17 @@ function grid(strategy: string): Variant[] {
   return v;
 }
 
-const STRATS = [
+const ALL_STRATS = [
   { id: 'ema2155', name: 'EMA 21/55 geri çekilmesi' },
   { id: 'bbstoch', name: 'Bollinger + Stokastik' },
   { id: 'hasmooth', name: 'Heikin Ashi Smoothed' },
+  { id: 'rsimacd', name: 'RSI + MACD' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
   { id: 'emavolha', name: 'EMA 20/50 + hacim + Heikin Ashi' },
 ];
+const ONLY = process.argv[2];
+const STRATS = ONLY ? ALL_STRATS.filter((x) => x.id === ONLY) : ALL_STRATS;
 
 interface T { ins: string; tf: Timeframe; half: 1 | 2; t: number; gross: number; net: number; bars: number }
 
@@ -219,7 +233,7 @@ async function main() {
     md.push('');
   }
   mkdirSync('research/out', { recursive: true });
-  writeFileSync('research/out/sratr-yeni.md', md.join('\n'));
+  writeFileSync(`research/out/sratr-yeni${ONLY ? '-' + ONLY : ''}.md`, md.join('\n'));
   writeFileSync('research/out/sratr-yeni.json', JSON.stringify(chosen, null, 1));
   console.log(JSON.stringify(chosen, null, 1));
 }

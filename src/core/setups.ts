@@ -1,7 +1,7 @@
 // Kullanıcının tarif ettiği stratejiler (video ekran görüntülerinden): EMA 21/55 geri çekilmesi, Bollinger + Stokastik,
 // Heikin Ashi Smoothed, üçgen formasyonları, EMA 20/50 + hacim + Heikin Ashi. Çıkış ayarları research/yeni-stratejiler.ts ile seçildi.
 import type { BoxSignal, ExitRule, TargetLine } from './boxes';
-import { adx, atr, bollinger, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc } from './indicators';
+import { adx, atr, bollinger, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc } from './indicators';
 import type { Candle, Direction } from './types';
 
 const O = (c: Candle[]) => c.map((x) => x.o);
@@ -215,4 +215,31 @@ export function ema20Exit(c: Candle[], mode: 'touch' | 'close' = 'touch'): ExitR
     if (mode === 'close') return d === 'up' ? x.c < e20[j] : x.c > e20[j];
     return d === 'up' ? x.l <= e20[j] : x.h >= e20[j];
   };
+}
+
+/**
+ * RSI + MACD: RSI(14) 50'yi yukarı keser ve MACD çizgisi (mavi) 0'ın üstünde (aynı mumda yukarı kesmiş olabilir) → LONG; tersi SHORT.
+ * `either`: MACD çizgisi 0'ı yukarı keserken RSI zaten 50 üstündeyse de LONG (ikisinden hangisi son keserse).
+ */
+export function rsiMacdSignals(c: Candle[], either = false): BoxSignal[] {
+  const cl = C(c);
+  const r = rsi(cl, 14);
+  const m = macd(cl).line;
+  const out: BoxSignal[] = [];
+  for (let i = 1; i < c.length; i++) {
+    if ([r[i - 1], r[i], m[i - 1], m[i]].some(Number.isNaN)) continue;
+    const rUp = r[i - 1] <= 50 && r[i] > 50;
+    const rDn = r[i - 1] >= 50 && r[i] < 50;
+    const mUp = m[i - 1] <= 0 && m[i] > 0;
+    const mDn = m[i - 1] >= 0 && m[i] < 0;
+    if ((rUp && m[i] > 0) || (either && mUp && r[i] > 50)) out.push({ i, dir: 'up' });
+    else if ((rDn && m[i] < 0) || (either && mDn && r[i] < 50)) out.push({ i, dir: 'down' });
+  }
+  return out;
+}
+
+/** RSI 50'nin ters tarafına geçince çıkış. */
+export function rsiMacdExit(c: Candle[]): ExitRule {
+  const r = rsi(C(c), 14);
+  return (j, d) => (d === 'up' ? r[j] < 50 : r[j] > 50);
 }
