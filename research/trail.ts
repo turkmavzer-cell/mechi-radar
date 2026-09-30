@@ -2,7 +2,7 @@
 // Tüm kutulu stratejiler, 18 enstrüman; ilk yarı / ikinci yarı ve Japan 225 (NIY=F) ayrıca.
 // Çalıştırma: npx tsx research/trail.ts
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { BOX_STRATEGIES } from '../src/core/boxStrategies';
+import { STRATEGY_ARCHIVE } from '../src/core/boxStrategies';
 import { higherSeries } from '../src/core/sratr';
 import { TIMEFRAMES } from '../src/core/types';
 import { loadAll, SYMBOLS } from './load';
@@ -30,7 +30,7 @@ async function main() {
       if (!cs || cs.length < 300) continue;
       const higher = higherSeries(tf, all);
       const half = Math.floor(cs.length / 2);
-      for (const b of BOX_STRATEGIES)
+      for (const b of STRATEGY_ARCHIVE)
         for (const tr of TRAILS) {
           for (const t of b.run(cs, tf, higher, tr.trail == null ? undefined : tr)) {
             if (t.outcome === 'open' || t.r == null) continue;
@@ -48,7 +48,7 @@ async function main() {
   const md = ['# Takip eden kâr al testi', '', 'Stop 1,5 ATR, hedef 2R. Takipte stop hedefe çekilir ve en iyi fiyatın `d × ATR` gerisinden izler. Spread/komisyon hariç.', ''];
   md.push('## Tüm veri', '', '| Strateji | Çıkış | İşlem | Kârlı % | ≥4R % | İlk yarı ort. R | İkinci yarı ort. R | Toplam R | Ort. süre (mum) |', '|---|---|---|---|---|---|---|---|---|');
   const rows: unknown[] = [];
-  for (const b of BOX_STRATEGIES)
+  for (const b of STRATEGY_ARCHIVE)
     for (const tr of TRAILS) {
       const k = `${b.id}|${tname(tr)}`;
       const a = g(`${k}|all|ALL`), f1 = g(`${k}|first|ALL`), f2 = g(`${k}|second|ALL`);
@@ -57,7 +57,7 @@ async function main() {
     }
   for (const [title, part] of [['Zaman dilimine göre ort. R (tüm semboller)', 'all'], ['Japan 225 (NIY=F): toplam R (işlem)', 'jp']] as const) {
     md.push('', `## ${title}`, '', `| Strateji | Çıkış | ${TIMEFRAMES.join(' | ')} |`, `|---|---|${TIMEFRAMES.map(() => '---').join('|')}|`);
-    for (const b of BOX_STRATEGIES)
+    for (const b of STRATEGY_ARCHIVE)
       for (const tr of TRAILS) {
         const cells = TIMEFRAMES.map((tf) => {
           const a = g(`${b.id}|${tname(tr)}|${part}|${tf}`);

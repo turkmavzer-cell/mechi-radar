@@ -36,7 +36,11 @@ const NO_TARGET = Number.POSITIVE_INFINITY;
 const EMA2155_OPTS = { firstOnly: true, breakAtr: 1, gapAtr: 1 };
 const EMA2155_EXIT: BoxParams = { stopAtr: 2, rr: 3 };
 
-export const BOX_STRATEGIES: BoxStrategy[] = [
+/**
+ * Tüm kutulu stratejilerin tanımları (arşiv). Kullanıcı isteğiyle uygulamadan kaldırıldı; araştırma betikleri ve
+ * ileride geri eklemek için burada duruyor. Uygulamada görünenler `BOX_STRATEGIES`.
+ */
+export const STRATEGY_ARCHIVE: BoxStrategy[] = [
   sra('sratr', 'Stokastik-RSI-ATR', 'SRA', [], ''),
   sra('sratrEma', 'SRA + EMA 200', 'SRA + EMA 200', ['ema200'], ' · EMA 200 yönünde'),
   sra('sratrAdx', 'SRA + ADX', 'SRA + ADX', ['adxRange'], ' · ADX 25 altı'),
@@ -89,3 +93,6 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   ),
   fromCandidate('rsi2', 'rsi2', 'RSI(2)', 'Fiyat SMA 200 üstünde + RSI(2) 5 altına iner → LONG; altında + 95 üstü → SHORT · testte 15dk, takip eden TP ile'),
 ];
+
+/** Uygulamada (grafik düğmeleri, Radar ve bildirimler) kullanılan kutulu stratejiler. Şu an boş: hepsi kaldırıldı. */
+export const BOX_STRATEGIES: BoxStrategy[] = [];

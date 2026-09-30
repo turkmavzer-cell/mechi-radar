@@ -82,17 +82,17 @@ test('değişen hedef: önceki mumun seviyesinde, açılış ötedeyse açılı�
 });
 
 test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () => {
-  const { BOX_STRATEGIES } = await import('../src/core/boxStrategies');
+  const { STRATEGY_ARCHIVE } = await import('../src/core/boxStrategies');
   const { analyze } = await import('../src/core/strategies');
   const cs = series(1200);
-  for (const b of BOX_STRATEGIES) {
+  for (const b of STRATEGY_ARCHIVE) {
     const tr = b.run(cs, '1h', undefined);
     for (const t of tr) if (t.outcome !== 'open') assert.ok(Number.isFinite(t.r), `${b.id} r`);
   }
   const res = analyze('TEST', '1h', cs);
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
-  assert.ok(res.events.some((e) => e.strategy === 'hasmooth'));
+  assert.ok(!res.events.some((e) => e.levels)); // kutulu stratejiler uygulamada kapalı
 });
 
 test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {

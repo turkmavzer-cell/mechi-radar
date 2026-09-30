@@ -1,6 +1,6 @@
 // Kontrol: USDJPY 15dk son 3 gün, EMA 21/55 stratejilerinin girişleri ve çıkışları.
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { BOX_STRATEGIES } from '../src/core/boxStrategies';
+import { STRATEGY_ARCHIVE } from '../src/core/boxStrategies';
 import { ema } from '../src/core/indicators';
 import { loadAll } from './load';
 
@@ -8,7 +8,7 @@ async function main() {
   const all = await loadAll('USDJPY=X');
   const cs = all['15m']!;
   const ids = ['ema2155', 'ema2155bo', 'ema2155bt'];
-  const trs = ids.map((id) => ({ id, tr: BOX_STRATEGIES.find((x) => x.id === id)!.run(cs, '15m', undefined) }));
+  const trs = ids.map((id) => ({ id, tr: STRATEGY_ARCHIVE.find((x) => x.id === id)!.run(cs, '15m', undefined) }));
   const tr = trs.flatMap((x) => x.tr.map((t) => ({ ...t, sid: x.id })));
   const e21 = ema(cs.map((c) => c.c), 21), e55 = ema(cs.map((c) => c.c), 55);
   const out: string[] = [];
