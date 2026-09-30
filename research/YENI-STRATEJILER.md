@@ -78,6 +78,14 @@ yalnızca açık işlemi kapatır. Eşik 20 / 25 / 30, stop 1,5 / 2 ATR, çıkı
 - **Sonuç: ADX filtresi testte sonucu iyileştirmedi.** İşlem sayısı yarıya iniyor (maliyet ve ekran başında geçen süre azalır)
   ama işlem başına kazanç artmıyor. Kullanıcı isteğiyle uygulamaya ayrı strateji olarak eklendi (ADX ≥ 20, stop 2 ATR, renk dönüşü çıkışı).
 
+### RSI + MACD
+Kural: RSI(14) 50'yi yukarı keser ve MACD çizgisi (mavi) 0'ın üstünde (aynı mumda 0'ı yukarı kesmiş de olabilir) → LONG; tersi SHORT.
+"Hangisi son keserse" sürümü (MACD 0'ı keserken RSI zaten 50 üstündeyse de giriş) da denendi. Stop 1 / 1,5 / 2 ATR; hedef 1:1, 1:1,5, 1:2, 1:3,
+1:2 + takip ve "RSI 50'nin ters tarafına geçince çık" (tüm sonuçlar: `rsimacd-sonuclar.md`).
+- İlk yarıda en iyi: **RSI keser + MACD 0 üstünde · stop 2 ATR · 1:2 + takip** → ilk yarı −0,011R, ikinci yarı +0,011R (maliyetsiz +0,072R). Başa baş.
+- 36 seçeneğin hepsi ilk yarıda maliyet dahil negatif. Stop genişledikçe (1 → 2 ATR) sonuç iyileşiyor; 1:1 en kötü, sabit 1:3 de kötü.
+- Nasdaq ve altında 15dk/1s hafif pozitif, USDJPY ve Japan 225'te negatif ya da sıfır.
+
 ### Üçgen formasyonları
 Tepe/dip noktalarıyla (iki yanda 5 mum) son iki tepe ve son iki dipten direnç/destek çizgisi. Yatay = 20 mumda 0,5 ATR'den az değişim.
 Yükselen üçgen (yatay direnç + yükselen destek) yukarı kırılımda AL; alçalan üçgen (düşen direnç + yatay destek) aşağı kırılımda SAT;

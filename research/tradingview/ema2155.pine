@@ -1,0 +1,65 @@
+//@version=5
+// Mechi Radar · EMA 21/55 geri çekilmesi (uygulamadaki kuralın TradingView sürümü, kontrol için).
+// Kural: EMA 21, EMA 55'i keser; fiyat EMA 21'den en az "Kopuş" ATR uzaklaşır (mumun dibi EMA 21'in üstünde);
+// sonra mum EMA 21'e değip üstünde yeşil kapanır ve iki EMA arası en az "EMA arası" ATR → LONG. Short tersi.
+// Kesişim başına tek işlem. Giriş mum kapanışında; stop 2 ATR, hedef 3R (ayarlanabilir).
+// Not: Sonuçları para yerine işlem listesi, kazanan oranı ve kâr faktörüyle karşılaştır (lot sabit).
+strategy("Mechi · EMA 21/55", overlay=true, process_orders_on_close=true, initial_capital=1000, default_qty_type=strategy.fixed, default_qty_value=1000)
+
+stopAtr  = input.float(2.0, "Stop (ATR)", step=0.5)
+rr       = input.float(3.0, "Hedef (R)", step=0.5)
+breakAtr = input.float(1.0, "Kopuş (ATR)", step=0.25)
+gapAtr   = input.float(1.0, "EMA arası (ATR)", step=0.25)
+useSt    = input.bool(false, "Filtre: Supertrend (10, 3) yönünde")
+useHa    = input.bool(false, "Filtre: Heikin Ashi Smoothed (10, 10) rengi yönünde")
+useAdx   = input.bool(false, "Filtre: ADX(14) ≥ 20")
+
+f = ta.ema(close, 21)
+s = ta.ema(close, 55)
+a = ta.atr(14)
+plot(f, "EMA 21", color.yellow)
+plot(s, "EMA 55", color.aqua)
+
+// Yardımcı indikatörler
+[_st, stDir] = ta.supertrend(3, 10)          // TradingView'de yön −1 = yükseliş
+[_dp, _dm, adxv] = ta.dmi(14, 14)
+o1 = ta.ema(open, 10), c1 = ta.ema(close, 10), h1 = ta.ema(high, 10), l1 = ta.ema(low, 10)
+haC = (o1 + h1 + l1 + c1) / 4
+var float haO = na
+haO := na(haO[1]) ? (o1 + c1) / 2 : (haO[1] + haC[1]) / 2
+haUp = ta.ema(haC, 10) > ta.ema(haO, 10)
+
+filt(bool up) =>
+    (not useSt or (up ? stDir < 0 : stDir > 0)) and (not useHa or (up ? haUp : not haUp)) and (not useAdx or adxv >= 20)
+
+var bool used = false
+var bool broke = false
+upTrend = f > s
+if math.sign(f - s) != math.sign(f[1] - s[1])
+    used := false
+    broke := false
+
+longC  = upTrend and low <= f and close > f and close > open and close > s
+shortC = not upTrend and high >= f and close < f and close < open and close < s
+okGap  = math.abs(f - s) >= gapAtr * a
+okBreak = breakAtr <= 0 or broke
+goLong  = longC and not used and okBreak and okGap and filt(true)
+goShort = shortC and not used and okBreak and okGap and filt(false)
+
+if goLong or goShort
+    used := true
+    if strategy.position_size == 0
+        dist = stopAtr * a
+        if goLong
+            strategy.entry("LONG", strategy.long)
+            strategy.exit("LONG çıkış", "LONG", stop=close - dist, limit=close + rr * dist)
+        else
+            strategy.entry("SHORT", strategy.short)
+            strategy.exit("SHORT çıkış", "SHORT", stop=close + dist, limit=close - rr * dist)
+
+// Kopuş bu mumdan sonra geçerli olur.
+if upTrend ? (low - f >= breakAtr * a) : (f - high >= breakAtr * a)
+    broke := true
+
+plotshape(goLong, "LONG sinyal", shape.triangleup, location.belowbar, color.green, size=size.small)
+plotshape(goShort, "SHORT sinyal", shape.triangledown, location.abovebar, color.red, size=size.small)
