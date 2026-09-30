@@ -562,6 +562,10 @@ async function main() {
       '',
       `- **Walk-forward test (10x, 1000 $):** ${usd(ev.end)} · getiri ${pc(ev.end - 1, 0)} · ${ev.n} işlem${ev.n < 30 ? ' (**30\'dan az: istatistiksel olarak zayıf**)' : ''} · isabet ${pc(ev.win, 0)} · işlem başı net ${fx(ev.avgPts, 0)} puan · maks. düşüş ${pc(ev.maxDD)} · en düşük ${usd(ev.minEq)} · stop-out ${ev.liq ? '**evet**' : 'hayır'} · hızlı zararlı çıkış (≤3 mum) ${pc(ev.whip, 0)}`,
       `- **Son 12 ay (test parçaları):** ${lastYear}`,
+      `- **Kaldıraç duyarlılığı (aynı test işlemleri):** ${[1, 2, 3, 5, 10].map((L) => {
+        const e = evaluate(c.wf.oos, L);
+        return `${L}x → ${usd(e.end)} (düşüş ${pc(e.maxDD, 0)}, en düşük ${usd(e.minEq)}${ok(e) ? '' : ', kısıtı aşıyor'})`;
+      }).join(' · ')}`,
       `- **Monte Carlo (bootstrap: işlemler yerine koyarak rastgele sırayla yeniden örneklendi, 2000 tekrar):** bitiş %5 / %50 / %95: ${usd(mc.p5)} / ${usd(mc.p50)} / ${usd(mc.p95)} · stop-out olasılığı ${pc(mc.bust)} · bakiye %40 altına inme ${pc(mc.low40)} · düşüş > %50 ${pc(mc.dd50)}`,
       `- **Seçilen parametreler (katlar):** ${c.wf.picks.map((p) => `${p.from}: ${p.id ?? 'işlem yok'}`).join(' · ')}`,
       `- **Son seçim (Pine için):** ${chosen ? `${chosen.v.tf} · ${JSON.stringify(chosen.v.params)}` : '—'}`,
