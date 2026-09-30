@@ -20,7 +20,8 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
   const cs = series();
   const fns: [string, (c: Candle[]) => { i: number; dir: string }[]][] = [
     ['ema2155', (c) => ema2155Signals(c)],
-    ['ema2155 ilk', (c) => ema2155Signals(c, true)],
+    ['ema2155 ilk', (c) => ema2155Signals(c, { firstOnly: true })],
+    ['ema2155 kopuş', (c) => ema2155Signals(c, { firstOnly: true, breakAtr: 0.25, gapAtr: 0.5 })],
     ['bbstoch', (c) => bbStochSignals(c, 0.8)],
     ['hasmooth', haSmoothedSignals],
     ['triangle', (c) => triangleSignals(c)],

@@ -32,6 +32,9 @@ const fromCandidate = (id: Strategy, candidate: string, short: string, rule: str
 /** Stop/hedef ayarları research/yeni-stratejiler.ts ile verinin ilk yarısında seçildi (research/YENI-STRATEJILER.md). */
 const custom = (id: Strategy, name: string, short: string, rule: string, run: BoxStrategy['run']): BoxStrategy => ({ id, name, short, rule: () => rule, run });
 const NO_TARGET = Number.POSITIVE_INFINITY;
+/** EMA 21/55: kesişim başına tek işlem, kopuş ve ortalama arası mesafe şartı (research/YENI-STRATEJILER.md). */
+const EMA2155_OPTS = { firstOnly: true, breakAtr: 0.5, gapAtr: 0.5 };
+const EMA2155_EXIT: BoxParams = { stopAtr: 2, rr: 3 };
 
 export const BOX_STRATEGIES: BoxStrategy[] = [
   sra('sratr', 'Stokastik-RSI-ATR', 'SRA', [], ''),
@@ -43,7 +46,7 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   fromCandidate('st200', 'st200', 'Supertrend + EMA 200', 'Supertrend (10, 3) yükselişe döner + fiyat EMA 200 üstünde (short tersi) · testte 4s, takip eden TP ile'),
   fromCandidate('utbot', 'utbot', 'UT Bot', 'UT Bot (1, 10) al sinyali + fiyat EMA 200 üstünde (short tersi) · testte 4s ve 15dk'),
   custom('ema2155', 'EMA 21/55 geri çekilmesi', 'EMA 21/55', 'EMA 21, EMA 55 üstündeyken mum EMA 21\'e değip üstünde yeşil kapanır → LONG (short tersi) · Stop 2 ATR · hedef 3R', (c, _tf, _h, exit) =>
-    simulate(c, ema2155Signals(c), { stopAtr: 2, rr: 3, ...exit }),
+    simulate(c, ema2155Signals(c, EMA2155_OPTS), { ...EMA2155_EXIT, ...exit }),
   ),
   custom('bbstoch', 'Bollinger + Stokastik', 'Bollinger + Stok.', 'Üst banda değer + Stokastik (14, 1, 3) %K %D\'yi aşağı keser → SHORT (alt bant + yukarı → LONG) · bant darsa sinyal yok · Stop 2 ATR · hedef karşı bant', (c, _tf, _h, exit) =>
     simulate(c, bbStochSignals(c, 1), { stopAtr: 2, rr: 2, ...exit }, undefined, bbTarget(c)),

@@ -42,6 +42,8 @@ export interface BoxParams {
    * Dur-ve-dön stratejileri için (ör. Heikin Ashi Smoothed renk dönüşü). Varsayılan: yalnızca kural çıkışında.
    */
   sameBarEntry?: boolean;
+  /** Fiyat girişten bu kadar R kâra geçince stop giriş fiyatına çekilir (başa baş; bir sonraki mumdan itibaren). */
+  breakeven?: number;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -126,7 +128,7 @@ export function simulate(
           t.outcome = 'sl';
           t.exitI = j;
           t.exitPrice = t.stop;
-          t.r = -1;
+          t.r = t.stop === entry ? 0 : -1; // başa başa çekilmiş stop 0R, değilse −1R
           break;
         }
         if (!hitTarget) {
@@ -134,6 +136,8 @@ export function simulate(
             closeByRule(t, j, c.c, entry, s, risk);
             break;
           }
+          // Başa baş: bu mumda yeterli kâr görüldüyse stop bir sonraki mumdan itibaren girişte.
+          if (params.breakeven != null && s * ((dir === 'up' ? c.h : c.l) - entry) >= params.breakeven * risk) t.stop = entry;
           continue;
         }
         // Değişen hedefte mum hedefin ötesinde açıldıysa açılış fiyatından çıkılır.
