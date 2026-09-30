@@ -16,6 +16,8 @@ export interface Ema2155Opts {
   breakAtr?: number;
   /** Girişte EMA 21 ile EMA 55 arası en az bu kadar ATR olmalı. */
   gapAtr?: number;
+  /** Ek şart (yardımcı indikatör); sağlanmazsa bu geri çekilme atlanır, kesişimin hakkı yanmaz. */
+  filter?: (i: number, dir: Direction) => boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface Ema2155Opts {
  * kapanış EMA 21 üstünde ve mum yeşil → LONG. Short tersi. Kopuş ve ortalama arası mesafe şartları `opts` ile.
  */
 export function ema2155Signals(c: Candle[], opts: Ema2155Opts = {}): BoxSignal[] {
-  const { firstOnly = false, breakAtr = 0, gapAtr = 0 } = opts;
+  const { firstOnly = false, breakAtr = 0, gapAtr = 0, filter } = opts;
   const cl = C(c);
   const f = ema(cl, 21);
   const s = ema(cl, 55);
@@ -41,7 +43,7 @@ export function ema2155Signals(c: Candle[], opts: Ema2155Opts = {}): BoxSignal[]
     const upTrend = f[i] > s[i];
     const up = upTrend && x.l <= f[i] && x.c > f[i] && x.c > x.o && x.c > s[i];
     const dn = !upTrend && x.h >= f[i] && x.c < f[i] && x.c < x.o && x.c < s[i];
-    const ok = (up || dn) && !(firstOnly && used) && (breakAtr <= 0 || broke) && Math.abs(f[i] - s[i]) >= gapAtr * a[i];
+    const ok = (up || dn) && !(firstOnly && used) && (breakAtr <= 0 || broke) && Math.abs(f[i] - s[i]) >= gapAtr * a[i] && (!filter || filter(i, up ? 'up' : 'down'));
     if (ok) {
       out.push({ i, dir: up ? 'up' : 'down' });
       used = true;
