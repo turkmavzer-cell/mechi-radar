@@ -122,6 +122,16 @@ Tümü: `trfst12-sonuclar.md` (15dk/1s/4s/günlük × 4 enstrüman, 4.900 işlem
   seçilen: **1R sonrası kâr al** → işlem sayısı yarıya iniyor (2.887), ikinci yarı −0,002R, kazanan %41. Yeni dip/tepe şartı sonucu kötüleştirdi.
 - Hiçbiri kullanıcı kuralından (−0,001R) belirgin iyi değil: maliyet dahil üçü de başa baş. Gir-çık sayısını azaltan tek sürüm 1R sonrası kâr al.
 
+### EMA 21/55 kesişim (sürekli pozisyon; TradingView testinden, uygulamada "EMA 21/55")
+Kural: EMA 21, 55'i yukarı keserse LONG, aşağı keserse SHORT (kapanışta), ters kesişimde dönüş, stop/hedef yok; R ölçüsü girişteki 2 × ATR(14).
+Tümü: `ema-kesisim-sonuclar.md` (1s/4s × 4 enstrüman, maliyet dahil, 5 EMA çifti).
+- 4s, dört enstrüman birlikte: 21/55 ilk yarı +0,06R, **ikinci yarı −0,26R** (268 işlem). İlk yarıya göre en iyi çift 50/200 (+2,98R) ikinci yarıda −0,65R.
+  Hiçbir çift iki yarıda da tutarlı değil; 1s'te 21/55 iki yarıda da −0,10R.
+- Enstrümana göre dönemler zıt: USDJPY 4s ilk yarı +0,77 / ikinci −1,03R; Japan 225 −0,17 / +0,47R; altın −0,14 / +0,84R.
+- TradingView karşılaştırması (Japan 225 4s, 30 Mart – 30 Eylül 2026, maliyetsiz): bizde 8 kapanan işlem, +10.475 puan (sonraki açılıştan giriş) /
+  +10.630 (kapanıştan); ayrıca açık LONG +2.030. TradingView: 11 işlem, +10.934 puan. Toplam yakın; işlem sayısı farklı (CME vadeli `NIY=F` ile
+  FxPro spot fiyatı ve 4s mum sınırları farklı, TradingView'de 4s geçmişi Mayıs sonunda başlıyor).
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).
