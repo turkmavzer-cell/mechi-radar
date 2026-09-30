@@ -86,6 +86,14 @@ Kural: RSI(14) 50'yi yukarı keser ve MACD çizgisi (mavi) 0'ın üstünde (ayn�
 - 36 seçeneğin hepsi ilk yarıda maliyet dahil negatif. Stop genişledikçe (1 → 2 ATR) sonuç iyileşiyor; 1:1 en kötü, sabit 1:3 de kötü.
 - Nasdaq ve altında 15dk/1s hafif pozitif, USDJPY ve Japan 225'te negatif ya da sıfır.
 
+### RSI + MACD — RSI üst/alt çizgide çıkış (kullanıcı isteği, uygulamada bu kullanılıyor)
+Çıkış: LONG'da RSI 70'e, SHORT'ta 30'a değince (hedef yok), acil stop 1,5 / 2 / 3 ATR. Karşılaştırma için 65/35, 80/20 ve
+"ya da RSI 50'nin ters tarafına geçince" de denendi (tümü: `rsimacdx-sonuclar.md`).
+- En iyi 70/30 ayarı: acil stop 3 ATR → ilk yarı −0,004R, **ikinci yarı −0,074R** (t −1,6), kazanan %42.
+- Önceki ayardan (stop 2 ATR, 1:2 + takip: −0,011 / +0,011R) **daha kötü**. RSI 70 çoğu zaman trend sürerken gelir; kazanç erken
+  alınıyor, zararlar ise acil stopa kadar gidiyor.
+- Yalnızca altın 15dk'da belirgin pozitif (+0,31R, 65 işlem, 2,5 ay).
+
 ### Üçgen formasyonları
 Tepe/dip noktalarıyla (iki yanda 5 mum) son iki tepe ve son iki dipten direnç/destek çizgisi. Yatay = 20 mumda 0,5 ATR'den az değişim.
 Yükselen üçgen (yatay direnç + yükselen destek) yukarı kırılımda AL; alçalan üçgen (düşen direnç + yatay destek) aşağı kırılımda SAT;
