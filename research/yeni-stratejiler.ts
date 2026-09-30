@@ -55,6 +55,12 @@ function grid(strategy: string): Variant[] {
       v.push({ id: `${st}|trail`, label: `stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: 2, trail: 1.5, sameBarEntry: true } }) });
       v.push({ id: `${st}|flip`, label: `stop ${st} ATR · renk dönünce çıkış`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: INF, sameBarEntry: true }, exit: haSmoothedExit(c) }) });
     }
+  if (strategy === 'hasmoothAdx')
+    for (const thr of [20, 25, 30])
+      for (const st of [1.5, 2]) {
+        v.push({ id: `${thr}|${st}|flip`, label: `ADX ≥ ${thr} · stop ${st} ATR · renk dönünce çıkış`, run: (c) => ({ signals: haSmoothedSignals(c, thr), params: { stopAtr: st, rr: INF, sameBarEntry: true }, exit: haSmoothedExit(c) }) });
+        v.push({ id: `${thr}|${st}|trail`, label: `ADX ≥ ${thr} · stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: haSmoothedSignals(c, thr), params: { stopAtr: st, rr: 2, trail: 1.5, sameBarEntry: true } }) });
+      }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -75,6 +81,7 @@ const STRATS = [
   { id: 'ema2155', name: 'EMA 21/55 geri çekilmesi' },
   { id: 'bbstoch', name: 'Bollinger + Stokastik' },
   { id: 'hasmooth', name: 'Heikin Ashi Smoothed' },
+  { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
   { id: 'emavolha', name: 'EMA 20/50 + hacim + Heikin Ashi' },
 ];
