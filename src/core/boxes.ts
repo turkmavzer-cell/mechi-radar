@@ -37,6 +37,11 @@ export interface BoxParams {
    * false (varsayılan): stop en iyi fiyatın `trail × ATR` gerisine konur; hedefte bu ≈ hedef − trail×ATR seviyesidir.
    */
   trailLock?: boolean;
+  /**
+   * true: işlem hangi yolla kapanırsa kapansın (stop mum içinde de olsa) aynı mumun kapanışındaki sinyal yeni işlem açar.
+   * Dur-ve-dön stratejileri için (ör. Heikin Ashi Smoothed renk dönüşü). Varsayılan: yalnızca kural çıkışında.
+   */
+  sameBarEntry?: boolean;
 }
 export const BOX_PARAMS: BoxParams = { stopAtr: 1.5, rr: 2 };
 
@@ -171,7 +176,7 @@ export function simulate(
     }
     trades.push(t);
     // Kural çıkışı mum kapanışında olur: aynı mumdaki ters sinyal (ör. renk dönüşü) o kapanışta yeni işlem açar.
-    busyUntil = t.exitI == null ? candles.length : t.ruleExit ? t.exitI - 1 : t.exitI;
+    busyUntil = t.exitI == null ? candles.length : t.ruleExit || params.sameBarEntry ? t.exitI - 1 : t.exitI;
   }
   return trades;
 }

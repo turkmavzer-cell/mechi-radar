@@ -55,3 +55,12 @@ test('kural çıkışı mumunda ters sinyal yeni işlem açar (stop/hedef çık�
   const tr2 = simulate(cs2, [{ i: 20, dir: 'down' }, { i: 25, dir: 'up' }], { stopAtr: 1.5, rr: 2 });
   assert.equal(tr2.length, 1);
 });
+
+test('sameBarEntry: stop mumunda gelen ters sinyal yeni işlem açar', () => {
+  const cs = Array.from({ length: 40 }, (_, i) => bar(i, 100));
+  cs[25] = { t: 25 * 3600, o: 100, h: 110, l: 99, c: 100 };
+  const tr = simulate(cs, [{ i: 20, dir: 'down' }, { i: 25, dir: 'up' }], { stopAtr: 1.5, rr: 2, sameBarEntry: true });
+  assert.equal(tr.length, 2);
+  assert.equal(tr[0].outcome, 'sl');
+  assert.equal(tr[1].i, 25);
+});

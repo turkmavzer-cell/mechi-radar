@@ -51,9 +51,9 @@ function grid(strategy: string): Variant[] {
       }
   if (strategy === 'hasmooth')
     for (const st of [...STOPS, 3]) {
-      for (const rr of [1, 1.5, 2, 3]) v.push({ id: `${st}|${rr}`, label: `stop ${st} ATR · 1:${rr}`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr } }) });
-      v.push({ id: `${st}|trail`, label: `stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: 2, trail: 1.5 } }) });
-      v.push({ id: `${st}|flip`, label: `stop ${st} ATR · renk dönünce çıkış`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: INF }, exit: haSmoothedExit(c) }) });
+      for (const rr of [1, 1.5, 2, 3]) v.push({ id: `${st}|${rr}`, label: `stop ${st} ATR · 1:${rr}`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr, sameBarEntry: true } }) });
+      v.push({ id: `${st}|trail`, label: `stop ${st} ATR · 1:2 + takip`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: 2, trail: 1.5, sameBarEntry: true } }) });
+      v.push({ id: `${st}|flip`, label: `stop ${st} ATR · renk dönünce çıkış`, run: (c) => ({ signals: haSmoothedSignals(c), params: { stopAtr: st, rr: INF, sameBarEntry: true }, exit: haSmoothedExit(c) }) });
     }
   if (strategy === 'triangle')
     for (const st of STOPS) {
