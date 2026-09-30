@@ -88,6 +88,10 @@ export type ExitRule = (j: number, dir: Direction, ctx: ExitContext) => boolean;
 /** Kural çıkışına verilen işlem bilgisi: şimdiye kadar görülen en iyi kâr (R, bu mum dahil). */
 export interface ExitContext {
   bestR: number;
+  /** Giriş mumu, giriş fiyatı ve şimdiye kadar görülen en iyi fiyat (bu mum dahil). */
+  i: number;
+  entry: number;
+  best: number;
 }
 
 /**
@@ -151,7 +155,7 @@ export function simulate(
           break;
         }
         if (!hitTarget) {
-          if (exitRule?.(j, dir, { bestR })) {
+          if (exitRule?.(j, dir, { bestR, i, entry, best: entry + (s * bestR * risk) })) {
             closeByRule(t, j, c.c, entry, s, risk);
             break;
           }
@@ -186,7 +190,7 @@ export function simulate(
         break;
       }
       best = dir === 'up' ? Math.max(best, c.h) : Math.min(best, c.l);
-      if (exitRule?.(j, dir, { bestR })) {
+      if (exitRule?.(j, dir, { bestR, i, entry, best: entry + (s * bestR * risk) })) {
         closeByRule(t, j, c.c, entry, s, risk);
         t.peak = best;
         break;

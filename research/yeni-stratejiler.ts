@@ -16,6 +16,7 @@ import {
   supertrendExitLine,
   twinStSignals,
   stKvExitLine,
+  trfAtrExit,
   trfExit,
   trfStSignals,
   ema20Exit,
@@ -144,6 +145,19 @@ function grid(strategy: string): Variant[] {
           }
   if (strategy === 'trfst')
     v.push({ id: 'user', label: 'Kullanıcı kuralı: TRF Long/Short ile giriş, TRF ters sinyalde kâr al, Supertrend çizgisi stop', run: (c) => ({ signals: trfStSignals(c), params: { stopAtr: 2, rr: INF, sameBarEntry: true }, exit: trfExit(c), line: stKvExitLine(c) }) });
+  if (strategy === 'trfst1')
+    for (const x of [1, 1.5, 2])
+      v.push({ id: `${x}`, label: `${x} ATR kârdan sonra ilk ters mumda kâr al (TRF ters sinyali de kâr aldırır)`, run: (c) => ({ signals: trfStSignals(c), params: { stopAtr: 2, rr: INF, sameBarEntry: true }, exit: trfAtrExit(c, x), line: stKvExitLine(c) }) });
+  if (strategy === 'trfst2') {
+    const base = { stopAtr: 2, rr: INF, sameBarEntry: true };
+    v.push({ id: 'base', label: 'karşılaştırma: kullanıcı kuralı (filtre yok)', eligible: false, run: (c) => ({ signals: trfStSignals(c), params: base, exit: trfExit(c), line: stKvExitLine(c) }) });
+    for (const adxMin of [20, 25])
+      v.push({ id: `adx${adxMin}`, label: `ADX ≥ ${adxMin} iken giriş`, run: (c) => ({ signals: trfStSignals(c, { minAdx: adxMin }), params: base, exit: trfExit(c), line: stKvExitLine(c) }) });
+    v.push({ id: 'ext', label: 'tekrar girişte yeni dip/tepe şartı', run: (c) => ({ signals: trfStSignals(c, { newExtreme: true }), params: base, exit: trfExit(c), line: stKvExitLine(c) }) });
+    v.push({ id: 'ext1r', label: 'tekrar girişte yeni dip/tepe + TRF kâr alı ancak 1R kârdan sonra', run: (c) => ({ signals: trfStSignals(c, { newExtreme: true }), params: base, exit: trfExit(c, 1), line: stKvExitLine(c) }) });
+    v.push({ id: '1r', label: 'TRF kâr alı ancak 1R kârdan sonra', run: (c) => ({ signals: trfStSignals(c), params: base, exit: trfExit(c, 1), line: stKvExitLine(c) }) });
+    v.push({ id: 'adx20ext1r', label: 'ADX ≥ 20 + yeni dip/tepe + TRF kâr alı 1R kârdan sonra', run: (c) => ({ signals: trfStSignals(c, { minAdx: 20, newExtreme: true }), params: base, exit: trfExit(c, 1), line: stKvExitLine(c) }) });
+  }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -172,6 +186,8 @@ const ALL_STRATS = [
   { id: 'ema2155v2', name: 'EMA 21/55 (2. anlatım)' },
   { id: 'twinst', name: 'Twin Range Filter + Supertrend' },
   { id: 'trfst', name: 'TRF + Supertrend (kullanıcı kuralı)' },
+  { id: 'trfst1', name: 'TRF + Supertrend · ATR kâr al' },
+  { id: 'trfst2', name: 'TRF + Supertrend · ek yöntem' },
   { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
@@ -260,7 +276,7 @@ async function main() {
       return { v, first: summary(ts.filter((x) => x.half === 1)), second: summary(ts.filter((x) => x.half === 2)), all: summary(ts), ts };
     });
     const pick = rows
-      .filter((r) => r.v.eligible !== false && r.first.n >= (ONLY === 'trfst' ? 1 : 60))
+      .filter((r) => r.v.eligible !== false && r.first.n >= (ONLY?.startsWith('trfst') ? 1 : 60))
       .sort((a, b) => b.first.avg - a.first.avg)[0];
     md.push(`## ${s.name}`, '');
     if (!pick) {
