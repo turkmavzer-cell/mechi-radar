@@ -6,7 +6,7 @@ import { higherSeries, SR_PARAMS, SR_VARIANTS, srTrades } from '../src/core/srat
 import type { Candle, Timeframe } from '../src/core/types';
 import { loadAll } from './load';
 
-interface Ins {
+export interface Ins {
   id: string;
   name: string;
   symbol: string;
@@ -20,7 +20,7 @@ interface Ins {
   tripleDay: number;
 }
 
-const INS: Ins[] = [
+export const INS: Ins[] = [
   { id: 'usdjpy', name: 'USDJPY', symbol: 'USDJPY=X', spread: 0.006, comm: 0.00007, swapLong: 0, swapShort: 4, tripleDay: 3 },
   { id: 'jp225', name: 'Japan 225', symbol: 'NIY=F', spread: 17, comm: 0, swapLong: 6.5306, swapShort: 3.0551, tripleDay: 5 },
   { id: 'nas100', name: 'Nasdaq 100', symbol: 'NQ=F', spread: 2.0, comm: 0, swapLong: 6.5306, swapShort: 3.0551, tripleDay: 5 },
@@ -45,9 +45,9 @@ function nights(t0: number, t1: number, tripleDay: number): number {
   return n;
 }
 
-interface Row { i: number; t: number; gross: number; net: number; bars: number }
+export interface Row { i: number; t: number; gross: number; net: number; bars: number }
 
-function costR(t: BoxTrade, cs: Candle[], ins: Ins, scale: number): number {
+export function costR(t: BoxTrade, cs: Candle[], ins: Ins, scale: number): number {
   const risk = Math.abs(t.entry - t.stop);
   const exitT = cs[t.exitI!].t;
   const trade = 1.5 * ins.spread + ins.comm * t.entry;
@@ -56,9 +56,9 @@ function costR(t: BoxTrade, cs: Candle[], ins: Ins, scale: number): number {
   return (scale * (trade + swap)) / risk;
 }
 
-interface Stat { n: number; perYear: number; win: number; avg: number; gross: number; t: number; total: number; pf: number; maxDD: number; h1: number; h2: number; n1: number; n2: number; bars: number }
+export interface Stat { n: number; perYear: number; win: number; avg: number; gross: number; t: number; total: number; pf: number; maxDD: number; h1: number; h2: number; n1: number; n2: number; bars: number }
 
-function stats(rows: Row[], key: 'gross' | 'net', span: [number, number], years: number): Stat {
+export function stats(rows: Row[], key: 'gross' | 'net', span: [number, number], years: number): Stat {
   const x = rows.map((r) => r[key]);
   const n = x.length;
   const avg = n ? x.reduce((a, b) => a + b, 0) / n : NaN;
@@ -93,8 +93,8 @@ function stats(rows: Row[], key: 'gross' | 'net', span: [number, number], years:
   };
 }
 
-const f = (x: number, d = 2) => (Number.isFinite(x) ? x.toFixed(d).replace('.', ',') : '—');
-const sg = (x: number, d = 3) => (Number.isFinite(x) ? (x > 0 ? '+' : '') + f(x, d) : '—');
+export const f = (x: number, d = 2) => (Number.isFinite(x) ? x.toFixed(d).replace('.', ',') : '—');
+export const sg = (x: number, d = 3) => (Number.isFinite(x) ? (x > 0 ? '+' : '') + f(x, d) : '—');
 
 async function main() {
   const strategies = [
@@ -200,7 +200,8 @@ async function main() {
   console.log(md.slice(0, 12).join('\n'));
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1]?.endsWith('focus.ts'))
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });

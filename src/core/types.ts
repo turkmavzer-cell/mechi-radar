@@ -11,6 +11,8 @@ export interface Candle {
   h: number;
   l: number;
   c: number;
+  /** İşlem hacmi (varsa; FX paritelerinde Yahoo hacim vermez). */
+  v?: number;
 }
 
 export type Direction = 'up' | 'down';
