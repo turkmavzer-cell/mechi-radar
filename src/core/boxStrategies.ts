@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155Signals, ema20Exit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155Signals, ema20Exit, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -57,8 +57,8 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   custom('hasmoothAdx', 'Heikin Ashi Smoothed + ADX', 'HA Smoothed + ADX', 'HA Smoothed renk dönüşü, yalnızca ADX(14) 20 üstündeyken (trend varken) giriş; yatay piyasada renk dönüşü yalnızca işlemi kapatır · acil stop 2 ATR', (c, _tf, _h, exit) =>
     simulate(c, haSmoothedSignals(c, 20), { stopAtr: 2, rr: NO_TARGET, sameBarEntry: true, ...exit }, haSmoothedExit(c)),
   ),
-  custom('rsimacd', 'RSI + MACD', 'RSI + MACD', 'RSI(14) 50\'yi yukarı keser ve MACD mavi çizgisi 0 üstünde (ya da aynı anda keser) → LONG; tersi SHORT · Stop 2 ATR · hedef 2R, hedefte takip eden TP', (c, _tf, _h, exit) =>
-    simulate(c, rsiMacdSignals(c), { stopAtr: 2, rr: 2, trail: 1.5, ...exit }),
+  custom('rsimacd', 'RSI + MACD', 'RSI + MACD', 'RSI(14) 50\'yi yukarı keser ve MACD mavi çizgisi 0 üstünde (ya da aynı anda keser) → LONG; tersi SHORT · Çıkış RSI 70\'e (SHORT\'ta 30\'a) değince · acil stop 3 ATR', (c, _tf, _h, exit) =>
+    simulate(c, rsiMacdSignals(c), { stopAtr: 3, rr: Number.POSITIVE_INFINITY, ...exit }, rsiLevelExit(c, 70)),
   ),
   custom('triangle', 'Üçgen formasyonları', 'Üçgen', 'Yükselen üçgen yukarı, alçalan aşağı, simetrik iki yöne kırılımda (kapanış çizginin ötesinde) · Stop 1,5 ATR · hedef 3R', (c, _tf, _h, exit) =>
     simulate(c, triangleSignals(c), { stopAtr: 1.5, rr: 3, ...exit }),

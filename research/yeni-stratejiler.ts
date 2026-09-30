@@ -12,6 +12,7 @@ import {
   emaVolHaSignals,
   haSmoothedExit,
   haSmoothedSignals,
+  rsiLevelExit,
   rsiMacdExit,
   rsiMacdSignals,
   triangleSignals,
@@ -80,6 +81,13 @@ function grid(strategy: string): Variant[] {
         v.push({ id: `${either}|${st}|exit`, label: `${tag} · stop ${st} ATR · RSI 50'nin ters tarafına geçince çıkış`, run: (c) => ({ signals: rsiMacdSignals(c, either), params: { stopAtr: st, rr: INF }, exit: rsiMacdExit(c) }) });
       }
     }
+  if (strategy === 'rsimacdx')
+    for (const lvl of [65, 70, 80])
+      for (const mid of [false, true])
+        for (const st of [1.5, 2, 3]) {
+          const tag = `RSI ${lvl}/${100 - lvl} çizgisinde çıkış${mid ? ' (veya RSI 50 ters tarafa geçince)' : ''}`;
+          v.push({ id: `${lvl}|${mid}|${st}`, label: `${tag} · acil stop ${st} ATR`, eligible: lvl === 70, run: (c) => ({ signals: rsiMacdSignals(c), params: { stopAtr: st, rr: INF }, exit: rsiLevelExit(c, lvl, mid) }) });
+        }
   if (strategy === 'triangle')
     for (const st of STOPS) {
       v.push({ id: `${st}|measured`, label: `stop ${st} ATR · hedef formasyon yüksekliği`, run: (c) => ({ signals: triangleSignals(c, true), params: { stopAtr: st, rr: 2 } }) });
@@ -101,6 +109,7 @@ const ALL_STRATS = [
   { id: 'bbstoch', name: 'Bollinger + Stokastik' },
   { id: 'hasmooth', name: 'Heikin Ashi Smoothed' },
   { id: 'rsimacd', name: 'RSI + MACD' },
+  { id: 'rsimacdx', name: 'RSI + MACD · RSI üst/alt çizgide çıkış' },
   { id: 'hasmoothAdx', name: 'Heikin Ashi Smoothed + ADX' },
   { id: 'triangle', name: 'Üçgen formasyonları' },
   { id: 'emavolha', name: 'EMA 20/50 + hacim + Heikin Ashi' },
