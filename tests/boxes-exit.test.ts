@@ -74,3 +74,14 @@ test('başa baş: 1R kârdan sonra stop girişe çekilir, dönüşte 0R', () => 
   assert.equal(tr[0].exitPrice, 100);
   assert.equal(tr[0].r, 0);
 });
+
+test('çıkış çizgisi: fiyat önceki mumun çizgi seviyesine değince oradan çıkar', () => {
+  const cs = Array.from({ length: 40 }, (_, i) => bar(i, 100));
+  cs[22] = { t: 22 * 3600, o: 104, h: 105, l: 103, c: 104 };
+  cs[23] = { t: 23 * 3600, o: 104, h: 105, l: 103, c: 104 };
+  cs[24] = { t: 24 * 3600, o: 102, h: 102.5, l: 101, c: 101.5 };
+  const tr = simulate(cs, [{ i: 20, dir: 'up', stop: 95 }], { stopAtr: 1.5, rr: Number.POSITIVE_INFINITY }, undefined, undefined, (j) => (j >= 22 ? 101.2 : 90));
+  assert.equal(tr[0].exitI, 24);
+  assert.equal(tr[0].exitPrice, 101.2);
+  assert.ok(tr[0].r! > 0);
+});
