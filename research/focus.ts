@@ -48,7 +48,7 @@ function nights(t0: number, t1: number, tripleDay: number): number {
 export interface Row { i: number; t: number; gross: number; net: number; bars: number }
 
 export function costR(t: BoxTrade, cs: Candle[], ins: Ins, scale: number): number {
-  const risk = Math.abs(t.entry - t.stop);
+  const risk = t.risk ?? Math.abs(t.entry - t.stop);
   const exitT = cs[t.exitI!].t;
   const trade = 1.5 * ins.spread + ins.comm * t.entry;
   const rate = t.dir === 'up' ? ins.swapLong : ins.swapShort;
