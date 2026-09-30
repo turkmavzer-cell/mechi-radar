@@ -471,30 +471,64 @@ export function supertrendExitLine(c: Candle[]): TargetLine {
  * Stop: Supertrend çizgisi (girişteki seviye; sonra `stExitLine` ile her mum takip). Kırmızıda tersi (SHORT).
  * Kâr al: TRF ters sinyali (`trfExit`).
  */
-export function trfStSignals(c: Candle[]): BoxSignal[] {
+export interface TrfStOpts {
+  /** Girişte ADX(14) en az bu değer (yatay piyasayı eler). */
+  minAdx?: number;
+  /** Aynı Supertrend bölgesindeki tekrar girişte kapanış, önceki girişten beri görülen en iyi fiyatın ötesinde olmalı (trend sürüyor). */
+  newExtreme?: boolean;
+}
+
+export function trfStSignals(c: Candle[], opts: TrfStOpts = {}): BoxSignal[] {
   const cl = C(c);
   const trf = twinRangeFilter(cl, 12, 1, 4, 2).signal;
   const st = supertrendKv(H(c), L(c), cl, 10, 4);
+  const ax = opts.minAdx != null ? adx(H(c), L(c), cl, 14).adx : null;
   const out: BoxSignal[] = [];
   let state = 0; // TRF'nin son sinyali
+  let zoneEntry = false; // bu Supertrend bölgesinde giriş oldu mu
+  let ext = NaN; // son girişten beri görülen en iyi fiyat (LONG'da en yüksek, SHORT'ta en düşük)
   for (let i = 1; i < c.length; i++) {
     if (trf[i] !== 0) state = trf[i];
     const d = st.dir[i];
     if (Number.isNaN(st.dir[i - 1]) || Number.isNaN(d)) continue;
     const flip = d !== st.dir[i - 1];
-    if (trf[i] === d || (flip && state === d)) {
-      const up = d === 1;
-      // Stop girişin doğru tarafında olmalı.
-      if (up ? st.line[i] < cl[i] : st.line[i] > cl[i]) out.push({ i, dir: up ? 'up' : 'down', stop: st.line[i] });
+    if (flip) {
+      zoneEntry = false;
+      ext = NaN;
     }
+    const up = d === 1;
+    const want = trf[i] === d || (flip && state === d);
+    let ok = want && (up ? st.line[i] < cl[i] : st.line[i] > cl[i]);
+    if (ok && ax && !(ax[i] >= opts.minAdx!)) ok = false;
+    if (ok && opts.newExtreme && zoneEntry && !(up ? cl[i] > ext : cl[i] < ext)) ok = false;
+    if (ok) {
+      out.push({ i, dir: up ? 'up' : 'down', stop: st.line[i] });
+      zoneEntry = true;
+      ext = cl[i];
+    }
+    if (zoneEntry) ext = up ? Math.max(ext, c[i].h) : Math.min(ext, c[i].l);
   }
   return out;
 }
 
-/** TRF ters sinyali (LONG'da "Short", SHORT'ta "Long") gelince mum kapanışında kâr al. */
-export function trfExit(c: Candle[]): ExitRule {
+/** TRF ters sinyali (LONG'da "Short", SHORT'ta "Long") gelince mum kapanışında kâr al; `minR`: ancak işlem en az o kadar R kâr gördüyse. */
+export function trfExit(c: Candle[], minR = -Infinity): ExitRule {
   const trf = twinRangeFilter(C(c), 12, 1, 4, 2).signal;
-  return (j, d) => trf[j] === (d === 'up' ? -1 : 1);
+  return (j, d, ctx) => trf[j] === (d === 'up' ? -1 : 1) && ctx.bestR >= minR;
+}
+
+/**
+ * ATR kâr al: fiyat girişten en az `x` × ATR (girişteki) kâr yönünde gittikten sonra ilk ters mumda (LONG'da kırmızı, SHORT'ta
+ * yeşil kapanış) kâr al. TRF ters sinyali de kâr aldırır.
+ */
+export function trfAtrExit(c: Candle[], x: number): ExitRule {
+  const a = atr(H(c), L(c), C(c), 14);
+  const trf = trfExit(c);
+  return (j, d, ctx) => {
+    const reached = (d === 'up' ? ctx.best - ctx.entry : ctx.entry - ctx.best) >= x * a[ctx.i];
+    const against = d === 'up' ? c[j].c < c[j].o : c[j].c > c[j].o;
+    return (reached && against) || trf(j, d, ctx);
+  };
 }
 
 /** Supertrend (Kıvanç, 10, 4) çizgisi takip stopu: fiyat bir önceki mumdaki çizgiye değince çıkış; yön dönmüşse açılışta. */

@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfExit, trfStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfAtrExit, trfExit, trfStSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -98,5 +98,11 @@ export const STRATEGY_ARCHIVE: BoxStrategy[] = [
 export const BOX_STRATEGIES: BoxStrategy[] = [
   custom('trfst', 'TRF + Supertrend', 'TRF + Supertrend', 'Supertrend (10, 4, hl2) yeşilken her Twin Range Filter (12/1, 4/2) "Long" → AL; Supertrend yeşile döndüğünde TRF zaten "Long"daysa o mumda AL · Kâr al: TRF "Short" · Stop: Supertrend çizgisi (takip eder, değince çıkış) · Kırmızıda tersi', (c, _tf, _h, exit) =>
     simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfExit(c), undefined, stKvExitLine(c)),
+  ),
+  custom('trfst1', 'TRF + Supertrend · ATR kâr al', 'TRF + ST · ATR TP', 'Giriş ve stop TRF + Supertrend ile aynı · Fiyat girişten 2 ATR kâr yönünde gittikten sonra ilk ters mumda (LONG\'da kırmızı, SHORT\'ta yeşil kapanış) kâr al; TRF ters sinyali de kâr aldırır', (c, _tf, _h, exit) =>
+    simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfAtrExit(c, 2), undefined, stKvExitLine(c)),
+  ),
+  custom('trfst2', 'TRF + Supertrend · 1R sonrası kâr al', 'TRF + ST · 1R', 'Giriş ve stop TRF + Supertrend ile aynı · TRF ters sinyali ancak işlem en az 1R kâr gördükten sonra kâr aldırır (öncesinde küçük geri dönüşlerde çıkılmaz, yalnızca Supertrend stopu geçerli)', (c, _tf, _h, exit) =>
+    simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfExit(c, 1), undefined, stKvExitLine(c)),
   ),
 ];
