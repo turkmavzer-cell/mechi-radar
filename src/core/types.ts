@@ -38,6 +38,7 @@ export type Strategy =
   | 'ema2155'
   | 'bbstoch'
   | 'hasmooth'
+  | 'hasmoothAdx'
   | 'triangle'
   | 'emavolha';
 
@@ -53,6 +54,7 @@ export const STRATEGIES: Strategy[] = [
   'ema2155',
   'bbstoch',
   'hasmooth',
+  'hasmoothAdx',
   'triangle',
   'emavolha',
   'ema5813',

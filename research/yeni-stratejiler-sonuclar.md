@@ -7,17 +7,17 @@ Seçim yalnızca verinin **ilk yarısıyla** yapıldı (4 enstrüman × 15dk/1s/
 
 | Enstrüman | Zaman dilimi | Dönem | Mum | Hacim |
 |---|---|---|---|---|
-| USDJPY | 15m | 2026-07-08 – 2026-09-30 | 5612 | yok |
-| USDJPY | 1h | 2023-12-14 – 2026-09-30 | 17141 | yok |
+| USDJPY | 15m | 2026-07-08 – 2026-09-30 | 5613 | yok |
+| USDJPY | 1h | 2023-12-14 – 2026-09-30 | 17142 | yok |
 | USDJPY | 4h | 2023-12-14 – 2026-09-30 | 4440 | yok |
-| Japan 225 | 15m | 2026-07-22 – 2026-09-30 | 4493 | var |
-| Japan 225 | 1h | 2024-05-08 – 2026-09-30 | 13738 | var |
+| Japan 225 | 15m | 2026-07-22 – 2026-09-30 | 4494 | var |
+| Japan 225 | 1h | 2024-05-08 – 2026-09-30 | 13739 | var |
 | Japan 225 | 4h | 2024-05-08 – 2026-09-30 | 3718 | var |
-| Nasdaq 100 | 15m | 2026-07-22 – 2026-09-30 | 4504 | var |
-| Nasdaq 100 | 1h | 2024-05-08 – 2026-09-30 | 13717 | var |
+| Nasdaq 100 | 15m | 2026-07-22 – 2026-09-30 | 4505 | var |
+| Nasdaq 100 | 1h | 2024-05-08 – 2026-09-30 | 13718 | var |
 | Nasdaq 100 | 4h | 2024-05-08 – 2026-09-30 | 3714 | var |
-| Altın | 15m | 2026-07-22 – 2026-09-30 | 4506 | var |
-| Altın | 1h | 2024-05-08 – 2026-09-30 | 13753 | var |
+| Altın | 15m | 2026-07-22 – 2026-09-30 | 4507 | var |
+| Altın | 1h | 2024-05-08 – 2026-09-30 | 13754 | var |
 | Altın | 4h | 2024-05-08 – 2026-09-30 | 3720 | var |
 
 ## EMA 21/55 geri çekilmesi
@@ -90,45 +90,45 @@ Zaman dilimine göre ilk yarıda en iyi seçenek ve ikinci yarısı:
 **Seçilen (ilk yarıya göre):** dar bant < 1 × ort. · stop 1.5 ATR · hedef karşı bant
 
 - İlk yarı: 1369 işlem · net ort. -0,036 R
-- **İkinci yarı (doğrulama): 1373 işlem · net ort. -0,007 R · kazanan %39 · t -0,2**
-- Tüm veri: 2742 işlem · net -0,022 R (maliyetsiz +0,054 R) · PF 0,97 · ort. süre 12,5 mum
+- **İkinci yarı (doğrulama): 1374 işlem · net ort. -0,008 R · kazanan %39 · t -0,2**
+- Tüm veri: 2743 işlem · net -0,022 R (maliyetsiz +0,053 R) · PF 0,97 · ort. süre 12,5 mum
 
 Seçilen ayarın enstrüman × zaman dilimi dökümü (net ort. R · işlem · en büyük düşüş %1 riskte):
 
 | Zaman dilimi | USDJPY | Japan 225 | Nasdaq 100 | Altın |
 |---|---|---|---|---|
 | 15m | -0,093 · 149 · %25 | +0,241 · 129 · %16 | +0,056 · 111 · %16 | -0,068 · 142 · %19 |
-| 1h | -0,131 · 510 · %52 | +0,019 · 412 · %33 | +0,014 · 370 · %24 | -0,087 · 418 · %35 |
+| 1h | -0,131 · 510 · %52 | +0,016 · 413 · %33 | +0,014 · 370 · %24 | -0,087 · 418 · %35 |
 | 4h | +0,124 · 138 · %16 | +0,000 · 129 · %10 | +0,041 · 110 · %10 | -0,040 · 124 · %16 |
 
 <details><summary>Tüm seçenekler (ilk yarıya göre sıralı)</summary>
 
 | Seçenek | İlk yarı işlem | İlk yarı net R | İkinci yarı işlem | İkinci yarı net R | Tüm veri maliyetsiz R |
 |---|---|---|---|---|---|
-| dar bant < 1 × ort. · stop 1.5 ATR · hedef karşı bant | 1369 | -0,036 | 1373 | -0,007 | +0,054 |
+| dar bant < 1 × ort. · stop 1.5 ATR · hedef karşı bant | 1369 | -0,036 | 1374 | -0,008 | +0,053 |
 | dar bant < 1 × ort. · stop 2 ATR · hedef karşı bant | 1259 | -0,036 | 1274 | -0,023 | +0,030 |
 | bant filtresi yok · stop 2 ATR · 1:2 (seçilemez) | 1547 | -0,047 | 1669 | +0,017 | +0,054 |
 | dar bant < 1 × ort. · stop 2 ATR · 1:1 | 1272 | -0,050 | 1310 | -0,033 | +0,015 |
-| dar bant < 1 × ort. · stop 1.5 ATR · 1:1 | 1412 | -0,056 | 1445 | -0,023 | +0,029 |
+| dar bant < 1 × ort. · stop 1.5 ATR · 1:1 | 1412 | -0,056 | 1446 | -0,024 | +0,029 |
 | dar bant < 1 × ort. · stop 2 ATR · 1:1.5 | 1159 | -0,060 | 1239 | -0,040 | +0,011 |
 | bant filtresi yok · stop 2 ATR · hedef karşı bant (seçilemez) | 2774 | -0,063 | 2731 | -0,059 | -0,000 |
-| dar bant < 1 × ort. · stop 1.5 ATR · 1:1.5 | 1363 | -0,063 | 1404 | -0,029 | +0,027 |
+| dar bant < 1 × ort. · stop 1.5 ATR · 1:1.5 | 1363 | -0,063 | 1405 | -0,029 | +0,027 |
 | dar bant < 0.8 × ort. · stop 2 ATR · 1:1 | 1687 | -0,064 | 1783 | -0,050 | +0,001 |
-| dar bant < 1 × ort. · stop 1.5 ATR · 1:2 | 1292 | -0,065 | 1358 | -0,022 | +0,034 |
+| dar bant < 1 × ort. · stop 1.5 ATR · 1:2 | 1292 | -0,065 | 1359 | -0,023 | +0,033 |
 | dar bant < 0.8 × ort. · stop 2 ATR · hedef karşı bant | 1712 | -0,067 | 1716 | -0,045 | +0,004 |
 | bant filtresi yok · stop 2 ATR · 1:1 (seçilemez) | 2442 | -0,072 | 2571 | -0,053 | -0,003 |
-| bant filtresi yok · stop 1.5 ATR · 1:1 (seçilemez) | 3249 | -0,073 | 3293 | -0,076 | -0,000 |
+| bant filtresi yok · stop 1.5 ATR · 1:1 (seçilemez) | 3249 | -0,073 | 3294 | -0,076 | -0,000 |
 | dar bant < 0.8 × ort. · stop 2 ATR · 1:2 | 1215 | -0,073 | 1369 | -0,010 | +0,027 |
 | dar bant < 1 × ort. · stop 2 ATR · 1:2 | 1027 | -0,074 | 1111 | +0,020 | +0,041 |
-| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:1 | 1949 | -0,075 | 2024 | -0,058 | +0,005 |
+| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:1 | 1949 | -0,075 | 2025 | -0,058 | +0,005 |
 | bant filtresi yok · stop 2 ATR · 1:1.5 (seçilemez) | 1899 | -0,078 | 2048 | -0,039 | +0,005 |
-| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:1.5 | 1835 | -0,082 | 1933 | -0,059 | +0,005 |
-| dar bant < 0.8 × ort. · stop 1.5 ATR · hedef karşı bant | 1892 | -0,083 | 1894 | -0,045 | +0,013 |
+| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:1.5 | 1835 | -0,082 | 1934 | -0,059 | +0,005 |
+| dar bant < 0.8 × ort. · stop 1.5 ATR · hedef karşı bant | 1892 | -0,083 | 1895 | -0,045 | +0,012 |
 | dar bant < 0.8 × ort. · stop 2 ATR · 1:1.5 | 1448 | -0,085 | 1602 | -0,055 | -0,007 |
-| bant filtresi yok · stop 1.5 ATR · 1:1.5 (seçilemez) | 2741 | -0,085 | 2870 | -0,061 | +0,004 |
-| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:2 | 1687 | -0,086 | 1809 | -0,063 | +0,004 |
-| bant filtresi yok · stop 1.5 ATR · hedef karşı bant (seçilemez) | 3166 | -0,087 | 3116 | -0,066 | +0,003 |
-| bant filtresi yok · stop 1.5 ATR · 1:2 (seçilemez) | 2306 | -0,089 | 2467 | -0,057 | +0,008 |
+| bant filtresi yok · stop 1.5 ATR · 1:1.5 (seçilemez) | 2741 | -0,085 | 2871 | -0,061 | +0,004 |
+| dar bant < 0.8 × ort. · stop 1.5 ATR · 1:2 | 1687 | -0,086 | 1810 | -0,063 | +0,004 |
+| bant filtresi yok · stop 1.5 ATR · hedef karşı bant (seçilemez) | 3166 | -0,087 | 3117 | -0,066 | +0,002 |
+| bant filtresi yok · stop 1.5 ATR · 1:2 (seçilemez) | 2306 | -0,089 | 2468 | -0,057 | +0,007 |
 | dar bant < 1 × ort. · stop 1 ATR · hedef karşı bant | 1512 | -0,101 | 1488 | -0,050 | +0,032 |
 | dar bant < 1 × ort. · stop 1 ATR · 1:2 | 1525 | -0,123 | 1526 | -0,056 | +0,013 |
 | dar bant < 1 × ort. · stop 1 ATR · 1:1.5 | 1537 | -0,126 | 1546 | -0,067 | +0,002 |
@@ -171,22 +171,22 @@ Seçilen ayarın enstrüman × zaman dilimi dökümü (net ort. R · işlem · e
 | Seçenek | İlk yarı işlem | İlk yarı net R | İkinci yarı işlem | İkinci yarı net R | Tüm veri maliyetsiz R |
 |---|---|---|---|---|---|
 | stop 2 ATR · 1:2 + takip | 1091 | +0,023 | 1189 | +0,008 | +0,086 |
-| stop 2 ATR · renk dönünce çıkış | 2273 | +0,014 | 2247 | +0,008 | +0,081 |
-| stop 3 ATR · renk dönünce çıkış | 2273 | +0,010 | 2246 | +0,004 | +0,054 |
+| stop 2 ATR · renk dönünce çıkış | 2273 | +0,014 | 2248 | +0,007 | +0,081 |
+| stop 3 ATR · renk dönünce çıkış | 2273 | +0,010 | 2247 | +0,003 | +0,054 |
 | stop 2 ATR · 1:2 | 1116 | -0,004 | 1202 | -0,035 | +0,048 |
-| stop 1.5 ATR · renk dönünce çıkış | 2273 | -0,005 | 2249 | +0,026 | +0,101 |
+| stop 1.5 ATR · renk dönünce çıkış | 2273 | -0,005 | 2250 | +0,025 | +0,100 |
 | stop 1 ATR · renk dönünce çıkış | 2273 | -0,006 | 2251 | +0,042 | +0,147 |
 | stop 2 ATR · 1:1.5 | 1295 | -0,011 | 1351 | -0,010 | +0,053 |
 | stop 2 ATR · 1:1 | 1523 | -0,026 | 1569 | -0,058 | +0,017 |
-| stop 2 ATR · 1:3 | 863 | -0,038 | 920 | -0,113 | +0,003 |
+| stop 2 ATR · 1:3 | 863 | -0,038 | 921 | -0,110 | +0,004 |
 | stop 3 ATR · 1:3 | 451 | -0,049 | 447 | -0,173 | -0,033 |
 | stop 3 ATR · 1:1 | 963 | -0,057 | 1022 | -0,043 | -0,003 |
 | stop 1 ATR · 1:2 + takip | 2030 | -0,059 | 2043 | +0,046 | +0,109 |
 | stop 3 ATR · 1:2 + takip | 582 | -0,081 | 642 | -0,082 | -0,018 |
 | stop 1.5 ATR · 1:2 + takip | 1554 | -0,082 | 1587 | +0,073 | +0,081 |
 | stop 3 ATR · 1:2 | 615 | -0,083 | 651 | -0,107 | -0,033 |
-| stop 1.5 ATR · 1:1.5 | 1728 | -0,094 | 1761 | -0,018 | +0,022 |
-| stop 1.5 ATR · 1:1 | 1899 | -0,095 | 1926 | -0,057 | -0,001 |
+| stop 1.5 ATR · 1:1.5 | 1728 | -0,094 | 1762 | -0,019 | +0,022 |
+| stop 1.5 ATR · 1:1 | 1899 | -0,095 | 1927 | -0,057 | -0,001 |
 | stop 1 ATR · 1:2 | 2044 | -0,098 | 2066 | -0,036 | +0,045 |
 | stop 3 ATR · 1:1.5 | 740 | -0,100 | 804 | -0,049 | -0,019 |
 | stop 1.5 ATR · 1:2 | 1580 | -0,111 | 1614 | +0,017 | +0,035 |
@@ -202,6 +202,47 @@ Zaman dilimine göre ilk yarıda en iyi seçenek ve ikinci yarısı:
 - 15m: stop 1 ATR · renk dönünce çıkış → ilk yarı +0,088 R (480), ikinci yarı +0,020 R (461)
 - 1h: stop 2 ATR · 1:2 + takip → ilk yarı +0,015 R (666), ikinci yarı +0,010 R (737)
 - 4h: stop 2 ATR · 1:2 → ilk yarı +0,142 R (194), ikinci yarı -0,055 R (225)
+
+## Heikin Ashi Smoothed + ADX
+
+**Seçilen (ilk yarıya göre):** ADX ≥ 30 · stop 2 ATR · 1:2 + takip
+
+- İlk yarı: 282 işlem · net ort. +0,092 R
+- **İkinci yarı (doğrulama): 281 işlem · net ort. -0,061 R · kazanan %33 · t -0,7**
+- Tüm veri: 563 işlem · net +0,016 R (maliyetsiz +0,080 R) · PF 1,02 · ort. süre 31,7 mum
+
+Seçilen ayarın enstrüman × zaman dilimi dökümü (net ort. R · işlem · en büyük düşüş %1 riskte):
+
+| Zaman dilimi | USDJPY | Japan 225 | Nasdaq 100 | Altın |
+|---|---|---|---|---|
+| 15m | -0,207 · 31 · %8 | +0,270 · 14 · %3 | -0,068 · 26 · %6 | -0,184 · 27 · %8 |
+| 1h | +0,054 · 93 · %10 | -0,087 · 71 · %14 | -0,024 · 101 · %10 | +0,148 · 102 · %11 |
+| 4h | +0,304 · 25 · %7 | -0,166 · 21 · %7 | -0,007 · 26 · %5 | +0,108 · 26 · %10 |
+
+<details><summary>Tüm seçenekler (ilk yarıya göre sıralı)</summary>
+
+| Seçenek | İlk yarı işlem | İlk yarı net R | İkinci yarı işlem | İkinci yarı net R | Tüm veri maliyetsiz R |
+|---|---|---|---|---|---|
+| ADX ≥ 30 · stop 2 ATR · 1:2 + takip | 282 | +0,092 | 281 | -0,061 | +0,080 |
+| ADX ≥ 25 · stop 2 ATR · 1:2 + takip | 495 | +0,045 | 525 | -0,058 | +0,059 |
+| ADX ≥ 20 · stop 2 ATR · renk dönünce çıkış | 1171 | +0,023 | 1177 | -0,004 | +0,073 |
+| ADX ≥ 25 · stop 2 ATR · renk dönünce çıkış | 685 | +0,021 | 675 | -0,018 | +0,063 |
+| ADX ≥ 30 · stop 2 ATR · renk dönünce çıkış | 394 | +0,004 | 337 | -0,085 | +0,018 |
+| ADX ≥ 20 · stop 1.5 ATR · renk dönünce çıkış | 1171 | -0,010 | 1177 | +0,016 | +0,086 |
+| ADX ≥ 20 · stop 2 ATR · 1:2 + takip | 745 | -0,021 | 823 | -0,031 | +0,042 |
+| ADX ≥ 25 · stop 1.5 ATR · renk dönünce çıkış | 685 | -0,029 | 675 | +0,029 | +0,078 |
+| ADX ≥ 30 · stop 1.5 ATR · 1:2 + takip | 301 | -0,032 | 304 | -0,033 | +0,040 |
+| ADX ≥ 30 · stop 1.5 ATR · renk dönünce çıkış | 394 | -0,071 | 337 | -0,038 | +0,013 |
+| ADX ≥ 20 · stop 1.5 ATR · 1:2 + takip | 905 | -0,080 | 977 | +0,025 | +0,054 |
+| ADX ≥ 25 · stop 1.5 ATR · 1:2 + takip | 542 | -0,088 | 587 | +0,030 | +0,049 |
+
+</details>
+
+Zaman dilimine göre ilk yarıda en iyi seçenek ve ikinci yarısı:
+
+- 15m: ADX ≥ 20 · stop 1.5 ATR · renk dönünce çıkış → ilk yarı +0,392 R (231), ikinci yarı +0,013 R (200)
+- 1h: ADX ≥ 30 · stop 2 ATR · 1:2 + takip → ilk yarı +0,020 R (171), ikinci yarı +0,041 R (196)
+- 4h: ADX ≥ 30 · stop 2 ATR · 1:2 + takip → ilk yarı +0,404 R (56), ikinci yarı -0,378 R (42)
 
 ## Üçgen formasyonları
 
