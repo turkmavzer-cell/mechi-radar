@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
 import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
-import { bbStochSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
+import { bbStochSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
 function series(n = 1500): Candle[] {
@@ -27,6 +27,7 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
     ['ema2155break', (c) => ema2155BreakSignals(c)],
     ['ema2155v2', (c) => ema2155BreakSignals(c, { refBars: 10, no55After: 3 })],
     ['ema5813macd', (c) => ema5813MacdSignals(c)],
+    ['twinst', (c) => twinStSignals(c)],
     ['triangle', (c) => triangleSignals(c)],
     ['emavolha', (c) => emaVolHaSignals(c)],
   ];
@@ -104,4 +105,11 @@ test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üst�
   }
   const tr = simulate(cs, sig, { stopAtr: 2, rr: Number.POSITIVE_INFINITY }, ema21CloseExit(cs, 1));
   for (const t of tr) if (t.outcome === 'sl' && !t.ruleExit) assert.equal(t.r, -1);
+});
+
+test('Twin Range Filter: Long ve Short etiketleri sırayla gelir', async () => {
+  const { twinRangeFilter } = await import('../src/core/indicators');
+  const sig = twinRangeFilter(series(1500).map((x) => x.c), 12, 1, 4, 2).signal.filter((x) => x !== 0);
+  assert.ok(sig.length > 4);
+  for (let k = 1; k < sig.length; k++) assert.notEqual(sig[k], sig[k - 1]);
 });

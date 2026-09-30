@@ -88,6 +88,25 @@ Stop geri çekilmenin tepesinin üstünde (en az 1 ATR). Çıkış: EMA 21 için
   kazancı erken kesiyor. Kanıt zayıf (yarı başına ~230 işlem).
 - "EMA 55'e değerse iptal" süresi kısaldıkça (6 → 0 mum) sonuç kötüleşiyor: kesişimden hemen sonra EMA'lar iç içe olduğu için çok sinyal eleniyor.
 
+### Twin Range Filter + Supertrend (YouTube, Gemini özeti)
+İndikatörler: Twin Range Filter (colinmck; 12/1, 4/2), Supertrend (10, 4, hl2), Stokastik RSI (3, 3, 8, 10).
+LONG: (a) Supertrend kırmızıyken Twin Range "Long", en geç W mum içinde Supertrend "Buy" (yeşile dönüş) → dönüş mumunda; (b) Supertrend
+yeşilken düzeltme sonrası yeni "Long" (bacak başına en fazla N LONG). SHORT: Supertrend kırmızı + Twin Range "Short" + Stokastik RSI son 10
+mumda en az 3 kez 98 üstü. Stop: son 10/20 mumun dibi (0,1 ATR pay, en az 0,5 ATR). Çıkış: Supertrend çizgisi (video) ya da sabit 1:2 / 1:3.
+Videoda net olmayanlar (W, N, stop derinliği, "100'e yapışık") seçeneklerle denendi. Test 1s / 4s / günlük; tümü: `twinst-sonuclar.md`.
+
+| Sürüm | İşlem | İlk yarı | İkinci yarı | Maliyetsiz |
+|---|---|---|---|---|
+| Video çıkışı: Supertrend çizgisi (W 5, N 2, stop 10 mum) | 830 | +0,006R | **+0,139R** (t 1,8) | +0,154R |
+| Sabit 1:3 (W 20, N 1, stop 10 mum) | 378 | +0,273R | **+0,238R** | +0,386R |
+
+- Şimdiye kadar test edilen stratejiler içinde doğrulama yarısında en iyi sonuç. Sabit 1:3 seçeneklerinin çoğu iki yarıda da pozitif
+  (sonuç tek bir ayara bağlı değil). Yine de t < 2: kesin değil.
+- Supertrend çıkışlı sürümde altın 1s +0,32R, 4s +0,25R, günlük +0,41R; Nasdaq günlük +0,78R (16 işlem); USDJPY 4s/günlük negatif.
+- LONG'da Stokastik RSI şartı sonucu kötüleştirdi (işlem yarıya iniyor, ikinci yarı negatif).
+- **Videodaki "6 yılda 1 hatalı sinyal" iddiası tutmuyor:** kazanan oranı %37; işlemlerin yaklaşık üçte ikisi zararla kapanıyor. Kâr,
+  kazanan işlemlerin büyük olmasından geliyor.
+
 ### Bollinger + Stokastik
 Ekran görüntüsündeki gibi uygulandı: **üst banda değip Stokastik %K (mavi) %D'yi aşağı kesince SAT**, alt bant + yukarı kesişimde AL
 (mesajda "üst bantta al" yazıyordu; hedef alt bant olduğu ve görselde üst bantta SAT olduğu için satış olarak alındı).

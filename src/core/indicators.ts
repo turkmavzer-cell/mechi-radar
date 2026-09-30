@@ -458,3 +458,43 @@ export function pivots(high: number[], low: number[], span = 5) {
   }
   return { hi, lo };
 }
+
+/**
+ * Twin Range Filter (colinmck, TradingView): iki yumuşatılmış aralığın ortalamasıyla aralık filtresi.
+ * `signal`: 1 = "Long" etiketi (yön ilk kez yukarı döner), −1 = "Short", 0 = yok.
+ */
+export function twinRangeFilter(close: number[], per1 = 27, mult1 = 1.6, per2 = 55, mult2 = 2) {
+  const n = close.length;
+  const diff = close.map((x, i) => (i === 0 ? NaN : Math.abs(x - close[i - 1])));
+  const smooth = (t: number, m: number) => emaNaN(emaNaN(diff, t), t * 2 - 1).map((v) => v * m);
+  const r1 = smooth(per1, mult1);
+  const r2 = smooth(per2, mult2);
+  const filt = new Array<number>(n).fill(NaN);
+  const signal = new Array<number>(n).fill(0);
+  let prev = NaN;
+  let upward = 0;
+  let downward = 0;
+  let cond = 0;
+  for (let i = 0; i < n; i++) {
+    const r = (r1[i] + r2[i]) / 2;
+    if (Number.isNaN(r)) continue;
+    const x = close[i];
+    const p = Number.isNaN(prev) ? 0 : prev;
+    const f = x > p ? (x - r < p ? p : x - r) : x + r > p ? p : x + r;
+    if (!Number.isNaN(prev)) {
+      upward = f > prev ? upward + 1 : f < prev ? 0 : upward;
+      downward = f < prev ? downward + 1 : f > prev ? 0 : downward;
+    }
+    filt[i] = f;
+    prev = f;
+    // Orijinal koşul: kaynak önceki kapanıştan farklı (büyük ya da küçük) olmalı.
+    const moved = i > 0 && x !== close[i - 1];
+    const longCond = moved && x > f && upward > 0;
+    const shortCond = moved && x < f && downward > 0;
+    const before = cond;
+    cond = longCond ? 1 : shortCond ? -1 : cond;
+    if (longCond && before === -1) signal[i] = 1;
+    else if (shortCond && before === 1) signal[i] = -1;
+  }
+  return { filt, signal };
+}
