@@ -1,5 +1,7 @@
 import {
   atr,
+  highest,
+  lowest,
   chandelier,
   ema,
   ichimoku,
@@ -60,9 +62,18 @@ export interface BoxTrade {
   trailStop?: number;
   /** Takip sırasında görülen en iyi fiyat (hedef dahil). */
   peak?: number;
+  /** Stop/hedef yerine kural çıkışıyla (mum kapanışında) kapandı. */
+  ruleExit?: boolean;
 }
 
-export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxParams = BOX_PARAMS): BoxTrade[] {
+/** Kural çıkışı: `j` mumunun kapanışında pozisyon kapatılsın mı. */
+export type ExitRule = (j: number, dir: Direction) => boolean;
+
+/**
+ * `exitRule` verilirse stop ve hedefe ek olarak mum kapanışında kural çıkışı da uygulanır (hangisi önce gelirse).
+ * Kural çıkışında sonuç kâr ise 'tp', zarar ise 'sl' sayılır; `ruleExit` işaretlenir.
+ */
+export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxParams = BOX_PARAMS, exitRule?: ExitRule): BoxTrade[] {
   const a = atr(
     candles.map((c) => c.h),
     candles.map((c) => c.l),
@@ -93,7 +104,13 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
           t.r = -1;
           break;
         }
-        if (!hitTarget) continue;
+        if (!hitTarget) {
+          if (exitRule?.(j, dir)) {
+            closeByRule(t, j, c.c, entry, s, risk);
+            break;
+          }
+          continue;
+        }
         if (Number.isNaN(gap)) {
           t.outcome = 'tp';
           t.exitI = j;
@@ -119,6 +136,11 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
         break;
       }
       best = dir === 'up' ? Math.max(best, c.h) : Math.min(best, c.l);
+      if (exitRule?.(j, dir)) {
+        closeByRule(t, j, c.c, entry, s, risk);
+        t.peak = best;
+        break;
+      }
       trailStop = dir === 'up' ? Math.max(trailStop, best - gap) : Math.min(trailStop, best + gap);
     }
     if (t.trailing && t.outcome === 'open') {
@@ -129,6 +151,14 @@ export function simulate(candles: Candle[], signals: BoxSignal[], params: BoxPar
     busyUntil = t.exitI ?? candles.length;
   }
   return trades;
+}
+
+function closeByRule(t: BoxTrade, j: number, px: number, entry: number, s: number, risk: number) {
+  t.exitI = j;
+  t.exitPrice = px;
+  t.r = (s * (px - entry)) / risk;
+  t.outcome = t.r > 0 ? 'tp' : 'sl';
+  t.ruleExit = true;
 }
 
 const H = (c: Candle[]) => c.map((x) => x.h);
@@ -157,6 +187,8 @@ export interface BoxCandidate {
   source: string;
   rule: string;
   signals: (c: Candle[]) => BoxSignal[];
+  /** İsteğe bağlı kural çıkışı (stop ve hedefe ek). */
+  exit?: (c: Candle[]) => ExitRule;
 }
 
 /** Web'de "test edilmiş, en iyi" diye öne çıkan indikatör stratejileri (hepsi aynı kutu kurallarıyla sınanır). */
@@ -320,6 +352,70 @@ export const BOX_CANDIDATES: BoxCandidate[] = [
       const m = macd(cl);
       const dir = sar.map((v, i) => (Number.isNaN(v) ? NaN : cl[i] > v ? 1 : -1));
       return flips(dir, (i, d) => side(c, e)(i, d) && (d === 'up' ? m.line[i] > m.signal[i] : m.line[i] < m.signal[i]));
+    },
+  },
+  {
+    id: 'donchian55',
+    name: 'Donchian 55 + EMA 200',
+    source: 'Turtle kırılımı; trend takibi (Moskowitz vd. 2012, Hurst vd. 2017 zaman serisi momentumu)',
+    rule: 'Kapanış önceki 55 mumun zirvesini kırar ve fiyat EMA 200 üstünde → LONG (short tersi)',
+    signals: (c) => {
+      const hi = highest(H(c), 55);
+      const lo = lowest(L(c), 55);
+      const e = ema(C(c), 200);
+      const out: BoxSignal[] = [];
+      for (let i = 56; i < c.length; i++) {
+        if (Number.isNaN(e[i]) || Number.isNaN(hi[i - 1])) continue;
+        const up = c[i].c > hi[i - 1] && c[i - 1].c <= hi[i - 2];
+        const dn = c[i].c < lo[i - 1] && c[i - 1].c >= lo[i - 2];
+        if (up && c[i].c > e[i]) out.push({ i, dir: 'up' });
+        else if (dn && c[i].c < e[i]) out.push({ i, dir: 'down' });
+      }
+      return out;
+    },
+  },
+  {
+    id: 'rsi2x',
+    name: 'RSI(2) + SMA 5 çıkışı',
+    source: 'Larry Connors RSI-2 (giriş RSI(2) < 10, çıkış kapanış > SMA 5)',
+    rule: 'Fiyat SMA 200 üstünde ve RSI(2) 10 altına iner → LONG, kapanış SMA 5 üstüne çıkınca çıkış (short tersi, 90 üstü)',
+    signals: (c) => {
+      const r = rsi(C(c), 2);
+      const s = sma(C(c), 200);
+      const out: BoxSignal[] = [];
+      for (let i = 1; i < c.length; i++) {
+        if (Number.isNaN(s[i])) continue;
+        if (c[i].c > s[i] && r[i] < 10 && r[i - 1] >= 10) out.push({ i, dir: 'up' });
+        else if (c[i].c < s[i] && r[i] > 90 && r[i - 1] <= 90) out.push({ i, dir: 'down' });
+      }
+      return out;
+    },
+    exit: (c) => {
+      const s5 = sma(C(c), 5);
+      return (j, d) => (d === 'up' ? c[j].c > s5[j] : c[j].c < s5[j]);
+    },
+  },
+  {
+    id: 'emapull',
+    name: 'EMA 50 geri çekilmesi + EMA 200',
+    source: 'Trend içinde geri çekilme; kapanışa bağlı EMA 50 çıkışı (fitil stoplarına dayanıklı)',
+    rule: 'Fiyat ve EMA 50, EMA 200 üstünde; mum EMA 50\'ye değip üstünde yeşil kapanır → LONG; kapanış EMA 50 altına inerse çıkış (short tersi)',
+    signals: (c) => {
+      const cl = C(c);
+      const e50 = ema(cl, 50);
+      const e200 = ema(cl, 200);
+      const out: BoxSignal[] = [];
+      for (let i = 1; i < c.length; i++) {
+        if (Number.isNaN(e200[i])) continue;
+        const x = c[i];
+        if (e50[i] > e200[i] && x.c > e200[i] && x.l <= e50[i] && x.c > e50[i] && x.c > x.o) out.push({ i, dir: 'up' });
+        else if (e50[i] < e200[i] && x.c < e200[i] && x.h >= e50[i] && x.c < e50[i] && x.c < x.o) out.push({ i, dir: 'down' });
+      }
+      return out;
+    },
+    exit: (c) => {
+      const e50 = ema(C(c), 50);
+      return (j, d) => (d === 'up' ? c[j].c < e50[j] : c[j].c > e50[j]);
     },
   },
 ];

@@ -29,7 +29,10 @@ export type Strategy =
   | 'sratrEma'
   | 'sratrAdx'
   | 'sarmacd'
-  | 'squeeze';
+  | 'squeeze'
+  | 'st200'
+  | 'utbot'
+  | 'rsi2';
 
 export const STRATEGIES: Strategy[] = [
   'sratr',
@@ -37,6 +40,9 @@ export const STRATEGIES: Strategy[] = [
   'sratrAdx',
   'sarmacd',
   'squeeze',
+  'st200',
+  'utbot',
+  'rsi2',
   'ema5813',
   'pullback2050',
   'triple',
