@@ -1,7 +1,7 @@
 // Kullanıcının tarif ettiği stratejiler (video ekran görüntülerinden): EMA 21/55 geri çekilmesi, Bollinger + Stokastik,
 // Heikin Ashi Smoothed, üçgen formasyonları, EMA 20/50 + hacim + Heikin Ashi. Çıkış ayarları research/yeni-stratejiler.ts ile seçildi.
 import type { BoxSignal, ExitRule, TargetLine } from './boxes';
-import { adx, atr, bollinger, highest, lowest, macd, ema, heikinAshi, haSmoothed, pivots, rsi, sma, stochOsc, stochRsi, supertrendKv, supertrendLine, twinRangeFilter } from './indicators';
+import { adx, atr, bollinger, highest, lowest, macd, ema, heikinAshi, haSmoothed, pivots, qqeMod, rsi, sslHybridArrows, sma, stochOsc, stochRsi, supertrendKv, supertrendLine, twinRangeFilter } from './indicators';
 import type { Candle, Direction } from './types';
 
 const O = (c: Candle[]) => c.map((x) => x.o);
@@ -555,4 +555,16 @@ export function emaCrossExit(c: Candle[], fast = 21, slow = 55): ExitRule {
   const cl = C(c);
   const f = ema(cl, fast), s = ema(cl, slow);
   return (j, d) => (d === 'up' ? f[j] < s[j] : f[j] > s[j]);
+}
+
+/** QQE MOD + SSL Hybrid: QQE MOD yeşilken SSL Hybrid yukarı ok → LONG; kırmızıyken aşağı ok → SHORT (mum kapanışında). */
+export function qqeSslSignals(c: Candle[]): BoxSignal[] {
+  const q = qqeMod(C(c));
+  const s = sslHybridArrows(H(c), L(c), C(c));
+  const out: BoxSignal[] = [];
+  for (let i = 1; i < c.length; i++) {
+    if (q[i] === 1 && s[i] === 1) out.push({ i, dir: 'up' });
+    else if (q[i] === -1 && s[i] === -1) out.push({ i, dir: 'down' });
+  }
+  return out;
 }

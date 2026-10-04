@@ -1,0 +1,36 @@
+//@version=6
+// Mechi · Kapsamlı araştırma aday 3: Tokyo açılış aralığı kırılımı (1 saatlik grafik).
+// Aralık: UTC 00:00–02:00 (Tokyo 09:00–11:00) mumlarının en yüksek/en düşüğü. UTC 02:00–05:00 arasında bir mum aralığın
+// üstünde kapanırsa LONG, altında kapanırsa SHORT (günde bir kez). Stop: aralığın karşı ucu. Çıkış: UTC 06:00 açılışı.
+// UYARI: walk-forward testinde 10x'te −%57; araştırma amaçlıdır, tavsiye değildir.
+strategy("Mechi · Tokyo açılış kırılımı", overlay=true, initial_capital=1000, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=8)
+
+rangeBars = input.int(2, "Aralık (saat, UTC 00:00'dan)")
+exitHour  = input.int(6, "Çıkış saati (UTC)")
+
+h = hour(time, "UTC")
+newDay = ta.change(dayofmonth(time, "UTC")) != 0
+var float rh = na
+var float rl = na
+var bool done = false
+if newDay
+    rh := na
+    rl := na
+    done := false
+if h < rangeBars
+    rh := na(rh) ? high : math.max(rh, high)
+    rl := na(rl) ? low : math.min(rl, low)
+
+canTrade = h >= rangeBars and h < 5 and not done and not na(rh) and strategy.position_size == 0
+if canTrade and close > rh
+    strategy.entry("LONG", strategy.long)
+    strategy.exit("stopL", "LONG", stop=rl)
+    done := true
+else if canTrade and close < rl
+    strategy.entry("SHORT", strategy.short)
+    strategy.exit("stopS", "SHORT", stop=rh)
+    done := true
+if h == exitHour - 1 and strategy.position_size != 0
+    strategy.close_all()
+plot(rh, "Aralık üst", color.green, style=plot.style_linebr)
+plot(rl, "Aralık alt", color.red, style=plot.style_linebr)

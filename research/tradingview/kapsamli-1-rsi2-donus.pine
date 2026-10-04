@@ -1,0 +1,32 @@
+//@version=6
+// Mechi · Kapsamlı araştırma aday 1: RSI(2) ortalamaya dönüş. Son walk-forward seçimi: günlük, eşik 10, yalnız LONG, stop yok.
+// Kural: kapanış SMA 200 üstünde ve RSI(2) < eşik → LONG; kapanış SMA 5 üstüne çıkınca ya da 10 mum sonra çık.
+// UYARI: walk-forward testinde 10x'te maks. düşüş %69 (kısıtı aşıyor). Araştırma amaçlıdır, tavsiye değildir.
+strategy("Mechi · RSI(2) dönüş", overlay=true, initial_capital=1000, margin_long=10, margin_short=10, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=2, process_orders_on_close=false)
+
+thr      = input.int(10, "RSI(2) eşiği")
+bothWays = input.bool(false, "İki yön (SHORT: SMA 200 altı ve RSI(2) > 100 − eşik)")
+maxBars  = input.int(10, "En fazla mum")
+stopAtr  = input.float(0, "Stop (ATR, 0 = yok)")
+
+r    = ta.rsi(close, 2)
+s200 = ta.sma(close, 200)
+s5   = ta.sma(close, 5)
+a    = ta.atr(14)
+
+if strategy.position_size == 0
+    if close > s200 and r < thr
+        strategy.entry("LONG", strategy.long)
+    else if bothWays and close < s200 and r > 100 - thr
+        strategy.entry("SHORT", strategy.short)
+else
+    held = bar_index - strategy.opentrades.entry_bar_index(0)
+    if strategy.position_size > 0 and (close > s5 or held >= maxBars)
+        strategy.close("LONG")
+    if strategy.position_size < 0 and (close < s5 or held >= maxBars)
+        strategy.close("SHORT")
+if stopAtr > 0 and strategy.position_size != 0
+    strategy.exit("stopL", "LONG", stop=strategy.position_avg_price - stopAtr * a)
+    strategy.exit("stopS", "SHORT", stop=strategy.position_avg_price + stopAtr * a)
+plot(s200, "SMA 200", color.gray)
+plot(s5, "SMA 5", color.orange)

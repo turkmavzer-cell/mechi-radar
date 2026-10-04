@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
 import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
-import { bbStochSignals, trfStSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals } from '../src/core/setups';
+import { bbStochSignals, trfStSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals, qqeSslSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
 function series(n = 1500): Candle[] {
@@ -31,13 +31,29 @@ test('yeni stratejiler geleceğe bakmaz (kısaltılmış veride aynı sinyaller)
     ['trfst', trfStSignals],
     ['triangle', (c) => triangleSignals(c)],
     ['emavolha', (c) => emaVolHaSignals(c)],
+    ['qqessl', qqeSslSignals],
   ];
   for (const [name, fn] of fns) {
     const full = fn(cs).filter((s) => s.i < 1100).map((s) => `${s.i}${s.dir}`);
     const cut = fn(cs.slice(0, 1100)).map((s) => `${s.i}${s.dir}`);
     assert.deepEqual(cut, full, name);
-    if (name !== 'triangle') assert.ok(full.length > 0, `${name} sinyal üretmeli`);
+    if (name !== 'triangle' && name !== 'qqessl') assert.ok(full.length > 0, `${name} sinyal üretmeli`);
   }
+});
+
+test('QQE MOD + SSL Hybrid: rastgele yürüyüşte sinyal üretir, geleceğe bakmaz', () => {
+  let x = 100;
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const cs: Candle[] = [];
+  for (let i = 0; i < 1500; i++) {
+    const o = x;
+    x += (rnd() - 0.5) * 2;
+    cs.push({ t: i * 3600, o, h: Math.max(o, x) + rnd(), l: Math.min(o, x) - rnd(), c: x, v: 1 });
+  }
+  const full = qqeSslSignals(cs).filter((s) => s.i < 1100).map((s) => `${s.i}${s.dir}`);
+  assert.ok(full.length > 0);
+  assert.deepEqual(qqeSslSignals(cs.slice(0, 1100)).map((s) => `${s.i}${s.dir}`), full);
 });
 
 test('Heikin Ashi: kapanış OHLC ortalaması, açılış önceki gövdenin ortası', () => {
@@ -93,8 +109,8 @@ test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () =>
   const res = analyze('TEST', '1h', cs);
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
-  // Uygulamada yalnızca TRF + Supertrend sürümleri açık.
-  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy.startsWith('trfst')));
+  // Uygulamada TRF + Supertrend sürümleri ve QQE + SSL açık.
+  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy.startsWith('trfst') || e.strategy === 'qqessl'));
 });
 
 test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {

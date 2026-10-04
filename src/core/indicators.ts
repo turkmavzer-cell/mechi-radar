@@ -527,3 +527,109 @@ export function supertrendKv(high: number[], low: number[], close: number[], per
   }
   return { line, dir };
 }
+
+/** Ağırlıklı hareketli ortalama (TradingView ta.wma). */
+export function wma(values: number[], period: number): number[] {
+  const out = new Array<number>(values.length).fill(NaN);
+  const den = (period * (period + 1)) / 2;
+  for (let i = period - 1; i < values.length; i++) {
+    let s = 0;
+    for (let k = 0; k < period; k++) s += values[i - k] * (period - k);
+    out[i] = s / den;
+  }
+  return out;
+}
+
+/** Hull hareketli ortalama: wma(2 × wma(n/2) − wma(n), round(√n)). */
+export function hma(values: number[], period: number): number[] {
+  const a = wma(values, Math.floor(period / 2));
+  const b = wma(values, period);
+  const diff = a.map((v, i) => 2 * v - b[i]);
+  const start = diff.findIndex((v) => !Number.isNaN(v));
+  const out = new Array<number>(values.length).fill(NaN);
+  if (start < 0) return out;
+  wma(diff.slice(start), Math.round(Math.sqrt(period))).forEach((v, j) => (out[start + j] = v));
+  return out;
+}
+
+/** Başındaki NaN'ları atlayarak kayan pencere (SMA / anakütle standart sapması). */
+function rollNaN(values: number[], period: number, fn: (v: number[], p: number) => number[]): number[] {
+  const start = values.findIndex((v) => !Number.isNaN(v));
+  const out = new Array<number>(values.length).fill(NaN);
+  if (start < 0) return out;
+  fn(values.slice(start), period).forEach((v, j) => (out[start + j] = v));
+  return out;
+}
+
+/** QQE çizgisi (Mihkel00 "QQE MOD" içindeki hesap): RSI'ın EMA'sı ve onu izleyen bant. */
+function qqeLine(close: number[], rsiLen: number, sf: number, factor: number) {
+  const wilders = rsiLen * 2 - 1;
+  const rsiMa = emaNaN(rsi(close, rsiLen), sf);
+  const atrRsi = rsiMa.map((v, i) => (i === 0 ? NaN : Math.abs(rsiMa[i - 1] - v)));
+  const dar = emaNaN(emaNaN(atrRsi, wilders), wilders).map((v) => v * factor);
+  const n = close.length;
+  const lb = new Array<number>(n).fill(NaN);
+  const sb = new Array<number>(n).fill(NaN);
+  const tl = new Array<number>(n).fill(NaN);
+  const cross = (a0: number, a1: number, b0: number, b1: number) => (a0 > b0 && a1 <= b1) || (a0 < b0 && a1 >= b1);
+  let trend = 1;
+  for (let i = 0; i < n; i++) {
+    const r = rsiMa[i];
+    const r1 = i > 0 ? rsiMa[i - 1] : NaN;
+    const lb1 = i > 0 ? lb[i - 1] : NaN;
+    const sb1 = i > 0 ? sb[i - 1] : NaN;
+    const sb2 = i > 1 ? sb[i - 2] : NaN;
+    const lb2 = i > 1 ? lb[i - 2] : NaN;
+    const nl = r - dar[i];
+    const ns = r + dar[i];
+    lb[i] = r1 > lb1 && r > lb1 ? Math.max(lb1, nl) : nl;
+    sb[i] = r1 < sb1 && r < sb1 ? Math.min(sb1, ns) : ns;
+    if (cross(r, r1, sb1, sb2)) trend = 1;
+    else if (cross(lb1, lb2, r, r1)) trend = -1;
+    tl[i] = trend === 1 ? lb[i] : sb[i];
+  }
+  return { rsiMa, tl };
+}
+
+/**
+ * QQE MOD (Mihkel00) histogram rengi: +1 = yeşil/mavi "QQE Up", −1 = kırmızı "QQE Down", 0 = gri.
+ * Varsayılanlar: QQE 1 (RSI 6, SF 5, 3), Bollinger 50 / 0,35, QQE 2 (RSI 6, SF 5, 1,61), eşik 3.
+ */
+export function qqeMod(close: number[], rsiLen = 6, sf = 5, factor = 3, rsiLen2 = 6, sf2 = 5, factor2 = 1.61, thr2 = 3, bbLen = 50, bbMult = 0.35): number[] {
+  const q1 = qqeLine(close, rsiLen, sf, factor);
+  const q2 = qqeLine(close, rsiLen2, sf2, factor2);
+  const x = q1.tl.map((v) => v - 50);
+  const basis = rollNaN(x, bbLen, sma);
+  const dev = rollNaN(x, bbLen, stdev);
+  return close.map((_, i) => {
+    const upper = basis[i] + bbMult * dev[i];
+    const lower = basis[i] - bbMult * dev[i];
+    const m1 = q1.rsiMa[i] - 50;
+    const m2 = q2.rsiMa[i] - 50;
+    if (m2 > thr2 && m1 > upper) return 1;
+    if (m2 < -thr2 && m1 < lower) return -1;
+    return 0;
+  });
+}
+
+/**
+ * SSL Hybrid (Mihkel00) çıkış okları (SSL3, HMA 15): +1 = yukarı ok (kapanış SSL çıkış çizgisini yukarı keser), −1 = aşağı ok.
+ */
+export function sslHybridArrows(high: number[], low: number[], close: number[], len = 15): number[] {
+  const eh = hma(high, len);
+  const el = hma(low, len);
+  const n = close.length;
+  const line = new Array<number>(n).fill(NaN);
+  let hlv = 0;
+  for (let i = 0; i < n; i++) {
+    if (Number.isNaN(eh[i]) || Number.isNaN(el[i])) continue;
+    hlv = close[i] > eh[i] ? 1 : close[i] < el[i] ? -1 : hlv;
+    line[i] = hlv < 0 ? eh[i] : el[i];
+  }
+  return close.map((c, i) => {
+    if (i === 0 || Number.isNaN(line[i - 1])) return 0;
+    if (c > line[i] && close[i - 1] <= line[i - 1]) return 1;
+    if (c < line[i] && close[i - 1] >= line[i - 1]) return -1;
+    return 0;
+  });
+}

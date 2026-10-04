@@ -1,0 +1,94 @@
+//@version=6
+// Mechi · TRF + ST · ATR TP (uygulamadaki kuralın TradingView sürümü). Araştırma amaçlıdır.
+strategy("Mechi · TRF + ST · ATR TP", overlay=true, initial_capital=1000, margin_long=10, margin_short=10, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=2, process_orders_on_close=false)
+
+// Twin Range Filter (colinmck): 12/1, 4/2, kaynak kapanış
+per1  = input.int(12, "TRF fast period")
+mult1 = input.float(1.0, "TRF fast range")
+per2  = input.int(4, "TRF slow period")
+mult2 = input.float(2.0, "TRF slow range")
+src = close
+smoothrng(x, t, m) =>
+    wper = t * 2 - 1
+    avrng = ta.ema(math.abs(x - x[1]), t)
+    ta.ema(avrng, wper) * m
+smrng = (smoothrng(src, per1, mult1) + smoothrng(src, per2, mult2)) / 2
+rngfilt(x, r) =>
+    rf = x
+    rf := x > nz(rf[1]) ? (x - r < nz(rf[1]) ? nz(rf[1]) : x - r) : (x + r > nz(rf[1]) ? nz(rf[1]) : x + r)
+    rf
+filt = rngfilt(src, smrng)
+var float upward = 0.0
+var float downward = 0.0
+upward := filt > filt[1] ? upward + 1 : filt < filt[1] ? 0 : upward
+downward := filt < filt[1] ? downward + 1 : filt > filt[1] ? 0 : downward
+longCond = src > filt and src != src[1] and upward > 0
+shortCond = src < filt and src != src[1] and downward > 0
+var int condIni = 0
+prevIni = condIni
+condIni := longCond ? 1 : shortCond ? -1 : condIni
+trfLong = longCond and prevIni == -1
+trfShort = shortCond and prevIni == 1
+
+// Supertrend (KivancOzbilgic): ATR 10 (Wilder), kaynak (Y+D)/2, çarpan 4
+stPer  = input.int(10, "ST ATR period")
+stMult = input.float(4.0, "ST ATR çarpanı")
+stAtr = ta.atr(stPer)
+up = hl2 - stMult * stAtr
+up1 = nz(up[1], up)
+up := close[1] > up1 ? math.max(up, up1) : up
+dn = hl2 + stMult * stAtr
+dn1 = nz(dn[1], dn)
+dn := close[1] < dn1 ? math.min(dn, dn1) : dn
+var int trend = 1
+trend := trend == -1 and close > dn1 ? 1 : trend == 1 and close < up1 ? -1 : trend
+stFlip = trend != trend[1]
+
+// Giriş: ST yeşilken TRF "Long" ya da ST yeşile dönerken TRF'nin son sinyali "Long" (short tersi)
+var int trfState = 0
+if trfLong
+    trfState := 1
+if trfShort
+    trfState := -1
+goLong = trend == 1 and (trfLong or (stFlip and trfState == 1)) and up < close
+goShort = trend == -1 and (trfShort or (stFlip and trfState == -1)) and dn > close
+
+// Çıkış: stop = ST çizgisi; 2 ATR kârdan sonra ilk ters mum; TRF ters sinyali; ST dönüşü
+tpAtr = input.float(2.0, "ATR kâr al (ATR)")
+atr14 = ta.atr(14)
+var float entryAtr = na
+var float best = na
+exitNow = false
+if strategy.position_size > 0
+    best := na(best) ? high : math.max(best, high)
+    reached = best - strategy.position_avg_price >= tpAtr * entryAtr
+    if (reached and close < open) or trfShort or trend == -1
+        strategy.close("LONG")
+        exitNow := true
+    else
+        strategy.exit("SL-L", "LONG", stop=up)
+if strategy.position_size < 0
+    best := na(best) ? low : math.min(best, low)
+    reached = strategy.position_avg_price - best >= tpAtr * entryAtr
+    if (reached and close > open) or trfLong or trend == 1
+        strategy.close("SHORT")
+        exitNow := true
+    else
+        strategy.exit("SL-S", "SHORT", stop=dn)
+if strategy.position_size == 0 or exitNow
+    if goLong
+        strategy.entry("LONG", strategy.long)
+        strategy.exit("SL-L", "LONG", stop=up)
+        entryAtr := atr14
+        best := na
+    else if goShort
+        strategy.entry("SHORT", strategy.short)
+        strategy.exit("SL-S", "SHORT", stop=dn)
+        entryAtr := atr14
+        best := na
+
+plot(trend == 1 ? up : na, "ST yükseliş", color.green, style=plot.style_linebr)
+plot(trend == -1 ? dn : na, "ST düşüş", color.red, style=plot.style_linebr)
+plot(filt, "TRF", color.purple)
+plotshape(trfLong, "TRF Long", shape.labelup, location.belowbar, color.green, text="Long", textcolor=color.white)
+plotshape(trfShort, "TRF Short", shape.labeldown, location.abovebar, color.red, text="Short", textcolor=color.white)
