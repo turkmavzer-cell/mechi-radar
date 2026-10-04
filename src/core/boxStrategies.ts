@@ -1,6 +1,6 @@
 import { BOX_CANDIDATES, BOX_PARAMS, simulate, type BoxParams, type BoxTrade } from './boxes';
 import { HIGHER_LABEL, HIGHER_TF, SR_PARAMS, srTrades, type HigherSeries } from './sratr';
-import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfAtrExit, trfExit, trfStSignals, emaCrossExit, emaCrossSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals, qqeSslSignals } from './setups';
+import { bbStochSignals, bbTarget, ema2155BreakSignals, ema2155Signals, ema20Exit, ema21CloseExit, ema55Line, ema5813MacdSignals, ema5x13Exit, supertrendExitLine, twinStSignals, stKvExitLine, trfAtrExit, trfExit, trfStSignals, emaCrossExit, emaCrossSignals, emaVolHaSignals, haSmoothedExit, haSmoothedSignals, rsiLevelExit, rsiMacdSignals, triangleSignals, qqeSslSignals, sslArrowExit } from './setups';
 import type { Candle, Strategy, Timeframe } from './types';
 
 /** Grafikte kutularla gösterilen, bildirim üreten giriş-stop-hedef stratejileri. */
@@ -115,5 +115,14 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   ),
   custom('qqessl', 'QQE MOD + SSL Hybrid', 'QQE + SSL', 'QQE MOD yeşil (QQE Up) iken SSL Hybrid yukarı ok (kapanış SSL çıkış çizgisini, HMA 15, yukarı keser) → LONG; QQE MOD kırmızıyken aşağı ok → SHORT (mum kapanışında) · Stop 2 ATR · Kâr al 2 ATR (1:1)', (c, _tf, _h, exit) =>
     simulate(c, qqeSslSignals(c), { stopAtr: 2, rr: 1, ...exit }),
+  ),
+  custom('qqessl2', 'QQE MOD + SSL Hybrid · ters okta çık', 'QQE + SSL · ters ok', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 2 ATR · Kâr al 2 ATR · SSL Hybrid ters ok verirse (LONG\'da aşağı, SHORT\'ta yukarı) mum kapanışında işlemi kapat', (c, _tf, _h, exit) =>
+    simulate(c, qqeSslSignals(c), { stopAtr: 2, rr: 1, ...exit }, sslArrowExit(c)),
+  ),
+  custom('qqessl12', 'QQE MOD + SSL Hybrid · 1:2', 'QQE + SSL · 1:2', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 1 ATR · Kâr al 2 ATR', (c, _tf, _h, exit) =>
+    simulate(c, qqeSslSignals(c), { stopAtr: 1, rr: 2, ...exit }),
+  ),
+  custom('qqessl13', 'QQE MOD + SSL Hybrid · 1:3', 'QQE + SSL · 1:3', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 1 ATR · Kâr al 3 ATR', (c, _tf, _h, exit) =>
+    simulate(c, qqeSslSignals(c), { stopAtr: 1, rr: 3, ...exit }),
   ),
 ];

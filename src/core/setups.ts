@@ -557,6 +557,12 @@ export function emaCrossExit(c: Candle[], fast = 21, slow = 55): ExitRule {
   return (j, d) => (d === 'up' ? f[j] < s[j] : f[j] > s[j]);
 }
 
+/** SSL Hybrid ters ok (LONG'da aşağı, SHORT'ta yukarı) gelince mum kapanışında çık. */
+export function sslArrowExit(c: Candle[]): ExitRule {
+  const s = sslHybridArrows(H(c), L(c), C(c));
+  return (j, d) => s[j] === (d === 'up' ? -1 : 1);
+}
+
 /** QQE MOD + SSL Hybrid: QQE MOD yeşilken SSL Hybrid yukarı ok → LONG; kırmızıyken aşağı ok → SHORT (mum kapanışında). */
 export function qqeSslSignals(c: Candle[]): BoxSignal[] {
   const q = qqeMod(C(c));

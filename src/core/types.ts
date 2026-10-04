@@ -53,7 +53,10 @@ export type Strategy =
   | 'rsimacd'
   | 'triangle'
   | 'emavolha'
-  | 'qqessl';
+  | 'qqessl'
+  | 'qqessl2'
+  | 'qqessl12'
+  | 'qqessl13';
 
 export const STRATEGIES: Strategy[] = [
   'sratr',
@@ -83,6 +86,9 @@ export const STRATEGIES: Strategy[] = [
   'triangle',
   'emavolha',
   'qqessl',
+  'qqessl2',
+  'qqessl12',
+  'qqessl13',
   'ema5813',
   'pullback2050',
   'triple',

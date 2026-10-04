@@ -110,7 +110,7 @@ test('tüm kutulu stratejiler çalışır, seviyeler JSON\'a uygun', async () =>
   const round = JSON.parse(JSON.stringify(res.events));
   for (const e of round) if (e.levels) assert.ok(e.levels.target == null || Number.isFinite(e.levels.target));
   // Uygulamada TRF + Supertrend sürümleri ve QQE + SSL açık.
-  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy.startsWith('trfst') || e.strategy === 'qqessl'));
+  assert.ok(res.events.filter((e) => e.levels).every((e) => e.strategy.startsWith('trfst') || e.strategy.startsWith('qqessl')));
 });
 
 test('EMA 21/55 kırılım: stop dibin altında, kapanış önceki tepenin üstünde', () => {
