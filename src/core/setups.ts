@@ -563,14 +563,19 @@ export function sslArrowExit(c: Candle[]): ExitRule {
   return (j, d) => s[j] === (d === 'up' ? -1 : 1);
 }
 
-/** QQE MOD + SSL Hybrid: QQE MOD yeşilken SSL Hybrid yukarı ok → LONG; kırmızıyken aşağı ok → SHORT (mum kapanışında). */
-export function qqeSslSignals(c: Candle[]): BoxSignal[] {
-  const q = qqeMod(C(c));
-  const s = sslHybridArrows(H(c), L(c), C(c));
+/**
+ * QQE MOD + SSL Hybrid: QQE MOD yeşilken SSL Hybrid yukarı ok → LONG; kırmızıyken aşağı ok → SHORT (mum kapanışında).
+ * `trendEma` (varsayılan 200): LONG yalnızca kapanış EMA'nın üstündeyken, SHORT altındayken; 0 = filtre yok.
+ */
+export function qqeSslSignals(c: Candle[], trendEma = 200): BoxSignal[] {
+  const cl = C(c);
+  const q = qqeMod(cl);
+  const s = sslHybridArrows(H(c), L(c), cl);
+  const e = trendEma > 0 ? ema(cl, trendEma) : null;
   const out: BoxSignal[] = [];
   for (let i = 1; i < c.length; i++) {
-    if (q[i] === 1 && s[i] === 1) out.push({ i, dir: 'up' });
-    else if (q[i] === -1 && s[i] === -1) out.push({ i, dir: 'down' });
+    if (q[i] === 1 && s[i] === 1 && (!e || cl[i] > e[i])) out.push({ i, dir: 'up' });
+    else if (q[i] === -1 && s[i] === -1 && (!e || cl[i] < e[i])) out.push({ i, dir: 'down' });
   }
   return out;
 }

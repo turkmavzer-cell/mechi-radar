@@ -113,16 +113,16 @@ export const BOX_STRATEGIES: BoxStrategy[] = [
   custom('trfst2', 'TRF + Supertrend · 1R sonrası kâr al', 'TRF + ST · 1R', 'Giriş ve stop TRF + Supertrend ile aynı · TRF ters sinyali ancak işlem en az 1R kâr gördükten sonra kâr aldırır (öncesinde küçük geri dönüşlerde çıkılmaz, yalnızca Supertrend stopu geçerli)', (c, _tf, _h, exit) =>
     simulate(c, trfStSignals(c), { stopAtr: 2, rr: Number.POSITIVE_INFINITY, sameBarEntry: true, ...exit }, trfExit(c, 1), undefined, stKvExitLine(c)),
   ),
-  custom('qqessl', 'QQE MOD + SSL Hybrid', 'QQE + SSL', 'QQE MOD yeşil (QQE Up) iken SSL Hybrid yukarı ok (kapanış SSL çıkış çizgisini, HMA 15, yukarı keser) → LONG; QQE MOD kırmızıyken aşağı ok → SHORT (mum kapanışında) · Stop 2 ATR · Kâr al 2 ATR (1:1)', (c, _tf, _h, exit) =>
+  custom('qqessl', 'QQE MOD + SSL Hybrid', 'QQE + SSL', 'QQE MOD yeşil (QQE Up) iken ve kapanış EMA 200 üstündeyken SSL Hybrid yukarı ok (kapanış SSL çıkış çizgisini, HMA 15, yukarı keser) → LONG; QQE MOD kırmızıyken ve kapanış EMA 200 altındayken aşağı ok → SHORT (mum kapanışında) · Stop 2 ATR · Kâr al 2 ATR (1:1)', (c, _tf, _h, exit) =>
     simulate(c, qqeSslSignals(c), { stopAtr: 2, rr: 1, ...exit }),
   ),
-  custom('qqessl2', 'QQE MOD + SSL Hybrid · ters okta çık', 'QQE + SSL · ters ok', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 2 ATR · Kâr al 2 ATR · SSL Hybrid ters ok verirse (LONG\'da aşağı, SHORT\'ta yukarı) mum kapanışında işlemi kapat', (c, _tf, _h, exit) =>
+  custom('qqessl2', 'QQE MOD + SSL Hybrid · ters okta çık', 'QQE + SSL · ters ok', 'Giriş QQE MOD + SSL Hybrid ile aynı (EMA 200 filtresi dahil) · Stop 2 ATR · Kâr al 2 ATR · SSL Hybrid ters ok verirse (LONG\'da aşağı, SHORT\'ta yukarı) mum kapanışında işlemi kapat', (c, _tf, _h, exit) =>
     simulate(c, qqeSslSignals(c), { stopAtr: 2, rr: 1, ...exit }, sslArrowExit(c)),
   ),
-  custom('qqessl12', 'QQE MOD + SSL Hybrid · 1:2', 'QQE + SSL · 1:2', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 1 ATR · Kâr al 2 ATR', (c, _tf, _h, exit) =>
+  custom('qqessl12', 'QQE MOD + SSL Hybrid · 1:2', 'QQE + SSL · 1:2', 'Giriş QQE MOD + SSL Hybrid ile aynı (EMA 200 filtresi dahil) · Stop 1 ATR · Kâr al 2 ATR', (c, _tf, _h, exit) =>
     simulate(c, qqeSslSignals(c), { stopAtr: 1, rr: 2, ...exit }),
   ),
-  custom('qqessl13', 'QQE MOD + SSL Hybrid · 1:3', 'QQE + SSL · 1:3', 'Giriş QQE MOD + SSL Hybrid ile aynı · Stop 1 ATR · Kâr al 3 ATR', (c, _tf, _h, exit) =>
+  custom('qqessl13', 'QQE MOD + SSL Hybrid · 1:3', 'QQE + SSL · 1:3', 'Giriş QQE MOD + SSL Hybrid ile aynı (EMA 200 filtresi dahil) · Stop 1 ATR · Kâr al 3 ATR', (c, _tf, _h, exit) =>
     simulate(c, qqeSslSignals(c), { stopAtr: 1, rr: 3, ...exit }),
   ),
 ];
