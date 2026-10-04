@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { simulate } from '../src/core/boxes';
-import { haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
+import { ema, haSmoothed, heikinAshi, pivots } from '../src/core/indicators';
 import { bbStochSignals, trfStSignals, twinStSignals, ema5813MacdSignals, ema2155BreakSignals, ema21CloseExit, ema2155Signals, emaVolHaSignals, haSmoothedSignals, triangleSignals, qqeSslSignals } from '../src/core/setups';
 import type { Candle } from '../src/core/types';
 
@@ -54,6 +54,8 @@ test('QQE MOD + SSL Hybrid: rastgele yürüyüşte sinyal üretir, geleceğe bak
   const full = qqeSslSignals(cs).filter((s) => s.i < 1100).map((s) => `${s.i}${s.dir}`);
   assert.ok(full.length > 0);
   assert.deepEqual(qqeSslSignals(cs.slice(0, 1100)).map((s) => `${s.i}${s.dir}`), full);
+  const e200 = ema(cs.map((c) => c.c), 200);
+  for (const s of qqeSslSignals(cs)) assert.ok(s.dir === 'up' ? cs[s.i].c > e200[s.i] : cs[s.i].c < e200[s.i], 'EMA 200 filtresi');
 });
 
 test('Heikin Ashi: kapanış OHLC ortalaması, açılış önceki gövdenin ortası', () => {
