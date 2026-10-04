@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-04T09:46:31.000Z",
+ "updatedAt": "2026-10-04T11:20:19.000Z",
  "symbols": {
   "NIY=F": {
    "symbol": "NIY=F",
@@ -1264,11 +1264,11 @@
   "BTC-USD": {
    "symbol": "BTC-USD",
    "name": "Bitcoin",
-   "price": 85279.99,
-   "changePct": 0.6092379373584935,
+   "price": 85264.09,
+   "changePct": 0.5904798807123228,
    "tf": {
     "15m": {
-     "align": "up",
+     "align": "neutral",
      "ema5813Dir": "up",
      "pullback": "confirmed",
      "pullbackDir": "up",
@@ -1279,16 +1279,16 @@
      "supertrend": "up",
      "golden": "down",
      "donchian": "up",
-     "close": 85267.578125,
-     "time": 1791106200,
+     "close": 85251,
+     "time": 1791111600,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "15m",
-      "strategy": "bbrev",
+      "strategy": "stoch",
       "dir": "down",
       "strength": "weak",
-      "time": 1791106200,
-      "close": 85267.578125
+      "time": 1791110700,
+      "close": 85260.25
      }
     },
     "20m": {
@@ -1303,16 +1303,16 @@
      "supertrend": "up",
      "golden": "down",
      "donchian": "up",
-     "close": 85226.4609375,
-     "time": 1791105600,
+     "close": 85260.0078125,
+     "time": 1791111600,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "20m",
-      "strategy": "bbrev",
+      "strategy": "stoch",
       "dir": "down",
       "strength": "weak",
-      "time": 1791102000,
-      "close": 85027.6875
+      "time": 1791109200,
+      "close": 85291.5234375
      }
     },
     "30m": {
@@ -1327,16 +1327,16 @@
      "supertrend": "up",
      "golden": "up",
      "donchian": "up",
-     "close": 85249.5625,
-     "time": 1791104400,
+     "close": 85260.25,
+     "time": 1791109800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "30m",
       "strategy": "stoch",
       "dir": "down",
       "strength": "weak",
-      "time": 1791104400,
-      "close": 85249.5625
+      "time": 1791109800,
+      "close": 85260.25
      }
     },
     "1h": {
@@ -1348,19 +1348,19 @@
      "above200": true,
      "triple": "up",
      "tripleScore": 3,
-     "supertrend": "down",
+     "supertrend": "up",
      "golden": "up",
      "donchian": "up",
-     "close": 85093.7890625,
-     "time": 1791100800,
+     "close": 85260.25,
+     "time": 1791108000,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "1h",
-      "strategy": "macd",
-      "dir": "up",
-      "strength": "strong",
-      "time": 1791093600,
-      "close": 85013.2109375
+      "strategy": "stoch",
+      "dir": "down",
+      "strength": "weak",
+      "time": 1791108000,
+      "close": 85260.25
      }
     },
     "2h": {
@@ -1375,8 +1375,8 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "up",
-     "close": 85098.59375,
-     "time": 1791093600,
+     "close": 85219.3984375,
+     "time": 1791100800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "2h",
@@ -1384,10 +1384,10 @@
       "dir": "up",
       "strength": "strong",
       "time": 1791093600,
-      "close": 85098.59375,
+      "close": 85092.9921875,
       "levels": {
-       "entry": 85098.59375,
-       "stop": 84108.07732896038
+       "entry": 85092.9921875,
+       "stop": 84102.28395587638
       }
      }
     },
@@ -1403,7 +1403,7 @@
      "supertrend": "up",
      "golden": "up",
      "donchian": "up",
-     "close": 85098.59375,
+     "close": 85092.9921875,
      "time": 1791086400,
      "lastSignal": {
       "symbol": "BTC-USD",
@@ -3108,11 +3108,11 @@
   "XU030.IS|2h": 1790951400,
   "XU030.IS|4h": 1790951400,
   "XU030.IS|1d": 1790922600,
-  "BTC-USD|15m": 1791106200,
-  "BTC-USD|20m": 1791105600,
-  "BTC-USD|30m": 1791104400,
-  "BTC-USD|1h": 1791100800,
-  "BTC-USD|2h": 1791093600,
+  "BTC-USD|15m": 1791111600,
+  "BTC-USD|20m": 1791111600,
+  "BTC-USD|30m": 1791109800,
+  "BTC-USD|1h": 1791108000,
+  "BTC-USD|2h": 1791100800,
   "BTC-USD|4h": 1791086400,
   "BTC-USD|1d": 1790985600,
   "GBPUSD=X|15m": 1790975700,
@@ -3179,5 +3179,5 @@
   "BIMAS.IS|4h": 1790951400,
   "BIMAS.IS|1d": 1790922600
  },
- "scanAt": 1791107191
+ "scanAt": 1791112819
 }
