@@ -2,6 +2,72 @@
  {
   "symbol": "BTC-USD",
   "tf": "20m",
+  "strategy": "goldencross",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791134400,
+  "close": 85323.2421875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "rsidiv",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791131400,
+  "close": 85358.3125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791131400,
+  "close": 85358.3125,
+  "levels": {
+   "entry": 85358.3125,
+   "stop": 84803.59144765638
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791131400,
+  "close": 85358.3125,
+  "levels": {
+   "entry": 85358.3125,
+   "stop": 84803.59144765638
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "trfst2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791131400,
+  "close": 85358.3125,
+  "levels": {
+   "entry": 85358.3125,
+   "stop": 84803.59144765638
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "rsidiv",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791130800,
+  "close": 85314.28125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
   "strategy": "bbrev",
   "dir": "down",
   "strength": "weak",
@@ -2988,59 +3054,5 @@
   "strength": "strong",
   "time": 1790962200,
   "close": 7722.72021484375
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1790962200,
-  "close": 84776.09375
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1790962200,
-  "close": 84776.09375
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "30m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1790962200,
-  "close": 0.828980028629303
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1790962200,
-  "close": 0.6952168941497803
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "30m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1790962200,
-  "close": 0.6950719356536865
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "30m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1790962200,
-  "close": 1.425529956817627
  }
 ]
