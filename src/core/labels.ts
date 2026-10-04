@@ -51,6 +51,9 @@ export function signalTitle(e: Pick<SignalEvent, 'strategy' | 'dir' | 'tf' | 'le
     case 'triangle':
     case 'emavolha':
     case 'qqessl':
+    case 'qqessl2':
+    case 'qqessl12':
+    case 'qqessl13':
       return e.levels
         ? `${up ? 'LONG' : 'SHORT'} GİRİŞ ${formatPrice(e.levels.entry)} · Stop ${formatPrice(e.levels.stop)}${e.levels.target != null ? ` · Hedef ${formatPrice(e.levels.target)}` : ''}`
         : `${up ? 'LONG' : 'SHORT'} GİRİŞ`;
@@ -113,6 +116,9 @@ export const STRATEGY_NAME: Record<Strategy, string> = {
   triangle: 'Üçgen formasyonları',
   emavolha: 'EMA 20/50 + hacim + HA',
   qqessl: 'QQE MOD + SSL Hybrid',
+  qqessl2: 'QQE MOD + SSL Hybrid · ters okta çık',
+  qqessl12: 'QQE MOD + SSL Hybrid · 1:2',
+  qqessl13: 'QQE MOD + SSL Hybrid · 1:3',
 };
 
 export function strategyName(e: Pick<SignalEvent, 'strategy'>): string {
