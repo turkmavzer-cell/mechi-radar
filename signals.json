@@ -1,5 +1,2326 @@
 [
  {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791496800,
+  "close": 81762.59375
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791496800,
+  "close": 81762.59375
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "15m",
+  "strategy": "goldencross",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791496800,
+  "close": 1.4223099946975708
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "rsidiv",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791495900,
+  "close": 1.323118805885315
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "rsidiv",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791495000,
+  "close": 1.4221999645233154
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791494400,
+  "close": 1.121956706047058,
+  "levels": {
+   "entry": 1.121956706047058,
+   "stop": 1.1205296543229377,
+   "target": 1.1233837577711785
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791494400,
+  "close": 81669.5390625
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791494100,
+  "close": 1.121956706047058,
+  "levels": {
+   "entry": 1.121956706047058,
+   "stop": 1.1208969064855094,
+   "target": 1.1230165056086068
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "goldencross",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791494100,
+  "close": 0.831030011177063
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "qqessl",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 157.79100036621094,
+  "levels": {
+   "entry": 157.79100036621094,
+   "stop": 158.02122253256144,
+   "target": 157.56077819986044
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 157.79100036621094,
+  "levels": {
+   "entry": 157.79100036621094,
+   "stop": 158.02122253256144,
+   "target": 157.56077819986044
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 157.79100036621094,
+  "levels": {
+   "entry": 157.79100036621094,
+   "stop": 157.90611144938617,
+   "target": 157.56077819986044
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 157.79100036621094,
+  "levels": {
+   "entry": 157.79100036621094,
+   "stop": 157.90611144938617,
+   "target": 157.4456671166852
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "qqessl",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.831059992313385,
+  "levels": {
+   "entry": 0.831059992313385,
+   "stop": 0.8320667868440418,
+   "target": 0.8300531977827282
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.831059992313385,
+  "levels": {
+   "entry": 0.831059992313385,
+   "stop": 0.8320667868440418,
+   "target": 0.8300531977827282
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "qqessl12",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.831059992313385,
+  "levels": {
+   "entry": 0.831059992313385,
+   "stop": 0.8315633895787135,
+   "target": 0.8300531977827282
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "qqessl13",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.831059992313385,
+  "levels": {
+   "entry": 0.831059992313385,
+   "stop": 0.8315633895787135,
+   "target": 0.8295498005173998
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.8310999870300293,
+  "levels": {
+   "entry": 0.8310999870300293,
+   "stop": 0.8322930496096868,
+   "target": 0.8299069244503718
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.8310999870300293,
+  "levels": {
+   "entry": 0.8310999870300293,
+   "stop": 0.831696518319858,
+   "target": 0.8299069244503718
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.8310999870300293,
+  "levels": {
+   "entry": 0.8310999870300293,
+   "stop": 0.831696518319858,
+   "target": 0.8293103931605431
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "20m",
+  "strategy": "rsidiv",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791493200,
+  "close": 1.4221999645233154
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "1h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 1.4221999645233154
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.560758113861084,
+  "levels": {
+   "entry": 0.560758113861084,
+   "stop": 0.5601898056309507,
+   "target": 0.5613264220912173
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791493200,
+  "close": 0.5607267022132874,
+  "levels": {
+   "entry": 0.5607267022132874,
+   "stop": 0.5599947361689519,
+   "target": 0.5614586682576228
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "15m",
+  "strategy": "rsidiv",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791492300,
+  "close": 1.4220000505447388
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791492000,
+  "close": 1.1214534044265747
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791492000,
+  "close": 1.3228563070297241
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791492000,
+  "close": 0.6960880160331726
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791491400,
+  "close": 1.4220000505447388
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791490800,
+  "close": 0.5606009364128113,
+  "levels": {
+   "entry": 0.5606009364128113,
+   "stop": 0.5598896290154237,
+   "target": 0.5613122438101988
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791490800,
+  "close": 0.5606009364128113,
+  "levels": {
+   "entry": 0.5606009364128113,
+   "stop": 0.5602452827141176,
+   "target": 0.5613122438101988
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791490800,
+  "close": 0.5606009364128113,
+  "levels": {
+   "entry": 0.5606009364128113,
+   "stop": 0.5602452827141176,
+   "target": 0.5616678975088926
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791490500,
+  "close": 81694.40625
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791490500,
+  "close": 1.3227163553237915
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "2h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791489600,
+  "close": 68395
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 1.1218308210372925
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "pullback2050",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791489600,
+  "close": 4159.10009765625
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 81815.078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 81735.1328125
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791489600,
+  "close": 0.8316100239753723
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 1.422029972076416
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791489600,
+  "close": 1.4220000505447388
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 0.5605067014694214
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 0.5605067014694214
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791489600,
+  "close": 0.5604438781738281
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488700,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1204805383158885,
+   "target": 1.1229295721577444
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488700,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1204805383158885,
+   "target": 1.1229295721577444
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488700,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1210927967763524,
+   "target": 1.1229295721577444
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488700,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1210927967763524,
+   "target": 1.1235418306182086
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1200977639298741,
+   "target": 1.1233123465437587
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1209014095833452,
+   "target": 1.1233123465437587
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.1217050552368164,
+  "levels": {
+   "entry": 1.1217050552368164,
+   "stop": 1.1209014095833452,
+   "target": 1.12411599219723
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.3231364488601685,
+  "levels": {
+   "entry": 1.3231364488601685,
+   "stop": 1.3214330183755962,
+   "target": 1.3248398793447407
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.3231364488601685,
+  "levels": {
+   "entry": 1.3231364488601685,
+   "stop": 1.3222847336178822,
+   "target": 1.3248398793447407
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791488400,
+  "close": 1.3231364488601685,
+  "levels": {
+   "entry": 1.3231364488601685,
+   "stop": 1.3222847336178822,
+   "target": 1.325691594587027
+  }
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "20m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791488400,
+  "close": 0.6961848735809326,
+  "levels": {
+   "entry": 0.6961848735809326,
+   "stop": 0.6946632455818064
+  }
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "20m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791488400,
+  "close": 0.6961848735809326,
+  "levels": {
+   "entry": 0.6961848735809326,
+   "stop": 0.6946632455818064
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3227863311767578,
+  "levels": {
+   "entry": 1.3227863311767578,
+   "stop": 1.3214445157934067,
+   "target": 1.324128146560109
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3227863311767578,
+  "levels": {
+   "entry": 1.3227863311767578,
+   "stop": 1.3214445157934067,
+   "target": 1.324128146560109
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3227863311767578,
+  "levels": {
+   "entry": 1.3227863311767578,
+   "stop": 1.3221154234850823,
+   "target": 1.324128146560109
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3227863311767578,
+  "levels": {
+   "entry": 1.3227863311767578,
+   "stop": 1.3221154234850823,
+   "target": 1.3247990542517845
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3231364488601685,
+  "levels": {
+   "entry": 1.3231364488601685,
+   "stop": 1.3183010300487836
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.3231364488601685,
+  "levels": {
+   "entry": 1.3231364488601685,
+   "stop": 1.3183010300487836
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "pullback2050",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 1.4218699932098389
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 0.5605067014694214,
+  "levels": {
+   "entry": 0.5605067014694214,
+   "stop": 0.5599032429437731,
+   "target": 0.5611101599950696
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 0.5605067014694214,
+  "levels": {
+   "entry": 0.5605067014694214,
+   "stop": 0.5599032429437731,
+   "target": 0.5611101599950696
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 0.5605067014694214,
+  "levels": {
+   "entry": 0.5605067014694214,
+   "stop": 0.5602049722065973,
+   "target": 0.5611101599950696
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487800,
+  "close": 0.5605067014694214,
+  "levels": {
+   "entry": 0.5605067014694214,
+   "stop": 0.5602049722065973,
+   "target": 0.5614118892578938
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "goldencross",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791487200,
+  "close": 157.87100219726562
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "20m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487200,
+  "close": 4158.2998046875,
+  "levels": {
+   "entry": 4158.2998046875,
+   "stop": 4139.274377713857,
+   "target": 4177.325231661143
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "20m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487200,
+  "close": 4158.2998046875,
+  "levels": {
+   "entry": 4158.2998046875,
+   "stop": 4139.274377713857,
+   "target": 4177.325231661143
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "20m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487200,
+  "close": 4158.2998046875,
+  "levels": {
+   "entry": 4158.2998046875,
+   "stop": 4148.787091200678,
+   "target": 4177.325231661143
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "20m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791487200,
+  "close": 4158.2998046875,
+  "levels": {
+   "entry": 4158.2998046875,
+   "stop": 4148.787091200678,
+   "target": 4186.837945147965
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791486900,
+  "close": 4155,
+  "levels": {
+   "entry": 4155,
+   "stop": 4139.216788715114,
+   "target": 4170.783211284886
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791486900,
+  "close": 4155,
+  "levels": {
+   "entry": 4155,
+   "stop": 4139.216788715114,
+   "target": 4170.783211284886
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791486900,
+  "close": 4155,
+  "levels": {
+   "entry": 4155,
+   "stop": 4147.108394357557,
+   "target": 4170.783211284886
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791486900,
+  "close": 4155,
+  "levels": {
+   "entry": 4155,
+   "stop": 4147.108394357557,
+   "target": 4178.67481692733
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486900,
+  "close": 81624.8984375
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "1h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 68415
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 1.1217050552368164
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 1.1217050552368164
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 1.3231364488601685
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 1.3231364488601685
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791486000,
+  "close": 1.422260046005249
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791484200,
+  "close": 0.6958457827568054
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "20m",
+  "strategy": "rsidiv",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791483600,
+  "close": 1.4232399463653564
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 68415
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 68450
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "30m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 68450
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 68340
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "2h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791482400,
+  "close": 68415
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 157.88299560546875
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 157.91700744628906
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791482400,
+  "close": 157.8560028076172
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "2h",
+  "strategy": "triple",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 157.87100219726562
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "2h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791482400,
+  "close": 157.87100219726562
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "2h",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 157.87100219726562
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 4151.39990234375
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 4151.39990234375
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 4158.10009765625
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "rsidiv",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 80739.78125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 81436.046875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "1h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 81436.046875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "2h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 81704.578125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "2h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 81704.578125
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 1.3231364488601685
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 0.8319399952888489
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 0.8319699764251709
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "1h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 0.6958457827568054
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "2h",
+  "strategy": "triple",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 1.4218699932098389
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "2h",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791482400,
+  "close": 1.4218699932098389
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "15m",
+  "strategy": "goldencross",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791481500,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481500,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481500,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481500,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481200,
+  "close": 68235
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481200,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791481200,
+  "close": 80679.7421875
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 68275
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 68275
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 157.66400146484375
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791480600,
+  "close": 1.1214534044265747
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 4157.39990234375,
+  "levels": {
+   "entry": 4157.39990234375,
+   "stop": 4122.305872957249
+  }
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 4157.39990234375,
+  "levels": {
+   "entry": 4157.39990234375,
+   "stop": 4122.305872957249
+  }
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 7752.64990234375
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 7742.39990234375
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 7742.39990234375
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791480600,
+  "close": 7746.43017578125
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791480600,
+  "close": 7761.27978515625
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 80773.2421875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 80679.7421875
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "15m",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791480600,
+  "close": 0.6963303089141846
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 0.6960395574569702
+ },
+ {
+  "symbol": "AUDUSD=X",
+  "tf": "30m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 0.6960395574569702
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791480600,
+  "close": 1.4220999479293823
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791480000,
+  "close": 1.1215791702270508
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791480000,
+  "close": 4156.7001953125
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "15m",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 1.1218308210372925
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 4155.5
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "15m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 4155.5
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 0.5608839392662048
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5591893325603557
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5591893325603557
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "15m",
+  "strategy": "trfst2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791479700,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5591893325603557
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062,
+  "levels": {
+   "entry": 157.56900024414062,
+   "stop": 158.44592020026374
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062,
+  "levels": {
+   "entry": 157.56900024414062,
+   "stop": 158.44592020026374
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "30m",
+  "strategy": "trfst2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.56900024414062,
+  "levels": {
+   "entry": 157.56900024414062,
+   "stop": 158.44592020026374
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "1h",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.1218308210372925,
+  "levels": {
+   "entry": 1.1218308210372925,
+   "stop": 1.1171615880453247
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.1218308210372925,
+  "levels": {
+   "entry": 1.1218308210372925,
+   "stop": 1.1171615880453247
+  }
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "1h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.1214534044265747
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "1h",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.1214534044265747
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "30m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 4155.5
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 4155.5
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "30m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 4155.5
+ },
+ {
+  "symbol": "GC=F",
+  "tf": "1h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 4157.39990234375
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 80636
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.3232064247131348,
+  "levels": {
+   "entry": 1.3232064247131348,
+   "stop": 1.3206517694952808,
+   "target": 1.3257610799309887
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.3232064247131348,
+  "levels": {
+   "entry": 1.3232064247131348,
+   "stop": 1.3206517694952808,
+   "target": 1.3257610799309887
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.3232064247131348,
+  "levels": {
+   "entry": 1.3232064247131348,
+   "stop": 1.321929097104208,
+   "target": 1.3257610799309887
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.3232064247131348,
+  "levels": {
+   "entry": 1.3232064247131348,
+   "stop": 1.321929097104208,
+   "target": 1.3270384075399155
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "1h",
+  "strategy": "supertrend",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.322891354560852
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "30m",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.8309599757194519
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.8309599757194519,
+  "levels": {
+   "entry": 0.8309599757194519,
+   "stop": 0.835563855904355
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.8309599757194519,
+  "levels": {
+   "entry": 0.8309599757194519,
+   "stop": 0.835563855904355
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "30m",
+  "strategy": "trfst2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.8309599757194519,
+  "levels": {
+   "entry": 0.8309599757194519,
+   "stop": 0.835563855904355
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "1h",
+  "strategy": "triple",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "1h",
+  "strategy": "donchian",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "1h",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4290164568163195
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4290164568163195
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "trfst2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4290164568163195
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "qqessl",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4254737192897728,
+   "target": 1.4187662308902809
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "qqessl2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4254737192897728,
+   "target": 1.4187662308902809
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "qqessl12",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4237968471898999,
+   "target": 1.4187662308902809
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "30m",
+  "strategy": "qqessl13",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 1.4221199750900269,
+  "levels": {
+   "entry": 1.4221199750900269,
+   "stop": 1.4237968471898999,
+   "target": 1.417089358790408
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "1h",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 1.4220999479293823
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "trfst",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5584995297659751
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "trfst1",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5584995297659751
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5596976585924286,
+   "target": 0.5620702199399811
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl2",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5596976585924286,
+   "target": 0.5620702199399811
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl12",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5602907989293167,
+   "target": 0.5620702199399811
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "30m",
+  "strategy": "qqessl13",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791478800,
+  "close": 0.5608839392662048,
+  "levels": {
+   "entry": 0.5608839392662048,
+   "stop": 0.5602907989293167,
+   "target": 0.5626633602768693
+  }
+ },
+ {
+  "symbol": "NZDUSD=X",
+  "tf": "1h",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1791478800,
+  "close": 0.5606009364128113
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791477000,
+  "close": 7737.77978515625
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "donchian",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791477000,
+  "close": 7737.77978515625
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791477000,
+  "close": 7737.77978515625,
+  "levels": {
+   "entry": 7737.77978515625,
+   "stop": 7851.112401102544
+  }
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791477000,
+  "close": 7737.77978515625,
+  "levels": {
+   "entry": 7737.77978515625,
+   "stop": 7851.112401102544
+  }
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "1h",
+  "strategy": "trfst2",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791477000,
+  "close": 7737.77978515625,
+  "levels": {
+   "entry": 7737.77978515625,
+   "stop": 7851.112401102544
+  }
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "4h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791475200,
+  "close": 68415
+ },
+ {
+  "symbol": "NIY=F",
+  "tf": "4h",
+  "strategy": "macd",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 68415
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "2h",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 157.7220001220703
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "4h",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 157.87100219726562,
+  "levels": {
+   "entry": 157.87100219726562,
+   "stop": 158.89414374938735
+  }
+ },
+ {
+  "symbol": "USDJPY=X",
+  "tf": "4h",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 157.87100219726562,
+  "levels": {
+   "entry": 157.87100219726562,
+   "stop": 158.89414374938735
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "4h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791475200,
+  "close": 81704.578125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "4h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "strong",
+  "time": 1791475200,
+  "close": 81704.578125
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "2h",
+  "strategy": "donchian",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313500285148621
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "2h",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313500285148621,
+  "levels": {
+   "entry": 0.8313500285148621,
+   "stop": 0.8366424296080988
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "2h",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313500285148621,
+  "levels": {
+   "entry": 0.8313500285148621,
+   "stop": 0.8366424296080988
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "4h",
+  "strategy": "trfst",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313900232315063,
+  "levels": {
+   "entry": 0.8313900232315063,
+   "stop": 0.836448856104116
+  }
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "4h",
+  "strategy": "trfst1",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 0.8313900232315063,
+  "levels": {
+   "entry": 0.8313900232315063,
+   "stop": 0.836448856104116
+  }
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "2h",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 1.4220999479293823
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "4h",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791475200,
+  "close": 1.4218699932098389
+ },
+ {
+  "symbol": "^GSPC",
+  "tf": "2h",
+  "strategy": "supertrend",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1791473400,
+  "close": 7737.77978515625
+ },
+ {
   "symbol": "USDJPY=X",
   "tf": "15m",
   "strategy": "trfst",
@@ -1057,2182 +3378,5 @@
   "strength": "strong",
   "time": 1791477000,
   "close": 158.0070037841797
- },
- {
-  "symbol": "^GSPC",
-  "tf": "15m",
-  "strategy": "rsidiv",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791477000,
-  "close": 7775.3798828125
- },
- {
-  "symbol": "^GSPC",
-  "tf": "30m",
-  "strategy": "donchian",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791477000,
-  "close": 7758.490234375
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "30m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791477000,
-  "close": 0.8328099846839905
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "30m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791477000,
-  "close": 0.8328099846839905
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791476400,
-  "close": 81311.71875
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791476100,
-  "close": 1.119444727897644
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791476100,
-  "close": 81239.4296875
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791476100,
-  "close": 81239.4296875
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791476100,
-  "close": 1.3207770586013794
- },
- {
-  "symbol": "^GSPC",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791475800,
-  "close": 7781.39013671875
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 68885
- },
- {
-  "symbol": "NIY=F",
-  "tf": "1h",
-  "strategy": "pullback2050",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 68375
- },
- {
-  "symbol": "NIY=F",
-  "tf": "1h",
-  "strategy": "qqessl",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 68375,
-  "levels": {
-   "entry": 68375,
-   "stop": 69062.50935435867,
-   "target": 67687.49064564133
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "1h",
-  "strategy": "qqessl2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 68375,
-  "levels": {
-   "entry": 68375,
-   "stop": 69062.50935435867,
-   "target": 67687.49064564133
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "1h",
-  "strategy": "qqessl12",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 68375,
-  "levels": {
-   "entry": 68375,
-   "stop": 68718.75467717934,
-   "target": 67687.49064564133
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "1h",
-  "strategy": "qqessl13",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 68375,
-  "levels": {
-   "entry": 68375,
-   "stop": 68718.75467717934,
-   "target": 67343.73596846199
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 158.281005859375
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 158.0070037841797,
-  "levels": {
-   "entry": 158.0070037841797,
-   "stop": 158.5168292705449
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 158.0070037841797,
-  "levels": {
-   "entry": 158.0070037841797,
-   "stop": 158.5168292705449
-  }
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 4135.7001953125
- },
- {
-  "symbol": "GC=F",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 4143.89990234375
- },
- {
-  "symbol": "^GSPC",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 7774.56005859375
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 81285.171875
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "1h",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 0.8328099846839905
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791475200,
-  "close": 0.6949753165245056
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "1h",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 1.4241900444030762
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "1h",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791475200,
-  "close": 1.4241900444030762
- },
- {
-  "symbol": "^GSPC",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474600,
-  "close": 7773.5
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 158.3260040283203
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 1.119444727897644
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 4135.89990234375
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.83224547977242
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.83224547977242
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "trfst2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.83224547977242
-  }
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.559440553188324,
-  "levels": {
-   "entry": 0.559440553188324,
-   "stop": 0.5609853484506713
-  }
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.559440553188324,
-  "levels": {
-   "entry": 0.559440553188324,
-   "stop": 0.5609853484506713
-  }
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474300,
-  "close": 0.559440553188324,
-  "levels": {
-   "entry": 0.559440553188324,
-   "stop": 0.5609853484506713
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "goldencross",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 158.3260040283203
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 158.3260040283203
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.8320779992733092
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.8320779992733092
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "trfst2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 0.8334500193595886,
-  "levels": {
-   "entry": 0.8334500193595886,
-   "stop": 0.8320779992733092
-  }
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 0.6949753165245056
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "20m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791474000,
-  "close": 0.559440553188324
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "30m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 158.3260040283203
- },
- {
-  "symbol": "GC=F",
-  "tf": "30m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 4135.89990234375
- },
- {
-  "symbol": "GC=F",
-  "tf": "30m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 4135.89990234375
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 1.3212658166885376
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 0.6952168941497803,
-  "levels": {
-   "entry": 0.6952168941497803,
-   "stop": 0.6974347286968198
-  }
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 0.6952168941497803,
-  "levels": {
-   "entry": 0.6952168941497803,
-   "stop": 0.6974347286968198
-  }
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791473400,
-  "close": 0.6952168941497803,
-  "levels": {
-   "entry": 0.6952168941497803,
-   "stop": 0.6974347286968198
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "20m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 68850
- },
- {
-  "symbol": "NIY=F",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 68850,
-  "levels": {
-   "entry": 68850,
-   "stop": 69619.1025245898
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 68850,
-  "levels": {
-   "entry": 68850,
-   "stop": 69619.1025245898
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 158.25799560546875
- },
- {
-  "symbol": "GC=F",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 4140.10009765625
- },
- {
-  "symbol": "GC=F",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 4140.10009765625
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "pullback2050",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472800,
-  "close": 81241.7734375
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 68965
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 158.26800537109375
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 158.26800537109375
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 158.26800537109375
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 4140.60009765625
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 4140.60009765625
- },
- {
-  "symbol": "^GSPC",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 7774.990234375
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 0.6957489848136902
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791472500,
-  "close": 0.5598164200782776
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 68975
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 68975
- },
- {
-  "symbol": "NIY=F",
-  "tf": "30m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 68965,
-  "levels": {
-   "entry": 68965,
-   "stop": 69763.15987132423
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "30m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 68965,
-  "levels": {
-   "entry": 68965,
-   "stop": 69763.15987132423
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "30m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 68965,
-  "levels": {
-   "entry": 68965,
-   "stop": 69763.15987132423
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.28399658203125
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.28399658203125
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "30m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.26800537109375
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "30m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.26800537109375,
-  "levels": {
-   "entry": 158.26800537109375,
-   "stop": 157.84494534261194
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "30m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.26800537109375,
-  "levels": {
-   "entry": 158.26800537109375,
-   "stop": 157.84494534261194
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.3260040283203
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "qqessl",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.3260040283203,
-  "levels": {
-   "entry": 158.3260040283203,
-   "stop": 158.0041775095931,
-   "target": 158.64783054704753
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "qqessl2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.3260040283203,
-  "levels": {
-   "entry": 158.3260040283203,
-   "stop": 158.0041775095931,
-   "target": 158.64783054704753
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "qqessl12",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.3260040283203,
-  "levels": {
-   "entry": 158.3260040283203,
-   "stop": 158.1650907689567,
-   "target": 158.64783054704753
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "1h",
-  "strategy": "qqessl13",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 158.3260040283203,
-  "levels": {
-   "entry": 158.3260040283203,
-   "stop": 158.1650907689567,
-   "target": 158.80874380641117
-  }
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 4139.60009765625
- },
- {
-  "symbol": "GC=F",
-  "tf": "20m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 4138.2001953125
- },
- {
-  "symbol": "GC=F",
-  "tf": "30m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 4140.60009765625
- },
- {
-  "symbol": "GC=F",
-  "tf": "1h",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 4135.89990234375
- },
- {
-  "symbol": "^GSPC",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 7773.33984375,
-  "levels": {
-   "entry": 7773.33984375,
-   "stop": 7806.555116921221
-  }
- },
- {
-  "symbol": "^GSPC",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 7773.33984375,
-  "levels": {
-   "entry": 7773.33984375,
-   "stop": 7806.555116921221
-  }
- },
- {
-  "symbol": "^GSPC",
-  "tf": "30m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 7774.990234375
- },
- {
-  "symbol": "^GSPC",
-  "tf": "30m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 7774.990234375
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 82100.3203125
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 82100.3203125,
-  "levels": {
-   "entry": 82100.3203125,
-   "stop": 83103.30802856246
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 82100.3203125,
-  "levels": {
-   "entry": 82100.3203125,
-   "stop": 83103.30802856246
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 82100.3203125,
-  "levels": {
-   "entry": 82100.3203125,
-   "stop": 83103.30802856246
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81922.671875,
-  "levels": {
-   "entry": 81922.671875,
-   "stop": 83184.1071558177
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81922.671875,
-  "levels": {
-   "entry": 81922.671875,
-   "stop": 83184.1071558177
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "pullback2050",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 83485.95194011355
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 83485.95194011355
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 83485.95194011355
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "qqessl",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 82185.8722745469,
-   "target": 80394.2839754531
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "qqessl2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 82185.8722745469,
-   "target": 80394.2839754531
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "qqessl12",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 81737.97519977344,
-   "target": 80394.2839754531
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "30m",
-  "strategy": "qqessl13",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 81290.078125,
-  "levels": {
-   "entry": 81290.078125,
-   "stop": 81737.97519977344,
-   "target": 79946.38690067966
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "1h",
-  "strategy": "qqessl",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 80989.34375,
-  "levels": {
-   "entry": 80989.34375,
-   "stop": 82099.74599808361,
-   "target": 79878.94150191639
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "1h",
-  "strategy": "qqessl2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 80989.34375,
-  "levels": {
-   "entry": 80989.34375,
-   "stop": 82099.74599808361,
-   "target": 79878.94150191639
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "1h",
-  "strategy": "qqessl12",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 80989.34375,
-  "levels": {
-   "entry": 80989.34375,
-   "stop": 81544.5448740418,
-   "target": 79878.94150191639
-  }
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "1h",
-  "strategy": "qqessl13",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 80989.34375,
-  "levels": {
-   "entry": 80989.34375,
-   "stop": 81544.5448740418,
-   "target": 79323.74037787458
-  }
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "1h",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 1.320916771888733
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 1.4235800504684448
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471600,
-  "close": 1.4239799976348877
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "1h",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791471600,
-  "close": 1.424739956855774
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471300,
-  "close": 12213.580078125
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471300,
-  "close": 15137.5703125
- },
- {
-  "symbol": "THYAO.IS",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471300,
-  "close": 284.25
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471300,
-  "close": 348.75
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "30m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471300,
-  "close": 348.75
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471300,
-  "close": 501
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791471300,
-  "close": 501
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471300,
-  "close": 401
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471300,
-  "close": 401
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791471300,
-  "close": 401
- },
- {
-  "symbol": "^GSPC",
-  "tf": "20m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791471000,
-  "close": 7777.35009765625
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470700,
-  "close": 69085,
-  "levels": {
-   "entry": 69085,
-   "stop": 69450.33347982171
-  }
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470700,
-  "close": 69085,
-  "levels": {
-   "entry": 69085,
-   "stop": 69450.33347982171
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470700,
-  "close": 158.2010040283203,
-  "levels": {
-   "entry": 158.2010040283203,
-   "stop": 157.99709439949396
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470700,
-  "close": 158.2010040283203,
-  "levels": {
-   "entry": 158.2010040283203,
-   "stop": 157.99709439949396
-  }
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 82638.890625
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.3226639032363892
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.3226639032363892
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 0.6965243220329285
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.4229199886322021
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 1.4229199886322021
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470700,
-  "close": 0.5604752898216248
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 158.2010040283203
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 158.2010040283203,
-  "levels": {
-   "entry": 158.2010040283203,
-   "stop": 157.94205135215208
-  }
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 158.2010040283203,
-  "levels": {
-   "entry": 158.2010040283203,
-   "stop": 157.94205135215208
-  }
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 12198.6298828125
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 15114.7001953125
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 1.3226639032363892
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 1.3226639032363892
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 0.8329200148582458
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 0.6965243220329285
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 0.5604752898216248
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "20m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 0.5604752898216248
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 348.5,
-  "levels": {
-   "entry": 348.5,
-   "stop": 340.17903535855737
-  }
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 348.5,
-  "levels": {
-   "entry": 348.5,
-   "stop": 340.17903535855737
-  }
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "15m",
-  "strategy": "trfst2",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 348.5,
-  "levels": {
-   "entry": 348.5,
-   "stop": 340.17903535855737
-  }
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470400,
-  "close": 501
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 400.25
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470400,
-  "close": 400.25
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470100,
-  "close": 12198.6298828125
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791470100,
-  "close": 15114.7001953125
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "20m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470100,
-  "close": 348.5
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470100,
-  "close": 348.5
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791470100,
-  "close": 501
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 69190
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 69190
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 69190
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 158.1439971923828
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 158.1439971923828
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 158.2010040283203
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "30m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "30m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 1.1212018728256226
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 4151
- },
- {
-  "symbol": "GC=F",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 4148.7001953125
- },
- {
-  "symbol": "^GSPC",
-  "tf": "1h",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 7774.990234375
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 1.3226639032363892
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 0.8327800035476685
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 0.697009801864624
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 0.6965243220329285
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "15m",
-  "strategy": "stoch",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 0.5608525276184082
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "30m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 0.5604752898216248
- },
- {
-  "symbol": "ASELS.IS",
-  "tf": "4h",
-  "strategy": "stoch",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469800,
-  "close": 348.75
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "2h",
-  "strategy": "goldencross",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469800,
-  "close": 401
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469500,
-  "close": 12199.419921875
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469500,
-  "close": 15114.3798828125
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469500,
-  "close": 501.5
- },
- {
-  "symbol": "MGROS.IS",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469500,
-  "close": 501.5
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469500,
-  "close": 400
- },
- {
-  "symbol": "BIMAS.IS",
-  "tf": "30m",
-  "strategy": "ema5813",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791469500,
-  "close": 400.25
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 158.09500122070312
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 158.09500122070312
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 1.1222084760665894
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 1.1222084760665894
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469200,
-  "close": 0.8326299786567688
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469200,
-  "close": 0.8326299786567688
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469200,
-  "close": 0.8326299786567688
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "weak",
-  "time": 1791469200,
-  "close": 0.8326299786567688
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 0.69730144739151
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 0.69730144739151
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 0.69730144739151
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 1.4227900505065918,
-  "levels": {
-   "entry": 1.4227900505065918,
-   "stop": 1.4284960201201586
-  }
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 1.4227900505065918,
-  "levels": {
-   "entry": 1.4227900505065918,
-   "stop": 1.4284960201201586
-  }
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "20m",
-  "strategy": "trfst2",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 1.4227900505065918,
-  "levels": {
-   "entry": 1.4227900505065918,
-   "stop": 1.4284960201201586
-  }
- },
- {
-  "symbol": "NZDUSD=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791469200,
-  "close": 0.5611042380332947
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791468900,
-  "close": 69410
- },
- {
-  "symbol": "NIY=F",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1791468900,
-  "close": 69410
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 158.05799865722656
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 158.05799865722656
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 4161.89990234375
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 4161.89990234375
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 4161.89990234375
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 4161.89990234375,
-  "levels": {
-   "entry": 4161.89990234375,
-   "stop": 4133.9346295244
-  }
- },
- {
-  "symbol": "GC=F",
-  "tf": "15m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 4161.89990234375,
-  "levels": {
-   "entry": 4161.89990234375,
-   "stop": 4133.9346295244
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 0.8325499892234802
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 0.8325499892234802
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1791468900,
-  "close": 0.8325499892234802
  }
 ]
