@@ -1,6 +1,6 @@
 {
  "name": "BIST 30",
- "updatedAt": "2026-10-14T22:24:12.000Z",
+ "updatedAt": "2026-10-15T00:42:44.000Z",
  "rows": [
   {
    "symbol": "AKBNK.IS",
@@ -15,7 +15,7 @@
      "triple": "down",
      "tripleScore": 0,
      "supertrend": "down",
-     "golden": "down",
+     "golden": "up",
      "donchian": "down",
      "close": 67.0999984741211,
      "time": 1791988200,
@@ -254,7 +254,7 @@
       "close": 193,
       "levels": {
        "entry": 193,
-       "stop": 222.08272644288445
+       "stop": 222.08272644351936
       }
      }
     },
@@ -421,7 +421,7 @@
       "close": 142.1999969482422,
       "levels": {
        "entry": 142.1999969482422,
-       "stop": 148.6594460001549
+       "stop": 148.65938509613218
       }
      }
     },
@@ -471,9 +471,9 @@
      "lastSignal": {
       "symbol": "EKGYO.IS",
       "tf": "4h",
-      "strategy": "ema5813",
-      "dir": "down",
-      "strength": "strong",
+      "strategy": "goldencross",
+      "dir": "up",
+      "strength": "weak",
       "time": 1791988200,
       "close": 19.510000228881836
      }
@@ -531,7 +531,7 @@
       "close": 81,
       "levels": {
        "entry": 81,
-       "stop": 84.9216675426319
+       "stop": 84.92166754288425
       }
      }
     },
@@ -1074,8 +1074,8 @@
       "close": 131.3000030517578,
       "levels": {
        "entry": 131.3000030517578,
-       "stop": 132.73674702060117,
-       "target": 126.98977114522773
+       "stop": 132.73674700637207,
+       "target": 126.98977118791503
       }
      }
     },
@@ -1195,7 +1195,7 @@
       "close": 1.8600000143051147,
       "levels": {
        "entry": 1.8600000143051147,
-       "stop": 2.058248820240666
+       "stop": 2.058248820131741
       }
      }
     },
@@ -1252,7 +1252,7 @@
       "close": 37.52000045776367,
       "levels": {
        "entry": 37.52000045776367,
-       "stop": 39.16181409166517
+       "stop": 39.16181409087059
       }
      }
     },
@@ -1302,11 +1302,11 @@
      "lastSignal": {
       "symbol": "TAVHL.IS",
       "tf": "4h",
-      "strategy": "stoch",
-      "dir": "up",
-      "strength": "weak",
-      "time": 1791887400,
-      "close": 269.5
+      "strategy": "goldencross",
+      "dir": "down",
+      "strength": "strong",
+      "time": 1791959400,
+      "close": 270.25
      }
     },
     "1d": {
@@ -1415,8 +1415,8 @@
       "close": 285.25,
       "levels": {
        "entry": 285.25,
-       "stop": 288.1516373629059,
-       "target": 276.5450879112823
+       "stop": 288.1516368241038,
+       "target": 276.5450895276886
       }
      }
     },
