@@ -2,6 +2,111 @@
  {
   "symbol": "BTC-USD",
   "tf": "15m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1792846800,
+  "close": 80668.8828125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792845600,
+  "close": 80678.46875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792845000,
+  "close": 80676.296875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792835100,
+  "close": 80516.0078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792835100,
+  "close": 80516.0078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792834800,
+  "close": 80516.0078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1792834800,
+  "close": 80516.0078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "1h",
+  "strategy": "qqessl",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1792832400,
+  "close": 80516.0078125,
+  "levels": {
+   "entry": 80516.0078125,
+   "stop": 81166.74953015886,
+   "target": 79865.26609484114
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "1h",
+  "strategy": "qqessl2",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1792832400,
+  "close": 80516.0078125,
+  "levels": {
+   "entry": 80516.0078125,
+   "stop": 81166.74953015886,
+   "target": 79865.26609484114
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "1h",
+  "strategy": "qqessl12",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1792832400,
+  "close": 80516.0078125,
+  "levels": {
+   "entry": 80516.0078125,
+   "stop": 80841.37867132944,
+   "target": 79865.26609484114
+  }
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
   "strategy": "bbrev",
   "dir": "up",
   "strength": "weak",
@@ -3161,111 +3266,5 @@
   "strength": "weak",
   "time": 1792767600,
   "close": 62835
- },
- {
-  "symbol": "EURUSD=X",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 1.1201971769332886
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "ema5813",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 81380.171875
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 81380.171875
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 81380.171875
- },
- {
-  "symbol": "BTC-USD",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 81416.53125
- },
- {
-  "symbol": "GBPUSD=X",
-  "tf": "15m",
-  "strategy": "bbrev",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 1.3380612134933472
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "1h",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1792767600,
-  "close": 0.8248299956321716,
-  "levels": {
-   "entry": 0.8248299956321716,
-   "stop": 0.8193888024689252
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "1h",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1792767600,
-  "close": 0.8248299956321716,
-  "levels": {
-   "entry": 0.8248299956321716,
-   "stop": 0.8193888024689252
-  }
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "1h",
-  "strategy": "trfst2",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1792767600,
-  "close": 0.8248299956321716,
-  "levels": {
-   "entry": 0.8248299956321716,
-   "stop": 0.8193888024689252
-  }
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "15m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1792767600,
-  "close": 0.7035317420959473,
-  "levels": {
-   "entry": 0.7035317420959473,
-   "stop": 0.7019253861932806
-  }
  }
 ]
