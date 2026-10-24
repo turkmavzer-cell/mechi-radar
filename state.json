@@ -1,11 +1,11 @@
 {
- "updatedAt": "2026-10-24T00:33:24.000Z",
+ "updatedAt": "2026-10-24T04:58:52.000Z",
  "symbols": {
   "NIY=F": {
    "symbol": "NIY=F",
    "name": "Japan 225 (vadeli)",
-   "price": 62650,
-   "changePct": 0.32025620496397117,
+   "price": 62640,
+   "changePct": 0.3042433947157726,
    "tf": {
     "15m": {
      "align": "neutral",
@@ -163,16 +163,16 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 62450,
-     "time": 1792641600,
+     "close": 62540,
+     "time": 1792728000,
      "lastSignal": {
       "symbol": "NIY=F",
       "tf": "1d",
-      "strategy": "stoch",
+      "strategy": "bbrev",
       "dir": "up",
       "strength": "strong",
-      "time": 1792468800,
-      "close": 64770
+      "time": 1792728000,
+      "close": 62540
      }
     }
    }
@@ -536,8 +536,8 @@
   "GC=F": {
    "symbol": "GC=F",
    "name": "Altın",
-   "price": 4010,
-   "changePct": -1.241254643776789,
+   "price": 4007.9,
+   "changePct": -1.292973687479547,
    "tf": {
     "15m": {
      "align": "down",
@@ -560,11 +560,11 @@
       "dir": "down",
       "strength": "strong",
       "time": 1792774800,
-      "close": 4010.699951171875,
+      "close": 4010.800048828125,
       "levels": {
-       "entry": 4010.699951171875,
-       "stop": 4019.770774719044,
-       "target": 3983.4874805303684
+       "entry": 4010.800048828125,
+       "stop": 4019.878117790642,
+       "target": 3983.565841940574
       }
      }
     },
@@ -592,8 +592,8 @@
       "close": 4007.39990234375,
       "levels": {
        "entry": 4007.39990234375,
-       "stop": 4017.433543865909,
-       "target": 3977.298977777273
+       "stop": 4017.436249843147,
+       "target": 3977.2908598455588
       }
      }
     },
@@ -645,7 +645,7 @@
       "close": 4014.39990234375,
       "levels": {
        "entry": 4014.39990234375,
-       "stop": 4085.845156680827
+       "stop": 4085.8040607729035
       }
      }
     },
@@ -673,7 +673,7 @@
       "close": 4010,
       "levels": {
        "entry": 4010,
-       "stop": 4092.0892018505765
+       "stop": 4092.054762982166
       }
      }
     },
@@ -713,8 +713,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 4060.39990234375,
-     "time": 1792641600,
+     "close": 4007.89990234375,
+     "time": 1792728000,
      "lastSignal": {
       "symbol": "GC=F",
       "tf": "1d",
@@ -867,7 +867,7 @@
       "close": 7659.27001953125,
       "levels": {
        "entry": 7659.27001953125,
-       "stop": 7785.905036884167
+       "stop": 7785.905036884175
       }
      }
     },
@@ -929,7 +929,7 @@
    "symbol": "XU100.IS",
    "name": "BIST 100",
    "price": 11116.99,
-   "changePct": -3.9743081160190483,
+   "changePct": -0.9216283468048332,
    "tf": {
     "15m": {
      "align": "up",
@@ -1087,8 +1087,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 11220.400390625,
-     "time": 1792650600,
+     "close": 11117,
+     "time": 1792737000,
      "lastSignal": {
       "symbol": "XU100.IS",
       "tf": "1d",
@@ -1105,7 +1105,7 @@
    "symbol": "XU030.IS",
    "name": "BIST 30",
    "price": 13874.24,
-   "changePct": -4.074778238419914,
+   "changePct": -0.9753862122697174,
    "tf": {
     "15m": {
      "align": "up",
@@ -1263,8 +1263,8 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 14010.900390625,
-     "time": 1792650600,
+     "close": 13874.2001953125,
+     "time": 1792737000,
      "lastSignal": {
       "symbol": "XU030.IS",
       "tf": "1d",
@@ -1280,8 +1280,8 @@
   "BTC-USD": {
    "symbol": "BTC-USD",
    "name": "Bitcoin",
-   "price": 80635.19,
-   "changePct": -0.8322283737330054,
+   "price": 80793.6,
+   "changePct": -0.637410618565351,
    "tf": {
     "15m": {
      "align": "down",
@@ -1295,16 +1295,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 80679.8515625,
-     "time": 1792800900,
+     "close": 80782.78125,
+     "time": 1792816200,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "15m",
-      "strategy": "bbrev",
-      "dir": "up",
-      "strength": "weak",
-      "time": 1792797300,
-      "close": 80842.8203125
+      "strategy": "ema5813",
+      "dir": "down",
+      "strength": "strong",
+      "time": 1792815300,
+      "close": 80759.6484375
      }
     },
     "20m": {
@@ -1319,16 +1319,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 80739.546875,
-     "time": 1792800000,
+     "close": 80776.71875,
+     "time": 1792815600,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "20m",
       "strategy": "bbrev",
       "dir": "up",
       "strength": "weak",
-      "time": 1792797600,
-      "close": 80837.703125
+      "time": 1792803600,
+      "close": 80744.03125
      }
     },
     "30m": {
@@ -1343,16 +1343,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 80679.8515625,
-     "time": 1792800000,
+     "close": 80759.6484375,
+     "time": 1792814400,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "30m",
       "strategy": "bbrev",
       "dir": "up",
       "strength": "weak",
-      "time": 1792798200,
-      "close": 80837.703125
+      "time": 1792803600,
+      "close": 80708.84375
      }
     },
     "1h": {
@@ -1367,16 +1367,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 80837.703125,
-     "time": 1792796400,
+     "close": 80864.6015625,
+     "time": 1792810800,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "1h",
-      "strategy": "pullback2050",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1792792800,
-      "close": 80734.796875
+      "strategy": "bbrev",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1792803600,
+      "close": 80823.3984375
      }
     },
     "2h": {
@@ -1391,16 +1391,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 80837.703125,
-     "time": 1792792800,
+     "close": 80864.6015625,
+     "time": 1792807200,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "2h",
-      "strategy": "pullback2050",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1792792800,
-      "close": 80837.703125
+      "strategy": "bbrev",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1792807200,
+      "close": 80864.6015625
      }
     },
     "4h": {
@@ -1415,19 +1415,19 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "up",
-     "close": 80837.703125,
-     "time": 1792785600,
+     "close": 80864.6015625,
+     "time": 1792800000,
      "lastSignal": {
       "symbol": "BTC-USD",
       "tf": "4h",
       "strategy": "trfst2",
       "dir": "down",
       "strength": "strong",
-      "time": 1792771200,
-      "close": 81166.5078125,
+      "time": 1792785600,
+      "close": 81074.6875,
       "levels": {
-       "entry": 81166.5078125,
-       "stop": 84446.2829656035
+       "entry": 81074.6875,
+       "stop": 84003.11942920125
       }
      }
     },
@@ -1988,8 +1988,8 @@
   "USDCAD=X": {
    "symbol": "USDCAD=X",
    "name": "USDCAD",
-   "price": 1.4002,
-   "changePct": -0.00428289173924821,
+   "price": 1.4004,
+   "changePct": 0.01000017026737381,
    "tf": {
     "15m": {
      "align": "neutral",
@@ -2323,7 +2323,7 @@
       "close": 0.5705482959747314,
       "levels": {
        "entry": 0.5705482959747314,
-       "stop": 0.5650075688934969
+       "stop": 0.565007568893439
       }
      }
     },
@@ -2691,7 +2691,7 @@
       "close": 326.25,
       "levels": {
        "entry": 326.25,
-       "stop": 353.914760710142
+       "stop": 353.91476071542655
       }
      }
     },
@@ -3081,7 +3081,7 @@
   "NIY=F|1h": 1792785600,
   "NIY=F|2h": 1792785600,
   "NIY=F|4h": 1792785600,
-  "NIY=F|1d": 1792641600,
+  "NIY=F|1d": 1792728000,
   "USDJPY=X|15m": 1792788300,
   "USDJPY=X|20m": 1792788000,
   "USDJPY=X|30m": 1792787400,
@@ -3102,7 +3102,7 @@
   "GC=F|1h": 1792785600,
   "GC=F|2h": 1792785600,
   "GC=F|4h": 1792785600,
-  "GC=F|1d": 1792641600,
+  "GC=F|1d": 1792728000,
   "^GSPC|15m": 1792785600,
   "^GSPC|20m": 1792785000,
   "^GSPC|30m": 1792785600,
@@ -3116,20 +3116,20 @@
   "XU100.IS|1h": 1792765800,
   "XU100.IS|2h": 1792765800,
   "XU100.IS|4h": 1792765800,
-  "XU100.IS|1d": 1792650600,
+  "XU100.IS|1d": 1792737000,
   "XU030.IS|15m": 1792767300,
   "XU030.IS|20m": 1792767300,
   "XU030.IS|30m": 1792767300,
   "XU030.IS|1h": 1792765800,
   "XU030.IS|2h": 1792765800,
   "XU030.IS|4h": 1792765800,
-  "XU030.IS|1d": 1792650600,
-  "BTC-USD|15m": 1792800900,
-  "BTC-USD|20m": 1792800000,
-  "BTC-USD|30m": 1792800000,
-  "BTC-USD|1h": 1792796400,
-  "BTC-USD|2h": 1792792800,
-  "BTC-USD|4h": 1792785600,
+  "XU030.IS|1d": 1792737000,
+  "BTC-USD|15m": 1792816200,
+  "BTC-USD|20m": 1792815600,
+  "BTC-USD|30m": 1792814400,
+  "BTC-USD|1h": 1792810800,
+  "BTC-USD|2h": 1792807200,
+  "BTC-USD|4h": 1792800000,
   "BTC-USD|1d": 1792627200,
   "GBPUSD=X|15m": 1792790100,
   "GBPUSD=X|20m": 1792790400,
@@ -3195,5 +3195,5 @@
   "BIMAS.IS|4h": 1792765800,
   "BIMAS.IS|1d": 1792650600
  },
- "scanAt": 1792802004
+ "scanAt": 1792817932
 }
