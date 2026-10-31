@@ -1,6 +1,78 @@
 [
  {
   "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "rsidiv",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793472000,
+  "close": 77484.8828125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793471400,
+  "close": 77547.21875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793471400,
+  "close": 77484.8828125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793469600,
+  "close": 77565.6328125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793469600,
+  "close": 77586.078125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1793460600,
+  "close": 77445.140625
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "ema5813",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1793460000,
+  "close": 77424.2421875
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "20m",
+  "strategy": "ema5813",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793458800,
+  "close": 77312.78125
+ },
+ {
+  "symbol": "BTC-USD",
   "tf": "15m",
   "strategy": "ema5813",
   "dir": "down",
@@ -3133,77 +3205,5 @@
   "strength": "weak",
   "time": 1793375100,
   "close": 157.47300720214844
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "supertrend",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1793375100,
-  "close": 157.47300720214844
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1793375100,
-  "close": 157.47300720214844
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "15m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1793375100,
-  "close": 157.47300720214844
- },
- {
-  "symbol": "USDCHF=X",
-  "tf": "15m",
-  "strategy": "rsidiv",
-  "dir": "down",
-  "strength": "strong",
-  "time": 1793375100,
-  "close": 0.8230100274085999
- },
- {
-  "symbol": "USDJPY=X",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1793374800,
-  "close": 157.47300720214844
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "triple",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793374800,
-  "close": 0.7037792801856995
- },
- {
-  "symbol": "AUDUSD=X",
-  "tf": "20m",
-  "strategy": "macd",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793374800,
-  "close": 0.7037792801856995
- },
- {
-  "symbol": "USDCAD=X",
-  "tf": "20m",
-  "strategy": "bbrev",
-  "dir": "up",
-  "strength": "weak",
-  "time": 1793374800,
-  "close": 1.3958300352096558
  }
 ]
