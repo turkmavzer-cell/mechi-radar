@@ -1,6 +1,6 @@
 {
  "name": "BIST 30",
- "updatedAt": "2026-11-05T17:49:18.000Z",
+ "updatedAt": "2026-11-05T22:55:51.000Z",
  "rows": [
   {
    "symbol": "AKBNK.IS",
@@ -37,12 +37,12 @@
      "pullbackLevel": 60.400001525878906,
      "above200": false,
      "triple": "neutral",
-     "tripleScore": 2,
+     "tripleScore": 1,
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 67.19999694824219,
-     "time": 1793860200,
+     "close": 66.19999694824219,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "AKBNK.IS",
       "tf": "1d",
@@ -94,16 +94,16 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 101.30000305175781,
-     "time": 1793860200,
+     "close": 100,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ALARK.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "stoch",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 101.30000305175781
+      "time": 1793601000,
+      "close": 94.75
      }
     }
    }
@@ -147,8 +147,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 70.4000015258789,
-     "time": 1793860200,
+     "close": 69.4000015258789,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ARCLK.IS",
       "tf": "1d",
@@ -189,31 +189,27 @@
      }
     },
     "1d": {
-     "align": "down",
-     "ema5813Dir": "down",
+     "align": "up",
+     "ema5813Dir": "up",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
-     "above200": false,
-     "triple": "down",
-     "tripleScore": 0,
+     "above200": true,
+     "triple": "neutral",
+     "tripleScore": 2,
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 329,
-     "time": 1793860200,
+     "close": 353.75,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ASELS.IS",
       "tf": "1d",
-      "strategy": "trfst1",
-      "dir": "down",
+      "strategy": "ema5813",
+      "dir": "up",
       "strength": "strong",
-      "time": 1793860200,
-      "close": 329,
-      "levels": {
-       "entry": 329,
-       "stop": 394.62289613474184
-      }
+      "time": 1793773800,
+      "close": 353.75
      }
     }
    }
@@ -245,12 +241,12 @@
       "close": 149.3000030517578,
       "levels": {
        "entry": 149.3000030517578,
-       "stop": 178.3680718881413
+       "stop": 178.36807188815897
       }
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "pulled",
      "pullbackDir": "down",
@@ -261,8 +257,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 149.3000030517578,
-     "time": 1793860200,
+     "close": 165.6999969482422,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ASTOR.IS",
       "tf": "1d",
@@ -305,17 +301,17 @@
     "1d": {
      "align": "neutral",
      "ema5813Dir": "down",
-     "pullback": "pulled",
+     "pullback": "trend",
      "pullbackDir": "down",
-     "pullbackLevel": 347.25,
-     "above200": false,
+     "pullbackLevel": null,
+     "above200": true,
      "triple": "down",
      "tripleScore": 0,
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 369.25,
-     "time": 1793860200,
+     "close": 372.5,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "BIMAS.IS",
       "tf": "1d",
@@ -370,17 +366,17 @@
      "tripleScore": 2,
      "supertrend": "up",
      "golden": "down",
-     "donchian": "up",
-     "close": 42.5,
-     "time": 1793860200,
+     "donchian": "down",
+     "close": 41.68000030517578,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "CIMSA.IS",
       "tf": "1d",
-      "strategy": "donchian",
+      "strategy": "supertrend",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 42.5
+      "time": 1793773800,
+      "close": 41.68000030517578
      }
     }
    }
@@ -424,8 +420,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "up",
-     "close": 131,
-     "time": 1793860200,
+     "close": 131.39999389648438,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "DOAS.IS",
       "tf": "1d",
@@ -477,16 +473,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 17.450000762939453,
-     "time": 1793860200,
+     "close": 17.489999771118164,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "EKGYO.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "stoch",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 17.450000762939453
+      "time": 1793601000,
+      "close": 16.770000457763672
      }
     }
    }
@@ -515,10 +511,10 @@
       "dir": "up",
       "strength": "weak",
       "time": 1793874600,
-      "close": 81.94999694824219,
+      "close": 81.9000015258789,
       "levels": {
-       "entry": 81.94999694824219,
-       "stop": 81.94999694824219
+       "entry": 81.9000015258789,
+       "stop": 81.9000015258789
       }
      }
     },
@@ -534,8 +530,8 @@
      "supertrend": "up",
      "golden": "down",
      "donchian": "down",
-     "close": 81.0999984741211,
-     "time": 1793860200,
+     "close": 81.25,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ENKAI.IS",
       "tf": "1d",
@@ -576,7 +572,7 @@
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
@@ -587,8 +583,8 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 30.799999237060547,
-     "time": 1793860200,
+     "close": 31.84000015258789,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "EREGL.IS",
       "tf": "1d",
@@ -640,8 +636,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 67.8499984741211,
-     "time": 1793860200,
+     "close": 68.6500015258789,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "FROTO.IS",
       "tf": "1d",
@@ -684,8 +680,8 @@
     "1d": {
      "align": "up",
      "ema5813Dir": "up",
-     "pullback": "trend",
-     "pullbackDir": "up",
+     "pullback": "none",
+     "pullbackDir": "neutral",
      "pullbackLevel": null,
      "above200": true,
      "triple": "up",
@@ -693,20 +689,16 @@
      "supertrend": "up",
      "golden": "down",
      "donchian": "up",
-     "close": 142,
-     "time": 1793860200,
+     "close": 137.5,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "GARAN.IS",
       "tf": "1d",
-      "strategy": "trfst2",
+      "strategy": "macd",
       "dir": "up",
       "strength": "strong",
-      "time": 1793860200,
-      "close": 142,
-      "levels": {
-       "entry": 142,
-       "stop": 121.1138355305136
-      }
+      "time": 1793773800,
+      "close": 137.5
      }
     }
    }
@@ -750,8 +742,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 1.8200000524520874,
-     "time": 1793860200,
+     "close": 1.8300000429153442,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "HEKTS.IS",
       "tf": "1d",
@@ -792,8 +784,8 @@
      }
     },
     "1d": {
-     "align": "up",
-     "ema5813Dir": "up",
+     "align": "neutral",
+     "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
@@ -803,16 +795,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 13.050000190734863,
-     "time": 1793860200,
+     "close": 12.869999885559082,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "ISCTR.IS",
       "tf": "1d",
-      "strategy": "ema5813",
+      "strategy": "bbrev",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 13.050000190734863
+      "time": 1793601000,
+      "close": 12.319999694824219
      }
     }
    }
@@ -856,8 +848,8 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 202.3000030517578,
-     "time": 1793860200,
+     "close": 203,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "KCHOL.IS",
       "tf": "1d",
@@ -898,31 +890,27 @@
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "pulled",
      "pullbackDir": "down",
      "pullbackLevel": 35.380001068115234,
-     "above200": false,
-     "triple": "down",
-     "tripleScore": 0,
+     "above200": true,
+     "triple": "neutral",
+     "tripleScore": 1,
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 36.720001220703125,
-     "time": 1793860200,
+     "close": 40.79999923706055,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "KRDMD.IS",
       "tf": "1d",
-      "strategy": "trfst1",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1793860200,
-      "close": 36.720001220703125,
-      "levels": {
-       "entry": 36.720001220703125,
-       "stop": 43.998646381403944
-      }
+      "strategy": "stoch",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1793082600,
+      "close": 37.599998474121094
      }
     }
    }
@@ -966,16 +954,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 452.5,
-     "time": 1793860200,
+     "close": 454,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "MGROS.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "stoch",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 452.5
+      "time": 1793601000,
+      "close": 428
      }
     }
    }
@@ -1008,7 +996,7 @@
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
@@ -1017,18 +1005,18 @@
      "triple": "down",
      "tripleScore": 0,
      "supertrend": "down",
-     "golden": "down",
+     "golden": "up",
      "donchian": "down",
-     "close": 16.8799991607666,
-     "time": 1793860200,
+     "close": 17.770000457763672,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "PETKM.IS",
       "tf": "1d",
-      "strategy": "goldencross",
-      "dir": "down",
-      "strength": "strong",
-      "time": 1793860200,
-      "close": 16.8799991607666
+      "strategy": "stoch",
+      "dir": "up",
+      "strength": "weak",
+      "time": 1793601000,
+      "close": 16.510000228881836
      }
     }
    }
@@ -1061,8 +1049,8 @@
      }
     },
     "1d": {
-     "align": "up",
-     "ema5813Dir": "up",
+     "align": "neutral",
+     "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
@@ -1072,16 +1060,20 @@
      "supertrend": "up",
      "golden": "down",
      "donchian": "down",
-     "close": 139.89999389648438,
-     "time": 1793860200,
+     "close": 134.60000610351562,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "PGSUS.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "trfst2",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 139.89999389648438
+      "time": 1793773800,
+      "close": 134.60000610351562,
+      "levels": {
+       "entry": 134.60000610351562,
+       "stop": 111.59582115256575
+      }
      }
     }
    }
@@ -1120,13 +1112,13 @@
      "pullbackDir": "neutral",
      "pullbackLevel": null,
      "above200": false,
-     "triple": "down",
-     "tripleScore": 0,
+     "triple": "neutral",
+     "tripleScore": 1,
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 85.0999984741211,
-     "time": 1793860200,
+     "close": 86.19999694824219,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "SAHOL.IS",
       "tf": "1d",
@@ -1169,17 +1161,17 @@
     "1d": {
      "align": "neutral",
      "ema5813Dir": "down",
-     "pullback": "pulled",
+     "pullback": "trend",
      "pullbackDir": "down",
-     "pullbackLevel": 1.4299999475479126,
+     "pullbackLevel": null,
      "above200": false,
      "triple": "down",
      "tripleScore": 0,
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 1.6299999952316284,
-     "time": 1793860200,
+     "close": 1.649999976158142,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "SASA.IS",
       "tf": "1d",
@@ -1231,16 +1223,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 35.41999816894531,
-     "time": 1793860200,
+     "close": 35.599998474121094,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "SISE.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "bbrev",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 35.41999816894531
+      "time": 1793601000,
+      "close": 33.41999816894531
      }
     }
    }
@@ -1273,31 +1265,27 @@
      }
     },
     "1d": {
-     "align": "up",
-     "ema5813Dir": "up",
+     "align": "neutral",
+     "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
      "above200": true,
-     "triple": "up",
-     "tripleScore": 3,
-     "supertrend": "up",
+     "triple": "neutral",
+     "tripleScore": 2,
+     "supertrend": "down",
      "golden": "down",
-     "donchian": "up",
-     "close": 291,
-     "time": 1793860200,
+     "donchian": "down",
+     "close": 278.75,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "TAVHL.IS",
       "tf": "1d",
-      "strategy": "trfst2",
+      "strategy": "bbrev",
       "dir": "up",
-      "strength": "strong",
-      "time": 1793860200,
-      "close": 291,
-      "levels": {
-       "entry": 291,
-       "stop": 247.24319373485162
-      }
+      "strength": "weak",
+      "time": 1793601000,
+      "close": 262
      }
     }
    }
@@ -1330,7 +1318,7 @@
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
@@ -1341,8 +1329,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 91.80000305175781,
-     "time": 1793860200,
+     "close": 93.94999694824219,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "TCELL.IS",
       "tf": "1d",
@@ -1387,8 +1375,8 @@
      }
     },
     "1d": {
-     "align": "up",
-     "ema5813Dir": "up",
+     "align": "neutral",
+     "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
@@ -1397,17 +1385,21 @@
      "tripleScore": 2,
      "supertrend": "up",
      "golden": "down",
-     "donchian": "up",
-     "close": 297,
-     "time": 1793860200,
+     "donchian": "down",
+     "close": 291.25,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "THYAO.IS",
       "tf": "1d",
-      "strategy": "donchian",
+      "strategy": "trfst2",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 297
+      "time": 1793773800,
+      "close": 291.25,
+      "levels": {
+       "entry": 291.25,
+       "stop": 235.19851020671027
+      }
      }
     }
    }
@@ -1440,7 +1432,7 @@
      }
     },
     "1d": {
-     "align": "down",
+     "align": "neutral",
      "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
@@ -1451,16 +1443,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 222.6999969482422,
-     "time": 1793860200,
+     "close": 226,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "TOASO.IS",
       "tf": "1d",
-      "strategy": "rsidiv",
+      "strategy": "stoch",
       "dir": "up",
       "strength": "weak",
-      "time": 1793860200,
-      "close": 222.6999969482422
+      "time": 1792996200,
+      "close": 219.3000030517578
      }
     }
    }
@@ -1504,8 +1496,8 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 49.279998779296875,
-     "time": 1793860200,
+     "close": 48.900001525878906,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "TTKOM.IS",
       "tf": "1d",
@@ -1545,7 +1537,7 @@
       "close": 331,
       "levels": {
        "entry": 331,
-       "stop": 362.9619859899672
+       "stop": 362.9626222584316
       }
      }
     },
@@ -1561,8 +1553,8 @@
      "supertrend": "down",
      "golden": "up",
      "donchian": "down",
-     "close": 331.75,
-     "time": 1793860200,
+     "close": 343.25,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "TUPRS.IS",
       "tf": "1d",
@@ -1602,13 +1594,13 @@
       "close": 36.900001525878906,
       "levels": {
        "entry": 36.900001525878906,
-       "stop": 32.80439921977953
+       "stop": 32.80439921987682
       }
      }
     },
     "1d": {
-     "align": "up",
-     "ema5813Dir": "up",
+     "align": "neutral",
+     "ema5813Dir": "down",
      "pullback": "none",
      "pullbackDir": "neutral",
      "pullbackLevel": null,
@@ -1618,16 +1610,16 @@
      "supertrend": "down",
      "golden": "down",
      "donchian": "down",
-     "close": 36.52000045776367,
-     "time": 1793860200,
+     "close": 35.880001068115234,
+     "time": 1793773800,
      "lastSignal": {
       "symbol": "YKBNK.IS",
       "tf": "1d",
-      "strategy": "ema5813",
+      "strategy": "bbrev",
       "dir": "up",
-      "strength": "strong",
-      "time": 1793860200,
-      "close": 36.52000045776367
+      "strength": "weak",
+      "time": 1793601000,
+      "close": 35.63999938964844
      }
     }
    }
