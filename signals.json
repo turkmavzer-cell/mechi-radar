@@ -1,5 +1,99 @@
 [
  {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "triple",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1794015000,
+  "close": 75933.3828125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "30m",
+  "strategy": "macd",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1794015000,
+  "close": 75933.3828125
+ },
+ {
+  "symbol": "BTC-USD",
+  "tf": "15m",
+  "strategy": "bbrev",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1794005100,
+  "close": 75799.1484375
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "1h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1794002400,
+  "close": 1.1143302917480469
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "2h",
+  "strategy": "stoch",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1794002400,
+  "close": 1.335577130317688
+ },
+ {
+  "symbol": "USDCAD=X",
+  "tf": "2h",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "weak",
+  "time": 1794002400,
+  "close": 1.4127999544143677
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "4h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1793995200,
+  "close": 1.1143302917480469
+ },
+ {
+  "symbol": "EURUSD=X",
+  "tf": "4h",
+  "strategy": "ema2155x",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793995200,
+  "close": 1.1143302917480469,
+  "levels": {
+   "entry": 1.1143302917480469,
+   "stop": 1.1143302917480469
+  }
+ },
+ {
+  "symbol": "GBPUSD=X",
+  "tf": "4h",
+  "strategy": "bbrev",
+  "dir": "up",
+  "strength": "weak",
+  "time": 1793995200,
+  "close": 1.335577130317688
+ },
+ {
+  "symbol": "USDCHF=X",
+  "tf": "4h",
+  "strategy": "stoch",
+  "dir": "down",
+  "strength": "strong",
+  "time": 1793995200,
+  "close": 0.8200100064277649
+ },
+ {
   "symbol": "USDJPY=X",
   "tf": "30m",
   "strategy": "stoch",
@@ -3097,132 +3191,5 @@
   "strength": "strong",
   "time": 1793975700,
   "close": 11466.8603515625
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "trfst",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11261.84848882273
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "trfst1",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11261.84848882273
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "trfst2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11261.84848882273
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "qqessl",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11366.176086146026,
-   "target": 11567.544616978974
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "qqessl2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11366.176086146026,
-   "target": 11567.544616978974
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "qqessl12",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11416.518218854264,
-   "target": 11567.544616978974
-  }
- },
- {
-  "symbol": "XU100.IS",
-  "tf": "20m",
-  "strategy": "qqessl13",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 11466.8603515625,
-  "levels": {
-   "entry": 11466.8603515625,
-   "stop": 11416.518218854264,
-   "target": 11617.88674968721
-  }
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "20m",
-  "strategy": "pullback2050",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 14270.2001953125
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "20m",
-  "strategy": "donchian",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 14270.2001953125
- },
- {
-  "symbol": "XU030.IS",
-  "tf": "20m",
-  "strategy": "qqessl2",
-  "dir": "up",
-  "strength": "strong",
-  "time": 1793975700,
-  "close": 14270.2001953125,
-  "levels": {
-   "entry": 14270.2001953125,
-   "stop": 14136.207846563279,
-   "target": 14404.192544061721
-  }
  }
 ]
